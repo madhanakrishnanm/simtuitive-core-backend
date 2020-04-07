@@ -133,10 +133,10 @@ public class UserController extends BaseController {
 			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	@RequestMapping(value = "/getuser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<User> getUser(@ApiIgnore UriComponentsBuilder builder,
-			@RequestBody UserRequestPayload userpayload, HttpServletRequest request, HttpServletResponse response) {
-		User userResponse = userservice.getUserDetails(userpayload);
+	@RequestMapping(value = "/getuser", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public JsonApiWrapper<User> getUser(@ApiIgnore UriComponentsBuilder builder, HttpServletRequest request,
+			HttpServletResponse response) {
+		User userResponse = userservice.getUser(request.getUserPrincipal().getName());
 		userResponse.setPassword(null);
 		String tmp = builder.path("/get").build().toString();
 		Link l1 = new Link(tmp, " User Detail get");
