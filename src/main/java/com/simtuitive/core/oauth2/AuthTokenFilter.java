@@ -51,12 +51,16 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 		try {
 
-			String clientToken = parseJwt(request);
+			String clientToken = parseJwt(request);//
+			System.out.println("clientToken::"+clientToken);
 			if (clientToken != null && TokenUtil.validate(clientToken, secret)) {
-				String clientTrueToken = TokenUtil.getToken(clientToken);
+				System.out.println("validateclientToken::"+clientToken);
+				String clientTrueToken = TokenUtil.getToken(clientToken);//
+				System.out.println("clientTrueToken::"+clientTrueToken);
 				Map<?, ?> newtoken = (Map<?, ?>) redis.redisTemplate().opsForHash().get(clientTrueToken,
 						clientTrueToken);
-				String truetoken = (String) newtoken.get(Constants.STR_AUTH_TOKEN);
+				String truetoken = (String) newtoken.get(Constants.STR_AUTH_TOKEN);//
+				System.out.println("truetoken::"+truetoken);
 				String username = (String) newtoken.get(Constants.STR_AUTH_EMAIL);
 				if (truetoken.matches(clientTrueToken)) {
 					UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);

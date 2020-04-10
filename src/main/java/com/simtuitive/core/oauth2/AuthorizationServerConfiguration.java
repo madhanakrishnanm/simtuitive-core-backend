@@ -27,6 +27,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.token.AuthenticationKeyGenerator;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
@@ -58,9 +59,19 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
+	@Autowired
+	public TokenStore tokenStore() {
+
+		TokenStore tokenstore = new RedisTokenStore(redisConnectionFactory);
+		((RedisTokenStore) tokenstore).setAuthenticationKeyGenerator(authenticationKeyGenerator());
+		return tokenstore;
+
+	}
+
 	@Bean
-	public TokenStore redisTokenStore() {
-		return new RedisTokenStore(redisConnectionFactory);
+	public AuthenticationKeyGenerator authenticationKeyGenerator() {
+		return new EnhancedAuthenticationKeyGenerator();
+
 	}
 
 	@Override
@@ -94,8 +105,8 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
 		corsConfigMap.put("/oauth/token", config);
 		endpoints.getFrameworkEndpointHandlerMapping().setCorsConfigurations(corsConfigMap);
-		endpoints.tokenStore(redisTokenStore()).tokenEnhancer(tokenEnhancerChain)
-				.authenticationManager(authenticationManager).userDetailsService(userDetailsService);
+		endpoints.tokenEnhancer(tokenEnhancer()).tokenStore(tokenStore()).authenticationManager(authenticationManager)
+				.userDetailsService(userDetailsService);
 	}
 
 	@Bean
@@ -107,9 +118,9 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 	@Primary
 	public DefaultTokenServices tokenServices() {
 		DefaultTokenServices tokenServices = new DefaultTokenServices();
-		tokenServices.setSupportRefreshToken(true);
-		tokenServices.setTokenStore(redisTokenStore());
-		tokenServices.setTokenEnhancer(tokenEnhancer());
+
+		tokenServices.setTokenStore(tokenStore());
+
 		return tokenServices;
 	}
 
@@ -122,8 +133,13 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 		@Override
 		public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
 			User user = (User) authentication.getPrincipal();
-			value = accessToken.toString() + stronger_salt;			
-			TokenEnc = TokenUtil.encrypt(value, secret);
+			System.out.println("accessToken::" + accessToken);
+			System.out.println("stronger_salt::" + stronger_salt);
+			value = accessToken.toString() + stronger_salt;
+			System.out.println("token with salt::" + value);
+			TokenEnc = TokenUtil.encrypt(value, secret);			
+			System.out.println("tokenEncrypted::" + TokenEnc);
+			System.out.println("stronger_salt" + stronger_salt);
 			truerefreshtoken = accessToken.getRefreshToken().getValue() + stronger_salt;
 			refreshTokenEnc = TokenUtil.encrypt(truerefreshtoken, secret);
 			additionalInfo.put("role", userDetailsService.getUserDetails(user.getUsername()));
@@ -131,15 +147,17 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 			// that//fails our case
 			OAuth2AccessToken accessTokenGen = new DefaultOAuth2AccessToken(TokenEnc);
 			OAuth2RefreshToken refreshToken = new DefaultOAuth2RefreshToken(refreshTokenEnc);
-			((DefaultOAuth2AccessToken) accessTokenGen).setAdditionalInformation(additionalInfo);			
+			((DefaultOAuth2AccessToken) accessTokenGen).setAdditionalInformation(additionalInfo);
 			((DefaultOAuth2AccessToken) accessTokenGen).setRefreshToken(refreshToken);
-			
-			// create token info class have the token information
+
+			// create token info class have the token information manually by me
 			redistoken = new PasswordResetToken(user.getUsername(), accessToken.toString(), stronger_salt,
 					new Date(System.currentTimeMillis() + 3600));
 			Map<?, ?> ruleHash = new ObjectMapper().convertValue(redistoken, Map.class);
+			System.out.println("Ruleshash:::" + ruleHash.toString());
 			// Publishing in redis
 			redis.redisTemplate().opsForHash().put(accessToken.toString(), accessToken.toString(), ruleHash);
+
 //		 OAuth2AccessToken accessTokenOutput = redisTokenStore().readAccessToken(accessTokenGen.getValue());
 //		 System.out.println("Value retrive"+accessTokenOutput.getRefreshToken());
 			return accessTokenGen;

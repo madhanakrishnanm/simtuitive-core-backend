@@ -3,9 +3,11 @@
  */
 package com.simtuitive.core.controller;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -76,7 +78,27 @@ public class UserController extends BaseController {
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
 
 	}
+	@ResponseStatus(HttpStatus.CREATED)
+	@ApiOperation(value = " Creates a Admin user ", response = User.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Successful Creation of User Data.", response = JsonApiWrapper.class),
+			@ApiResponse(code = 401, message = "Not authorized!"),
+			@ApiResponse(code = 403, message = "Not authorized to perform this action."),
+			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
+			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
+			@ApiResponse(code = 500, message = "Internal server error") })
 
+	@RequestMapping(value = "/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public JsonApiWrapper<User> login(@ApiIgnore UriComponentsBuilder builder,
+			@RequestBody UserRequestPayload userpayload, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//		request.getRequestDispatcher("/oauth/token").forward(request, response);	
+		User userResponse = null;
+		userResponse = userservice.addUser(userpayload);
+		String tmp = builder.path(Constants.PATH_CREATE_ADMIN).build().toString();
+		Link l1 = new Link(tmp, Constants.LINK_CREATE_ADMIN_DETAIL);
+		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
+
+	}
 	// update
 	@PreAuthorize("hasAuthority('ADMIN')")
 	@ResponseStatus(HttpStatus.IM_USED)
