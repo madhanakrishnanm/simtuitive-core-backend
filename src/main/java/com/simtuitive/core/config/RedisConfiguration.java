@@ -25,10 +25,14 @@ public class RedisConfiguration extends AbstractSecurityWebApplicationInitialize
 	private String REDIS_HOSTNAME;
 	@Value("${spring.redis.port}")
 	private int REDIS_PORT;
+	
+	@Value("${spring.redis.password}")
+	private String REDIS_PASSWORD;
 
 	@Bean
 	protected JedisConnectionFactory jedisConnectionFactory() {
 		RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(REDIS_HOSTNAME, REDIS_PORT);
+		configuration.setPassword(REDIS_PASSWORD);
 		JedisClientConfiguration jedisClientConfiguration = JedisClientConfiguration.builder().usePooling().build();
 		JedisConnectionFactory factory = new JedisConnectionFactory(configuration, jedisClientConfiguration);
 		factory.afterPropertiesSet();
@@ -38,13 +42,13 @@ public class RedisConfiguration extends AbstractSecurityWebApplicationInitialize
 	@Bean
 	public JedisPool getConfig() {
 		JedisPoolConfig config = new JedisPoolConfig();
-		JedisPool jedisPool = new JedisPool();
-		config.setMaxTotal(100);
-		config.setMaxIdle(200);
-		config.setMinIdle(50);
-		config.setMaxWaitMillis(30000);
+		JedisPool jedisPool = new JedisPool();		
+		config.setMaxIdle(30);
+		config.setMinIdle(10);		
 		config.setTestOnBorrow(true);
+		
 		jedisPool = new JedisPool(config, REDIS_HOSTNAME, REDIS_PORT, 50000);
+		
 		return jedisPool;
 	}
 
