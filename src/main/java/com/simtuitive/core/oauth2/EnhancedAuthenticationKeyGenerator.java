@@ -17,12 +17,15 @@ public class EnhancedAuthenticationKeyGenerator extends DefaultAuthenticationKey
 
 	@Override
 	public String extractKey(final OAuth2Authentication authentication) {
-		String superKey = UUID.randomUUID().toString();
+//		String superKey = UUID.randomUUID().toString();
 		final OAuth2Request authorizationRequest = authentication.getOAuth2Request();
 		final Map<String, String> requestParameters = authorizationRequest.getRequestParameters();
 		final Map<String, String> values = new LinkedHashMap<>(2);
+		String superKey = requestParameters != null ? requestParameters.get(KEY_SUPER_KEY)
+				: null;
 		final String clientInstanceId = requestParameters != null ? requestParameters.get(PARAM_CLIENT_INSTANCE_ID)
 				: null;
+		System.out.println("superKeyVeera"+superKey);
 		if (clientInstanceId == null || clientInstanceId.length() == 0) {
 			values.put(KEY_SUPER_KEY, superKey);
 //			return superKey;
