@@ -4,8 +4,11 @@
 package com.simtuitive.core.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +36,7 @@ import com.simtuitive.core.controller.productmgmt.api.Link;
 import com.simtuitive.core.controller.requestpayload.UserRequestPayload;
 import com.simtuitive.core.globalexception.ResourceNotFoundException;
 import com.simtuitive.core.globalexception.UserServiceException;
+import com.simtuitive.core.model.ProductUsers;
 import com.simtuitive.core.model.User;
 import com.simtuitive.core.service.abstracts.IUserService;
 
@@ -145,7 +149,56 @@ public class UserController extends BaseController {
 			return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
 		}
 	}
-
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Successful delete of User Data.", response = JsonApiWrapper.class),
+			@ApiResponse(code = 401, message = "Not authorized!"),
+			@ApiResponse(code = 403, message = "Not authorized to perform this action."),
+			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
+			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
+			@ApiResponse(code = 500, message = "Internal server error") })
+	@RequestMapping(value = "/dashboard", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public JsonApiWrapper<Map<String, Map<String, Long>>> getSample(@ApiIgnore UriComponentsBuilder builder,
+			HttpServletRequest request, HttpServletResponse response)
+			throws UserServiceException, ResourceNotFoundException {
+		Map<String, Map<String, Long>> userresponse = generateCounts();
+		String tmp = builder.path(Constants.PATH_GET_DASHBOARD).build().toString();
+		Link l1 = new Link(tmp, Constants.LINK_GET_DASHBOARD);
+		return new JsonApiWrapper<>(userresponse, getSelfLink(request), Arrays.asList(l1));
+	}
+	
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Successful delete of User Data.", response = JsonApiWrapper.class),
+			@ApiResponse(code = 401, message = "Not authorized!"),
+			@ApiResponse(code = 403, message = "Not authorized to perform this action."),
+			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
+			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
+			@ApiResponse(code = 500, message = "Internal server error") })
+	@RequestMapping(value = "/dashboardcount", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public JsonApiWrapper<List<ProductUsers>> getProductCount(@ApiIgnore UriComponentsBuilder builder,
+			HttpServletRequest request, HttpServletResponse response)
+			throws UserServiceException, ResourceNotFoundException {
+		List<ProductUsers> userresponse = generateProductCounts();
+		String tmp = builder.path(Constants.PATH_GET_DASHBOARD).build().toString();
+		Link l1 = new Link(tmp, Constants.LINK_GET_DASHBOARD);
+		return new JsonApiWrapper<>(userresponse, getSelfLink(request), Arrays.asList(l1));
+	}
+	private List<ProductUsers>  generateProductCounts() {
+		// TODO Auto-generated method stub
+		List<ProductUsers>  userresponse = new ArrayList<ProductUsers>();
+		ProductUsers prod1=new ProductUsers("Business Ethics", 7653334L, 7653334L);
+		userresponse.add(prod1);
+		ProductUsers prod2=new ProductUsers("Data Visualization", 7653334L, 7653334L);
+		userresponse.add(prod2);
+		ProductUsers prod3=new ProductUsers("Business Acumen", 7653334L, 7653334L);
+		userresponse.add(prod3);
+		ProductUsers prod4=new ProductUsers("Business Finance", 7653334L, 7653334L);
+		userresponse.add(prod4);
+		ProductUsers prod5=new ProductUsers("Agile Project Management", 7653334L, 7653334L);
+		userresponse.add(prod5);
+		return userresponse;
+	}
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	@ApiOperation(value = " Get a user ", response = User.class)
 	@ApiResponses(value = {
@@ -210,5 +263,21 @@ public class UserController extends BaseController {
 			new SecurityContextLogoutHandler().logout(request, response, auth);
 		}
 		return Constants.LOGOUT_URL;
+	}
+		private Map<String, Map<String, Long>> generateCounts() {
+			Map<String, Long> retailUserscount = new HashMap<String, Long>();
+			retailUserscount.put("currentMonth", 20244L);
+			retailUserscount.put("pastMonth", 23455L);
+			Map<String, Long> enterpriseUserscount = new HashMap<String, Long>();
+			enterpriseUserscount.put("currentMonth", 20244L);
+			enterpriseUserscount.put("pastMonth", 23455L);
+			Map<String, Long> usersOnlineNowcount = new HashMap<String, Long>();
+			usersOnlineNowcount.put("currentMonth", 20244L);
+			usersOnlineNowcount.put("pastMonth", 23455L);			
+		Map<String, Map<String, Long>> userresponse = new HashMap<String, Map<String,  Long>>();
+		userresponse.put("retailUsers", retailUserscount);
+		userresponse.put("enterpriseUsers", enterpriseUserscount);
+		userresponse.put("usersOnlineNow", usersOnlineNowcount);		
+		return userresponse;
 	}
 }
