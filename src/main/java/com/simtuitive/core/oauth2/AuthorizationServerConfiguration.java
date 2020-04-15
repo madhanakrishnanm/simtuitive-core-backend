@@ -64,6 +64,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
 		TokenStore tokenstore = new RedisTokenStore(redisConnectionFactory);
 		((RedisTokenStore) tokenstore).setAuthenticationKeyGenerator(authenticationKeyGenerator());
+
 		return tokenstore;
 
 	}
@@ -129,15 +130,18 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 		String value, TokenEnc, refreshTokenEnc, truerefreshtoken = null;
 		final Map<String, Object> additionalInfo = new HashMap<>();
 		PasswordResetToken redistoken = null;
+		StringBuilder sb = new StringBuilder();
 
 		@Override
 		public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
 			User user = (User) authentication.getPrincipal();
 			System.out.println("accessToken::" + accessToken);
 			System.out.println("stronger_salt::" + stronger_salt);
-			value = accessToken.toString() + stronger_salt;
-			System.out.println("token with salt::" + value);
-			TokenEnc = TokenUtil.encrypt(value, secret);			
+			value = accessToken.toString();
+			sb.append(value);
+			sb.append(stronger_salt);
+			System.out.println("token with salt::" + sb.toString());
+			TokenEnc = TokenUtil.encrypt(sb.toString(), secret);
 			System.out.println("tokenEncrypted::" + TokenEnc);
 			System.out.println("stronger_salt" + stronger_salt);
 			truerefreshtoken = accessToken.getRefreshToken().getValue() + stronger_salt;
