@@ -99,6 +99,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		User existinguser = userrepository.findByuserEmail(payload.getUserEmail());
 		existinguser.setUserName(payload.getUserName());
 		existinguser.setUserEmail(payload.getUserEmail());
+		existinguser.setPermissions(payload.getPermissions());
 		return existinguser;
 
 	}
