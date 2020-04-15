@@ -114,7 +114,7 @@ public class UserController extends BaseController {
 			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	@RequestMapping(value = "/updateUser", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/update-user", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<User> updateAdminUser(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody UserRequestPayload userpayload, HttpServletRequest request, HttpServletResponse response) {
 		User userResponse = userservice.updateUser(userpayload);
@@ -175,7 +175,7 @@ public class UserController extends BaseController {
 			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	@RequestMapping(value = "/dashboardcount", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/product-user", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<List<ProductUsers>> getProductCount(@ApiIgnore UriComponentsBuilder builder,
 			HttpServletRequest request, HttpServletResponse response)
 			throws UserServiceException, ResourceNotFoundException {
