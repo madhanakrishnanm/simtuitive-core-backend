@@ -51,7 +51,7 @@ import springfox.documentation.annotations.ApiIgnore;
  */
 @CrossOrigin
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/v1/users")
 public class UserController extends BaseController {
 
 	@Autowired
@@ -175,7 +175,7 @@ public class UserController extends BaseController {
 			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	@RequestMapping(value = "/product-user", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/product-users", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<List<ProductUsers>> getProductCount(@ApiIgnore UriComponentsBuilder builder,
 			HttpServletRequest request, HttpServletResponse response)
 			throws UserServiceException, ResourceNotFoundException {
@@ -187,15 +187,15 @@ public class UserController extends BaseController {
 	private List<ProductUsers>  generateProductCounts() {
 		// TODO Auto-generated method stub
 		List<ProductUsers>  userresponse = new ArrayList<ProductUsers>();
-		ProductUsers prod1=new ProductUsers("Business Ethics", 7653334L, 7653334L);
+		ProductUsers prod1=new ProductUsers("Business Ethics", 765L, 734L);
 		userresponse.add(prod1);
-		ProductUsers prod2=new ProductUsers("Data Visualization", 7653334L, 7653334L);
+		ProductUsers prod2=new ProductUsers("Data Visualization", 5333L, 5334L);
 		userresponse.add(prod2);
-		ProductUsers prod3=new ProductUsers("Business Acumen", 7653334L, 7653334L);
+		ProductUsers prod3=new ProductUsers("Business Acumen", 3334L, 653L);
 		userresponse.add(prod3);
-		ProductUsers prod4=new ProductUsers("Business Finance", 7653334L, 7653334L);
+		ProductUsers prod4=new ProductUsers("Business Finance", 789L, 764L);
 		userresponse.add(prod4);
-		ProductUsers prod5=new ProductUsers("Agile Project Management", 7653334L, 7653334L);
+		ProductUsers prod5=new ProductUsers("Agile Project Management", 700L, 833L);
 		userresponse.add(prod5);
 		return userresponse;
 	}
@@ -208,7 +208,7 @@ public class UserController extends BaseController {
 			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	@RequestMapping(value = "/getuser", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/get-user", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<User> getUser(@ApiIgnore UriComponentsBuilder builder, HttpServletRequest request,
 			HttpServletResponse response) {
 		User userResponse = userservice.getUser(request.getUserPrincipal().getName());
@@ -266,14 +266,14 @@ public class UserController extends BaseController {
 	}
 		private Map<String, Map<String, Long>> generateCounts() {
 			Map<String, Long> retailUserscount = new HashMap<String, Long>();
-			retailUserscount.put("currentMonth", 20244L);
-			retailUserscount.put("pastMonth", 23455L);
+			retailUserscount.put("currentMonth", 205L);
+			retailUserscount.put("pastMonth", 200L);
 			Map<String, Long> enterpriseUserscount = new HashMap<String, Long>();
-			enterpriseUserscount.put("currentMonth", 20244L);
-			enterpriseUserscount.put("pastMonth", 23455L);
+			enterpriseUserscount.put("currentMonth", 244L);
+			enterpriseUserscount.put("pastMonth", 255L);
 			Map<String, Long> usersOnlineNowcount = new HashMap<String, Long>();
-			usersOnlineNowcount.put("currentMonth", 20244L);
-			usersOnlineNowcount.put("pastMonth", 23455L);			
+			usersOnlineNowcount.put("yesterday", 202L);
+			usersOnlineNowcount.put("today", 234L);			
 		Map<String, Map<String, Long>> userresponse = new HashMap<String, Map<String,  Long>>();
 		userresponse.put("retailUsers", retailUserscount);
 		userresponse.put("enterpriseUsers", enterpriseUserscount);
