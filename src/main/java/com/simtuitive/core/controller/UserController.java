@@ -266,8 +266,8 @@ public class UserController extends BaseController {
 	}
 		private Map<String, Map<String, Long>> generateCounts() {
 			Map<String, Long> retailUserscount = new HashMap<String, Long>();
-			retailUserscount.put("currentMonth", 205L);
-			retailUserscount.put("pastMonth", 200L);
+			retailUserscount.put("currentMonth", 20005L);
+			retailUserscount.put("pastMonth", 20000L);
 			Map<String, Long> enterpriseUserscount = new HashMap<String, Long>();
 			enterpriseUserscount.put("currentMonth", 244L);
 			enterpriseUserscount.put("pastMonth", 255L);

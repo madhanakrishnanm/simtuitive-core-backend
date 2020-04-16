@@ -28,7 +28,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.AuthenticationKeyGenerator;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -103,11 +103,10 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 		config.setAllowedOrigins(Collections.singletonList("*"));
 		config.setAllowedMethods(Collections.singletonList("*"));
 		config.setAllowedHeaders(Collections.singletonList("*"));
-
 		corsConfigMap.put("/oauth/token", config);
 		endpoints.getFrameworkEndpointHandlerMapping().setCorsConfigurations(corsConfigMap);
-		endpoints.tokenEnhancer(tokenEnhancer()).tokenStore(tokenStore()).authenticationManager(authenticationManager)
-				.userDetailsService(userDetailsService);
+		endpoints.tokenEnhancer(tokenEnhancer()).tokenStore(tokenStore()).tokenServices(tokenServices())
+				.authenticationManager(authenticationManager).userDetailsService(userDetailsService);
 	}
 
 	@Bean
@@ -117,10 +116,11 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
 	@Bean
 	@Primary
-	public DefaultTokenServices tokenServices() {
-		DefaultTokenServices tokenServices = new DefaultTokenServices();
-
+	public AuthorizationServerTokenServices tokenServices() {
+		final SimtuitiveTokenServices tokenServices = new SimtuitiveTokenServices();
 		tokenServices.setTokenStore(tokenStore());
+		tokenServices.setTokenEnhancer(tokenEnhancer());
+		tokenServices.setSupportRefreshToken(true);
 
 		return tokenServices;
 	}
@@ -130,23 +130,23 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 		String value, TokenEnc, refreshTokenEnc, truerefreshtoken = null;
 		final Map<String, Object> additionalInfo = new HashMap<>();
 		PasswordResetToken redistoken = null;
-		StringBuilder sb = new StringBuilder();
 
 		@Override
 		public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
 			User user = (User) authentication.getPrincipal();
-			System.out.println("accessToken::" + accessToken);
-			System.out.println("stronger_salt::" + stronger_salt);
-			value = accessToken.toString();
+			value = accessToken.getValue();
+			StringBuilder sb = new StringBuilder();
 			sb.append(value);
-			sb.append(stronger_salt);
+			sb.append(BCrypt.gensalt(12));
 			System.out.println("token with salt::" + sb.toString());
 			TokenEnc = TokenUtil.encrypt(sb.toString(), secret);
 			System.out.println("tokenEncrypted::" + TokenEnc);
 			System.out.println("stronger_salt" + stronger_salt);
-			truerefreshtoken = accessToken.getRefreshToken().getValue() + stronger_salt;
+			truerefreshtoken = accessToken.getRefreshToken().getValue() + BCrypt.gensalt(12);
 			refreshTokenEnc = TokenUtil.encrypt(truerefreshtoken, secret);
 			additionalInfo.put("role", userDetailsService.getUserDetails(user.getUsername()));
+			Map<String, String> customvalues = (Map<String, String>) authentication.getDetails();
+			additionalInfo.put("key_super_key", customvalues.get("key_super_key"));
 			// Experienced to add extra salt and true token--but client can able to see
 			// that//fails our case
 			OAuth2AccessToken accessTokenGen = new DefaultOAuth2AccessToken(TokenEnc);
