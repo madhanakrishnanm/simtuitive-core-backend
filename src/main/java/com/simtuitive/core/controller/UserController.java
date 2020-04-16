@@ -69,7 +69,7 @@ public class UserController extends BaseController {
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 
-	@RequestMapping(value = "/addUser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/add-user", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<User> createUser(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody UserRequestPayload userpayload, HttpServletRequest request, HttpServletResponse response) {
 		checkArguments(userpayload);
