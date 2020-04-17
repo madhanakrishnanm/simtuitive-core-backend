@@ -121,6 +121,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 		tokenServices.setTokenStore(tokenStore());
 		tokenServices.setTokenEnhancer(tokenEnhancer());
 		tokenServices.setSupportRefreshToken(true);
+		tokenServices.setAccessTokenValiditySeconds(1800);
 
 		return tokenServices;
 	}
@@ -153,10 +154,10 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 			OAuth2RefreshToken refreshToken = new DefaultOAuth2RefreshToken(refreshTokenEnc);
 			((DefaultOAuth2AccessToken) accessTokenGen).setAdditionalInformation(additionalInfo);
 			((DefaultOAuth2AccessToken) accessTokenGen).setRefreshToken(refreshToken);
-
+			((DefaultOAuth2AccessToken) accessTokenGen).setExpiration(accessToken.getExpiration());
 			// create token info class have the token information manually by me
 			redistoken = new PasswordResetToken(user.getUsername(), accessToken.toString(), stronger_salt,
-					new Date(System.currentTimeMillis() + 3600));
+					accessToken.getExpiration());
 			Map<?, ?> ruleHash = new ObjectMapper().convertValue(redistoken, Map.class);
 			System.out.println("Ruleshash:::" + ruleHash.toString());
 			// Publishing in redis
