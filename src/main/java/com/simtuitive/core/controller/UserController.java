@@ -74,7 +74,7 @@ public class UserController extends BaseController {
 			@RequestBody UserRequestPayload userpayload, HttpServletRequest request, HttpServletResponse response) {
 		checkArguments(userpayload);
 		checkArguments(userpayload.getUserEmail());
-		checkArguments(userpayload.getUserType());
+//		checkArguments(userpayload.getUserType());
 		User userResponse = null;
 		userResponse = userservice.addUser(userpayload);
 		String tmp = builder.path(Constants.PATH_CREATE_ADMIN).build().toString();

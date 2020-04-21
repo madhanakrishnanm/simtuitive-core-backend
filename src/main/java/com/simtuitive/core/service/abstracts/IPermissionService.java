@@ -13,5 +13,7 @@ public interface IPermissionService {
 
 	// GetAll Roles
 	public List<Permissions> findAll();
+	
+	public Permissions get(String permissionId);
 
 }

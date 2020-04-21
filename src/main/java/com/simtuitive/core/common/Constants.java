@@ -9,12 +9,15 @@ public class Constants {
 	public final static String LINK_CREATE_CLIENT_DETAIL = "Client User Detail";
 	public final static String LINK_CREATE_LEARNER_DETAIL = "Learner User Detail";
 	public final static String LINK_CREATE_WORKORDER_DETAIL = "WorkOrder User Detail";
+	
+	public final static String LINK_CREATE_ORGANISATION_DETAIL = "Organisation Detail";
 
 	public final static String PATH_CREATE_ADMIN = "/createAdmin";
 	public final static String PATH_CREATE_SME = "/createSME";
 	public final static String PATH_CREATE_CLIENT = "/createClient";
 	public final static String PATH_CREATE_LEARNER = "/createLearner";
 	public final static String PATH_CREATE_WORKORDER = "/createWorkOrder";
+	public final static String PATH_CREATE_ORGANISATION = "/createOrganisation";
 
 	public final static String PATH_PASSWORD_CHANGE = "/chagepassword";
 
@@ -23,12 +26,20 @@ public class Constants {
 	public final static String PATH_UPDATE_CLIENT = "/updateClient";
 	public final static String PATH_UPDATE_LEARNER = "/updateLearner";
 	public final static String PATH_UPDATE_WORKORDER = "/updateWorkOrder";
+	public final static String PATH_UPDATE_ORGANISATION = "/updateOrganistion";
+	public final static String PATH_GET_ORG = "/getOrganisation";
+	public final static String PATH_GET_ALL_ORG = "/getAllOrganisation";
 
 	public final static String LINK_UPDATE_ADMIN_DETAIL = "Admin User Detail";
 	public final static String LINK_UPDATE_SME_DETAIL = "SME User Detail";
 	public final static String LINK_UPDATE_CLIENT_DETAIL = "Client User Detail";
 	public final static String LINK_UPDATE_LEARNER_DETAIL = "Learner User Detail";
 	public final static String LINK_UPDATE_WORKORDER_DETAIL = "WorkOrder User Detail";
+	
+	public final static String LINK_UPDATE_ORGANISATION_DETAIL = "Organisation Detail";
+	
+	public final static String LINK_GET_ORGANISATION_DETAIL = "Organisation Detail";
+	public final static String LINK_GET_ALL_ORGANISATION_DETAIL = "Organisations Detail";
 
 	public final static String ROLE_NOT_FOUND = "Role not found";
 	public final static String LOGOUT_URL = "redirect:/login";

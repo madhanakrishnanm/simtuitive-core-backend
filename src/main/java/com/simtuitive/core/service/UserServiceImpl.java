@@ -1,5 +1,6 @@
 package com.simtuitive.core.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -8,7 +9,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.simtuitive.core.controller.requestpayload.UserRequestPayload;
+import com.simtuitive.core.model.Permissions;
+import com.simtuitive.core.model.RoleHasPermission;
+import com.simtuitive.core.model.Roles;
 import com.simtuitive.core.model.User;
+import com.simtuitive.core.repository.PermissionsRepository;
+import com.simtuitive.core.repository.RoleHasPermissionRepository;
+import com.simtuitive.core.repository.RolesRepository;
 import com.simtuitive.core.repository.UserRepository;
 import com.simtuitive.core.service.abstracts.IUserService;
 
@@ -20,6 +27,13 @@ public class UserServiceImpl extends BaseService implements IUserService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	@Autowired
+	private RoleHasPermissionRepository roleHasPermissionRepository;
+
+	@Autowired
+	private PermissionsRepository permissionsRepository;
+	@Autowired
+	private RolesRepository roleRepository;
 
 	// Get User By Email
 	@Override
@@ -31,13 +45,14 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	public User addUser(UserRequestPayload UserRequestPayload) {
 		// TODO Auto-generated method stub
 		User buildUserNeedsToBeCreated = null;
-		if (UserRequestPayload.getUserType().equalsIgnoreCase("ADMIN")||UserRequestPayload.getUserType().equalsIgnoreCase("Super Admin") ) {
+		if (UserRequestPayload.getRole().equalsIgnoreCase("ADMIN")
+				|| UserRequestPayload.getRole().equalsIgnoreCase("Super Admin")) {
 			buildUserNeedsToBeCreated = buildAdminUser(UserRequestPayload);
 		}
-		if (UserRequestPayload.getUserType().equalsIgnoreCase("CLIENT")) {
+		if (UserRequestPayload.getRole().equalsIgnoreCase("CLIENT")) {
 			buildUserNeedsToBeCreated = buildClientUser(UserRequestPayload);
 		}
-		if (UserRequestPayload.getUserType().equalsIgnoreCase("Learner")) {
+		if (UserRequestPayload.getRole().equalsIgnoreCase("Learner")) {
 			buildUserNeedsToBeCreated = buildLearnerUser(UserRequestPayload);
 		}
 		User savedUser = userrepository.save(buildUserNeedsToBeCreated);
@@ -47,7 +62,14 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	@Override
 	public User updateUser(UserRequestPayload UserRequestPayload) {
 		// TODO Auto-generated method stub
-		User updateuser = modifyAdminUser(UserRequestPayload);
+		User updateuser = null;
+		if (UserRequestPayload.getRole().equalsIgnoreCase("ADMIN")
+				|| UserRequestPayload.getRole().equalsIgnoreCase("Super Admin")) {
+			updateuser = modifyAdminUser(UserRequestPayload);
+		}
+		if (UserRequestPayload.getRole().equalsIgnoreCase("CLIENT")) {
+			updateuser = modifyClientUser(UserRequestPayload);
+		}
 		return userrepository.save(updateuser);
 	}
 
@@ -88,11 +110,24 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	}
 
 	private User buildAdminUser(UserRequestPayload payload) {
-
+		List<Permissions> permissionlist = buildRolePermission(payload);
+		System.out.println("List" + permissionlist.toString());
 		User user = new User(payload.getUserName(), payload.getUserEmail(),
-				passwordEncoder.encode(payload.getPassword()), 1L, payload.getPermissions(),payload.getUserType());
+				passwordEncoder.encode(payload.getPassword()), 1L, permissionlist, payload.getRole());
 		return user;
+	}
 
+	private List<Permissions> buildRolePermission(UserRequestPayload payload) {
+		List<Permissions> permissionlist = new ArrayList<Permissions>();
+		Roles role = roleRepository.findByRolename(payload.getRole());
+		System.out.println("veera role" + role.toString());
+		List<RoleHasPermission> haspermission = roleHasPermissionRepository.findByRoleid(role.getRoleid());
+		for (RoleHasPermission permission : haspermission) {
+			System.out.println("permission" + permission.getPermissionid());
+			Permissions per = permissionsRepository.findBypermissionId(permission.getPermissionid());
+			permissionlist.add(per);
+		}
+		return permissionlist;
 	}
 
 	private User modifyAdminUser(UserRequestPayload payload) {
@@ -105,11 +140,10 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	}
 
 	private User buildClientUser(UserRequestPayload payload) {
-
+		List<Permissions> permissionlist = buildRolePermission(payload);
 		User user = new User(payload.getUserName(), payload.getUserEmail(), payload.getClientOrgname(),
 				passwordEncoder.encode(payload.getPassword()), 1L, payload.getClientDealOwner(), new Date(),
-				payload.getClientLocation(), payload.getClientGst(), payload.getClientPan(),
-				payload.getPermissions(),payload.getUserType());
+				payload.getClientGst(), payload.getClientPan(), permissionlist, payload.getRole());
 		return user;
 
 	}
@@ -123,7 +157,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		existinguser.setClientLocation(payload.getClientLocation());
 		existinguser.setClientGst(payload.getClientGst());
 		existinguser.setClientPan(payload.getClientPan());
-		existinguser.setClientSpoc(payload.getClientSpoc());
+		existinguser.setPermissions(payload.getPermissions());
 		return existinguser;
 
 	}
@@ -133,7 +167,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		User user = new User(payload.getUserName(), payload.getUserEmail(), payload.getClientOrgname(),
 				passwordEncoder.encode(payload.getPassword()), 1L, new Date(), payload.getSimEventName(),
 				payload.getSmeAssigned(), payload.getNoOfMilestone(), payload.getNoOfMilestoneAttended(),
-				payload.getNoOfMilestoneCompleted(), payload.getPermissions(),payload.getUserType());
+				payload.getNoOfMilestoneCompleted(), payload.getPermissions(), payload.getUserType());
 		return user;
 
 	}

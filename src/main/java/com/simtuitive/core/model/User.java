@@ -321,7 +321,7 @@ public class User implements GrantedAuthority,Serializable {
 
 	// client specific
 	public User(String userName, String userEmail, String clientOrgname, String password, Long status,
-			String clientDealOwner, Date createdDate, String clientLocation, String clientGst, String clientPan,
+			String clientDealOwner, Date createdDate, String clientGst, String clientPan,
 			 List<Permissions> permissions,String role) {
 		super();
 		this.userName = userName;
@@ -330,8 +330,7 @@ public class User implements GrantedAuthority,Serializable {
 		this.password = password;
 		this.status = status;
 		this.clientDealOwner = clientDealOwner;
-		this.createdDate = createdDate;
-		this.clientLocation = clientLocation;
+		this.createdDate = createdDate;		
 		this.clientGst = clientGst;
 		this.clientPan = clientPan;	
 		this.permissions = permissions;

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.simtuitive.core.model;
 
 import java.io.Serializable;
@@ -11,61 +8,43 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-/**
- * @author Veeramani N S
- *
- */
-
 @Document
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Permissions implements Serializable {
+public class Roles implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	@Id
-	private String permissionId;
-	private String name;
-	private String type;
+	private String roleid;
+	private String rolename;
 	private String description;
 	private Date createdOn;
-	private Date modifiedOn;
+	private Date modifiedOn;	
 	/**
-	 * @return the permissionId
+	 * @return the roleid
 	 */
-	public String getPermissionId() {
-		return permissionId;
+	public String getRoleid() {
+		return roleid;
 	}
 	/**
-	 * @param permissionId the permissionId to set
+	 * @param roleid the roleid to set
 	 */
-	public void setPermissionId(String permissionId) {
-		this.permissionId = permissionId;
+	public void setRoleid(String roleid) {
+		this.roleid = roleid;
 	}
 	/**
-	 * @return the name
+	 * @return the rolename
 	 */
-	public String getName() {
-		return name;
+	public String getRolename() {
+		return rolename;
 	}
 	/**
-	 * @param name the name to set
+	 * @param rolename the rolename to set
 	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
-	/**
-	 * @param type the type to set
-	 */
-	public void setType(String type) {
-		this.type = type;
+	public void setRolename(String rolename) {
+		this.rolename = rolename;
 	}
 	/**
 	 * @return the description
@@ -103,23 +82,23 @@ public class Permissions implements Serializable {
 	public void setModifiedOn(Date modifiedOn) {
 		this.modifiedOn = modifiedOn;
 	}
-	public Permissions(String name, String type, String description, Date createdOn, Date modifiedOn) {
+	public Roles(String rolename, String description, Date createdOn, Date modifiedOn) {
 		super();
-		this.name = name;
-		this.type = type;
+		this.rolename = rolename;
 		this.description = description;
 		this.createdOn = createdOn;
 		this.modifiedOn = modifiedOn;
 	}
-	public Permissions() {
+	public Roles() {
 		
 		// TODO Auto-generated constructor stub
 	}
 	@Override
 	public String toString() {
-		return "Permissions [permissionId=" + permissionId + ", name=" + name + ", type=" + type + ", description="
-				+ description + ", createdOn=" + createdOn + ", modifiedOn=" + modifiedOn + "]";
+		return "Roles [roleid=" + roleid + ", rolename=" + rolename + ", description=" + description + ", createdOn="
+				+ createdOn + ", modifiedOn=" + modifiedOn + "]";
 	}
+	
 	
 	
 	

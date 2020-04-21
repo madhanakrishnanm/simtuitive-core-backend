@@ -1,49 +1,78 @@
 package com.simtuitive.core.controller.requestpayload;
 
 import java.io.Serializable;
-import java.util.List;
 
-import com.simtuitive.core.model.Tabs;
+
 
 public class PermissionsRequestPayload implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 4918027656475893756L;
-	private List<String> tabs;
-	private List<String> Learners;
+	private String permissionId;
+	private String name;
+	private String type;
+	private String description;	
 	/**
-	 * @return the tabs
+	 * @return the permissionId
 	 */
-	public List<String> getTabs() {
-		return tabs;
+	public String getPermissionId() {
+		return permissionId;
 	}
 	/**
-	 * @param tabs the tabs to set
+	 * @param permissionId the permissionId to set
 	 */
-	public void setTabs(List<String> tabs) {
-		this.tabs = tabs;
+	public void setPermissionId(String permissionId) {
+		this.permissionId = permissionId;
 	}
 	/**
-	 * @return the learners
+	 * @return the name
 	 */
-	public List<String> getLearners() {
-		return Learners;
+	public String getName() {
+		return name;
 	}
 	/**
-	 * @param learners the learners to set
+	 * @param name the name to set
 	 */
-	public void setLearners(List<String> learners) {
-		Learners = learners;
+	public void setName(String name) {
+		this.name = name;
 	}
-	public PermissionsRequestPayload(List<String> tabs, List<String> learners) {
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(String type) {
+		this.type = type;
+	}
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public PermissionsRequestPayload(String permissionId, String name, String type, String description) {
 		super();
-		this.tabs = tabs;
-		Learners = learners;
+		this.permissionId = permissionId;
+		this.name = name;
+		this.type = type;
+		this.description = description;
 	}
-	public PermissionsRequestPayload() {
-		
-		// TODO Auto-generated constructor stub
-	}	
+	@Override
+	public String toString() {
+		return "PermissionsRequestPayload [permissionId=" + permissionId + ", name=" + name + ", type=" + type
+				+ ", description=" + description + "]";
+	}
+	
 	
 }

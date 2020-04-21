@@ -8,4 +8,5 @@ import com.simtuitive.core.model.Permissions;
 @Repository
 public interface PermissionsRepository extends MongoRepository<Permissions, String> {
 
+	public Permissions findBypermissionId(String permissionId);
 }
