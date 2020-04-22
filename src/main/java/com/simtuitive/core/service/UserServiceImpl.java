@@ -131,10 +131,9 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	}
 
 	private User modifyAdminUser(UserRequestPayload payload) {
-		User existinguser = userrepository.findByuserEmail(payload.getUserEmail());
+		User existinguser = userrepository.findByUserId(payload.getUserId());
 		existinguser.setUserName(payload.getUserName());
-		existinguser.setUserEmail(payload.getUserEmail());
-		existinguser.setPermissions(payload.getPermissions());
+		existinguser.setUserEmail(payload.getUserEmail());		
 		return existinguser;
 
 	}
@@ -149,15 +148,13 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	}
 
 	private User modifyClientUser(UserRequestPayload payload) {
-		User existinguser = userrepository.findByuserEmail(payload.getUserEmail());
+		User existinguser = userrepository.findByUserId(payload.getUserId());
 		existinguser.setUserName(payload.getUserName());
 		existinguser.setUserEmail(payload.getUserEmail());
 		existinguser.setClientOrgname(payload.getClientOrgname());
-		existinguser.setClientDealOwner(payload.getClientDealOwner());
-		existinguser.setClientLocation(payload.getClientLocation());
+		existinguser.setClientDealOwner(payload.getClientDealOwner());		
 		existinguser.setClientGst(payload.getClientGst());
-		existinguser.setClientPan(payload.getClientPan());
-		existinguser.setPermissions(payload.getPermissions());
+		existinguser.setClientPan(payload.getClientPan());		
 		return existinguser;
 
 	}
