@@ -1,6 +1,7 @@
 package com.simtuitive.core.service.abstracts;
 
 import java.util.List;
+import java.util.Map;
 
 import com.simtuitive.core.controller.requestpayload.OrganisationRequestPayload;
 import com.simtuitive.core.model.Organisation;
@@ -14,4 +15,6 @@ public interface IOrganisationService {
 	public Organisation getOrganisation(String Id);
 
 	public List<Organisation> findAll();
+	
+	public Map<String,String>findAllOrganisationName();
 }

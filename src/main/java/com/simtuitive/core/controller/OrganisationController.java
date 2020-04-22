@@ -2,6 +2,7 @@ package com.simtuitive.core.controller;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -119,6 +120,25 @@ public class OrganisationController extends BaseController {
 		String tmp = builder.path(Constants.PATH_GET_ALL_ORG).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_GET_ALL_ORGANISATION_DETAIL);
 
+		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
+
+	}
+	@PreAuthorize("hasAuthority('ADMIN')")
+	@ResponseStatus(HttpStatus.IM_USED)
+	@ApiOperation(value = " getall Organisations ", response = Organisation.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Successful Creation of User Data.", response = JsonApiWrapper.class),
+			@ApiResponse(code = 401, message = "Not authorized!"),
+			@ApiResponse(code = 403, message = "Not authorized to perform this action."),
+			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
+			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
+			@ApiResponse(code = 500, message = "Internal server error") })
+	@RequestMapping(value = "/getall-orgname", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public JsonApiWrapper<Map<String,String>> findAllOrganisationName(@ApiIgnore UriComponentsBuilder builder,
+			 HttpServletRequest request, HttpServletResponse response) {
+		Map<String,String>userResponse = organisationservice.findAllOrganisationName();
+		String tmp = builder.path(Constants.PATH_GET_ALL_ORG).build().toString();
+		Link l1 = new Link(tmp, Constants.LINK_GET_ALL_ORGANISATION_DETAIL);
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
 
 	}

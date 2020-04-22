@@ -1,7 +1,9 @@
 package com.simtuitive.core.service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,6 +73,17 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 	public List<Organisation> findAll() {
 		// TODO Auto-generated method stub
 		return organisationrepository.findAll();
+	}
+
+	@Override
+	public Map<String,String> findAllOrganisationName() {
+		// TODO Auto-generated method stub
+		List<Organisation>organisations=organisationrepository.findAll();
+		Map<String,String>listorgname=new HashMap<>();
+		for(Organisation org:organisations) {
+			listorgname.put(org.getOrgId(), org.getOrgName());			
+		}
+		return listorgname;
 	}
 
 }
