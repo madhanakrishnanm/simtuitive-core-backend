@@ -6,39 +6,55 @@ import java.util.Date;
 import org.springframework.data.annotation.Id;
 
 public class OrganisationRequestPayload implements Serializable {
-	private String orgName;	
-	private String orgId;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String name;	
+	private String id;
 	private String location;
 	private String industry;
 	private String dealOwner;
 	private String dealOwnerEmail;
 	private Long dealOwnerMobile;	
 	private String status;
-	private Long creditLimit;	
+	private Long creditLimit;
 	private String modifiedBy;
 	/**
-	 * @return the orgName
+	 * @return the modifiedBy
 	 */
-	public String getOrgName() {
-		return orgName;
+	public String getModifiedBy() {
+		return modifiedBy;
 	}
 	/**
-	 * @param orgName the orgName to set
+	 * @param modifiedBy the modifiedBy to set
 	 */
-	public void setOrgName(String orgName) {
-		this.orgName = orgName;
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
 	}
 	/**
-	 * @return the orgId
+	 * @return the name
 	 */
-	public String getOrgId() {
-		return orgId;
+	public String getName() {
+		return name;
 	}
 	/**
-	 * @param orgId the orgId to set
+	 * @param name the name to set
 	 */
-	public void setOrgId(String orgId) {
-		this.orgId = orgId;
+	public void setName(String name) {
+		this.name = name;
+	}
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
 	}
 	/**
 	 * @return the location
@@ -124,23 +140,11 @@ public class OrganisationRequestPayload implements Serializable {
 	public void setCreditLimit(Long creditLimit) {
 		this.creditLimit = creditLimit;
 	}
-	/**
-	 * @return the modifiedBy
-	 */
-	public String getModifiedBy() {
-		return modifiedBy;
-	}
-	/**
-	 * @param modifiedBy the modifiedBy to set
-	 */
-	public void setModifiedBy(String modifiedBy) {
-		this.modifiedBy = modifiedBy;
-	}
-	public OrganisationRequestPayload(String orgName, String orgId, String location, String industry, String dealOwner,
+	public OrganisationRequestPayload(String name, String id, String location, String industry, String dealOwner,
 			String dealOwnerEmail, Long dealOwnerMobile, String status, Long creditLimit, String modifiedBy) {
 		super();
-		this.orgName = orgName;
-		this.orgId = orgId;
+		this.name = name;
+		this.id = id;
 		this.location = location;
 		this.industry = industry;
 		this.dealOwner = dealOwner;
@@ -152,10 +156,10 @@ public class OrganisationRequestPayload implements Serializable {
 	}
 	@Override
 	public String toString() {
-		return "OrganisationRequestPayload [orgName=" + orgName + ", orgId=" + orgId + ", location=" + location
-				+ ", industry=" + industry + ", dealOwner=" + dealOwner + ", dealOwnerEmail=" + dealOwnerEmail
-				+ ", dealOwnerMobile=" + dealOwnerMobile + ", status=" + status + ", creditLimit=" + creditLimit
-				+ ", modifiedBy=" + modifiedBy + "]";
-	}
-		
+		return "OrganisationRequestPayload [name=" + name + ", id=" + id + ", location=" + location + ", industry="
+				+ industry + ", dealOwner=" + dealOwner + ", dealOwnerEmail=" + dealOwnerEmail + ", dealOwnerMobile="
+				+ dealOwnerMobile + ", status=" + status + ", creditLimit=" + creditLimit + ", modifiedBy=" + modifiedBy
+				+ "]";
+	}	
+			
 }

@@ -17,208 +17,190 @@ public class Organisation implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private String orgName;
+	private String organizationName;
 	@Id
-	private String orgId;
+	private String organizationId;
 	private String location;
 	private String industry;
-	private String clientDealOwnerName;
-	private String clientDealOwnerEmail;
-	private Long clientDealOwnerMobile;
-	private Date creationDate;
+	private String dealOwnerName;
+	private String dealOwnerEmail;
+	private Long dealOwnerMobile;
+	private Date createdAt;
 	private String status;
 	private Long creditLimit;
-	private Date modifiedDate;
+	private Date updatedAt;
 	private String modifiedBy;
-
 	/**
-	 * @return the orgName
+	 * @return the organizationName
 	 */
-	public String getOrgName() {
-		return orgName;
+	public String getOrganizationName() {
+		return organizationName;
 	}
-
 	/**
-	 * @param orgName the orgName to set
+	 * @param organizationName the organizationName to set
 	 */
-	public void setOrgName(String orgName) {
-		this.orgName = orgName;
+	public void setOrganizationName(String organizationName) {
+		this.organizationName = organizationName;
 	}
-
 	/**
-	 * @return the orgId
+	 * @return the organizationId
 	 */
-	public String getOrgId() {
-		return orgId;
+	public String getOrganizationId() {
+		return organizationId;
 	}
-
 	/**
-	 * @param orgId the orgId to set
+	 * @param organizationId the organizationId to set
 	 */
-	public void setOrgId(String orgId) {
-		this.orgId = orgId;
+	public void setOrganizationId(String organizationId) {
+		this.organizationId = organizationId;
 	}
-
 	/**
 	 * @return the location
 	 */
 	public String getLocation() {
 		return location;
 	}
-
 	/**
 	 * @param location the location to set
 	 */
 	public void setLocation(String location) {
 		this.location = location;
 	}
-
 	/**
 	 * @return the industry
 	 */
 	public String getIndustry() {
 		return industry;
 	}
-
 	/**
 	 * @param industry the industry to set
 	 */
 	public void setIndustry(String industry) {
 		this.industry = industry;
 	}
-
 	/**
-	 * @return the clientDealOwnerName
+	 * @return the dealOwnerName
 	 */
-	public String getClientDealOwnerName() {
-		return clientDealOwnerName;
+	public String getDealOwnerName() {
+		return dealOwnerName;
 	}
-
 	/**
-	 * @param clientDealOwnerName the clientDealOwnerName to set
+	 * @param dealOwnerName the dealOwnerName to set
 	 */
-	public void setClientDealOwnerName(String clientDealOwnerName) {
-		this.clientDealOwnerName = clientDealOwnerName;
+	public void setDealOwnerName(String dealOwnerName) {
+		this.dealOwnerName = dealOwnerName;
 	}
-
 	/**
-	 * @return the clientDealOwnerEmail
+	 * @return the dealOwnerEmail
 	 */
-	public String getClientDealOwnerEmail() {
-		return clientDealOwnerEmail;
+	public String getDealOwnerEmail() {
+		return dealOwnerEmail;
 	}
-
 	/**
-	 * @param clientDealOwnerEmail the clientDealOwnerEmail to set
+	 * @param dealOwnerEmail the dealOwnerEmail to set
 	 */
-	public void setClientDealOwnerEmail(String clientDealOwnerEmail) {
-		this.clientDealOwnerEmail = clientDealOwnerEmail;
+	public void setDealOwnerEmail(String dealOwnerEmail) {
+		this.dealOwnerEmail = dealOwnerEmail;
 	}
-
 	/**
-	 * @return the clientDealOwnerMobile
+	 * @return the dealOwnerMobile
 	 */
-	public Long getClientDealOwnerMobile() {
-		return clientDealOwnerMobile;
+	public Long getDealOwnerMobile() {
+		return dealOwnerMobile;
 	}
-
 	/**
-	 * @param clientDealOwnerMobile the clientDealOwnerMobile to set
+	 * @param dealOwnerMobile the dealOwnerMobile to set
 	 */
-	public void setClientDealOwnerMobile(Long clientDealOwnerMobile) {
-		this.clientDealOwnerMobile = clientDealOwnerMobile;
+	public void setDealOwnerMobile(Long dealOwnerMobile) {
+		this.dealOwnerMobile = dealOwnerMobile;
 	}
-
 	/**
-	 * @return the creationDate
+	 * @return the createdAt
 	 */
-	public Date getCreationDate() {
-		return creationDate;
+	public Date getCreatedAt() {
+		return createdAt;
 	}
-
 	/**
-	 * @param creationDate the creationDate to set
+	 * @param createdAt the createdAt to set
 	 */
-	public void setCreationDate(Date creationDate) {
-		this.creationDate = creationDate;
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
 	}
-
 	/**
 	 * @return the status
 	 */
 	public String getStatus() {
 		return status;
 	}
-
 	/**
 	 * @param status the status to set
 	 */
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
 	/**
 	 * @return the creditLimit
 	 */
 	public Long getCreditLimit() {
 		return creditLimit;
 	}
-
 	/**
 	 * @param creditLimit the creditLimit to set
 	 */
 	public void setCreditLimit(Long creditLimit) {
 		this.creditLimit = creditLimit;
 	}
-
 	/**
-	 * @return the modifiedDate
+	 * @return the updatedAt
 	 */
-	public Date getModifiedDate() {
-		return modifiedDate;
+	public Date getUpdatedAt() {
+		return updatedAt;
 	}
-
 	/**
-	 * @param modifiedDate the modifiedDate to set
+	 * @param updatedAt the updatedAt to set
 	 */
-	public void setModifiedDate(Date modifiedDate) {
-		this.modifiedDate = modifiedDate;
+	public void setUpdatedAt(Date updatedAt) {
+		this.updatedAt = updatedAt;
 	}
-
 	/**
 	 * @return the modifiedBy
 	 */
 	public String getModifiedBy() {
 		return modifiedBy;
 	}
-
 	/**
 	 * @param modifiedBy the modifiedBy to set
 	 */
 	public void setModifiedBy(String modifiedBy) {
 		this.modifiedBy = modifiedBy;
 	}
-
-	public Organisation() {
-
-		// TODO Auto-generated constructor stub
-	}
-
-	public Organisation(String orgName, String location, String industry, String clientDealOwnerName,
-			String clientDealOwnerEmail, Long clientDealOwnerMobile, Date creationDate, String status, Long creditLimit,
-			Date modifiedDate, String modifiedBy) {
+	public Organisation(String organizationName, String location, String industry,
+			String dealOwnerName, String dealOwnerEmail, Long dealOwnerMobile, Date createdAt, String status,
+			Long creditLimit, Date updatedAt, String modifiedBy) {
 		super();
-		this.orgName = orgName;
+		this.organizationName = organizationName;		
 		this.location = location;
 		this.industry = industry;
-		this.clientDealOwnerName = clientDealOwnerName;
-		this.clientDealOwnerEmail = clientDealOwnerEmail;
-		this.clientDealOwnerMobile = clientDealOwnerMobile;
-		this.creationDate = creationDate;
+		this.dealOwnerName = dealOwnerName;
+		this.dealOwnerEmail = dealOwnerEmail;
+		this.dealOwnerMobile = dealOwnerMobile;
+		this.createdAt = createdAt;
 		this.status = status;
 		this.creditLimit = creditLimit;
-		this.modifiedDate = modifiedDate;
+		this.updatedAt = updatedAt;
 		this.modifiedBy = modifiedBy;
+	}
+	public Organisation() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	@Override
+	public String toString() {
+		return "Organisation [organizationName=" + organizationName + ", organizationId=" + organizationId
+				+ ", location=" + location + ", industry=" + industry + ", dealOwnerName=" + dealOwnerName
+				+ ", dealOwnerEmail=" + dealOwnerEmail + ", dealOwnerMobile=" + dealOwnerMobile + ", createdAt="
+				+ createdAt + ", status=" + status + ", creditLimit=" + creditLimit + ", updatedAt=" + updatedAt
+				+ ", modifiedBy=" + modifiedBy + "]";
 	}
 
 }

@@ -6,6 +6,7 @@ import com.simtuitive.core.model.Organisation;
 
 public interface OrganisationRepository extends MongoRepository<Organisation, String> {	
 	
-	public Organisation findByOrgId(String orgId); 
+	public Organisation findByOrganizationId(String organizationId);
+	
 	
 }

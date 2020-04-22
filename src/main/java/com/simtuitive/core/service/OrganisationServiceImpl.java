@@ -34,9 +34,9 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 
 	private Organisation buildOrganisation(OrganisationRequestPayload payload) {
 		// TODO Auto-generated method stub
-		Organisation client = new Organisation(payload.getOrgName(), payload.getLocation(), payload.getIndustry(),
+		Organisation client = new Organisation(payload.getName(), payload.getLocation(), payload.getIndustry(),
 				payload.getDealOwner(), payload.getDealOwnerEmail(), payload.getDealOwnerMobile(),
-				new Date(), payload.getStatus(), payload.getCreditLimit(), new Date(), payload.getModifiedBy());
+				new Date(), payload.getStatus(), payload.getCreditLimit(), new Date(),payload.getModifiedBy());
 
 		return client;
 	}
@@ -50,13 +50,13 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 
 	private Organisation modifyOrganisation(OrganisationRequestPayload payload) {
 		// TODO Auto-generated method stub
-		Organisation needtobeupdate = getOrganisation(payload.getOrgId());
-		needtobeupdate.setOrgName(payload.getOrgName());
+		Organisation needtobeupdate = getOrganisation(payload.getId());
+		needtobeupdate.setOrganizationName((payload.getName()));
 		needtobeupdate.setModifiedBy(payload.getModifiedBy());
-		needtobeupdate.setClientDealOwnerName(payload.getDealOwner());
-		needtobeupdate.setClientDealOwnerEmail(payload.getDealOwnerEmail());
-		needtobeupdate.setClientDealOwnerMobile(payload.getDealOwnerMobile());
-		needtobeupdate.setModifiedDate(new Date());
+		needtobeupdate.setDealOwnerName(payload.getDealOwner());
+		needtobeupdate.setDealOwnerEmail(payload.getDealOwnerEmail());
+		needtobeupdate.setDealOwnerMobile(payload.getDealOwnerMobile());
+		needtobeupdate.setUpdatedAt((new Date()));
 		needtobeupdate.setIndustry(payload.getIndustry());
 		needtobeupdate.setCreditLimit(payload.getCreditLimit());
 		needtobeupdate.setStatus(payload.getStatus());
@@ -66,7 +66,7 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 	@Override
 	public Organisation getOrganisation(String Id) {
 		// TODO Auto-generated method stub
-		return organisationrepository.findByOrgId(Id);
+		return organisationrepository.findByOrganizationId(Id);
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 		List<Organisation>organisations=organisationrepository.findAll();
 		Map<String,String>listorgname=new HashMap<>();
 		for(Organisation org:organisations) {
-			listorgname.put(org.getOrgId(), org.getOrgName());			
+			listorgname.put(org.getOrganizationId(), org.getOrganizationName());			
 		}
 		return listorgname;
 	}

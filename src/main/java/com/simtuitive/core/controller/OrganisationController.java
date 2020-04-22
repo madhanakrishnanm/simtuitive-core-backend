@@ -54,6 +54,8 @@ public class OrganisationController extends BaseController {
 	public JsonApiWrapper<Organisation> createOrganisation(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody OrganisationRequestPayload payload, HttpServletRequest request, HttpServletResponse response) {
 		Organisation userResponse = null;
+		String createdby=request.getUserPrincipal().getName();
+		payload.setModifiedBy(createdby);
 		userResponse = organisationservice.addOrganisation(payload);
 		String tmp = builder.path(Constants.PATH_CREATE_ORGANISATION).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_CREATE_ORGANISATION_DETAIL);
@@ -74,6 +76,8 @@ public class OrganisationController extends BaseController {
 	@RequestMapping(value = "/update-org", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<Organisation> updateOrganisation(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody OrganisationRequestPayload payload, HttpServletRequest request, HttpServletResponse response) {
+		String modify=request.getUserPrincipal().getName();
+		payload.setModifiedBy(modify);
 		Organisation userResponse = organisationservice.updateOrganisation(payload);
 		String tmp = builder.path(Constants.PATH_UPDATE_ORGANISATION).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_UPDATE_ORGANISATION_DETAIL);
@@ -95,7 +99,7 @@ public class OrganisationController extends BaseController {
 	@RequestMapping(value = "/get-org", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<Organisation> findOrganisation(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody OrganisationRequestPayload payload, HttpServletRequest request, HttpServletResponse response) {
-		Organisation userResponse = organisationservice.getOrganisation(payload.getOrgId());
+		Organisation userResponse = organisationservice.getOrganisation(payload.getId());
 		String tmp = builder.path(Constants.PATH_GET_ORG).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_GET_ORGANISATION_DETAIL);
 
