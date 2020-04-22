@@ -1,6 +1,7 @@
 package com.simtuitive.core.controller.requestpayload;
 
 import java.io.Serializable;
+import java.util.List;
 
 
 
@@ -13,6 +14,7 @@ public class PermissionsRequestPayload implements Serializable {
 	private String name;
 	private String type;
 	private String description;	
+	private List<String> roleids;
 	/**
 	 * @return the permissionId
 	 */
@@ -60,6 +62,18 @@ public class PermissionsRequestPayload implements Serializable {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	/**
+	 * @return the roleids
+	 */
+	public List<String> getRoleids() {
+		return roleids;
+	}
+	/**
+	 * @param roleids the roleids to set
+	 */
+	public void setRoleids(List<String> roleids) {
+		this.roleids = roleids;
 	}
 	public PermissionsRequestPayload(String permissionId, String name, String type, String description) {
 		super();

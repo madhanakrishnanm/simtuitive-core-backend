@@ -10,10 +10,10 @@ public class OrganisationRequestPayload implements Serializable {
 	private String orgId;
 	private String location;
 	private String industry;
-	private String clientDealOwnerName;
-	private String clientDealOwnerEmail;
-	private Long clientDealOwnerMobile;	
-	private Long status;
+	private String dealOwner;
+	private String dealOwnerEmail;
+	private Long dealOwnerMobile;	
+	private String status;
 	private Long creditLimit;	
 	private String modifiedBy;
 	/**
@@ -65,51 +65,51 @@ public class OrganisationRequestPayload implements Serializable {
 		this.industry = industry;
 	}
 	/**
-	 * @return the clientDealOwnerName
+	 * @return the dealOwner
 	 */
-	public String getClientDealOwnerName() {
-		return clientDealOwnerName;
+	public String getDealOwner() {
+		return dealOwner;
 	}
 	/**
-	 * @param clientDealOwnerName the clientDealOwnerName to set
+	 * @param dealOwner the dealOwner to set
 	 */
-	public void setClientDealOwnerName(String clientDealOwnerName) {
-		this.clientDealOwnerName = clientDealOwnerName;
+	public void setDealOwner(String dealOwner) {
+		this.dealOwner = dealOwner;
 	}
 	/**
-	 * @return the clientDealOwnerEmail
+	 * @return the dealOwnerEmail
 	 */
-	public String getClientDealOwnerEmail() {
-		return clientDealOwnerEmail;
+	public String getDealOwnerEmail() {
+		return dealOwnerEmail;
 	}
 	/**
-	 * @param clientDealOwnerEmail the clientDealOwnerEmail to set
+	 * @param dealOwnerEmail the dealOwnerEmail to set
 	 */
-	public void setClientDealOwnerEmail(String clientDealOwnerEmail) {
-		this.clientDealOwnerEmail = clientDealOwnerEmail;
+	public void setDealOwnerEmail(String dealOwnerEmail) {
+		this.dealOwnerEmail = dealOwnerEmail;
 	}
 	/**
-	 * @return the clientDealOwnerMobile
+	 * @return the dealOwnerMobile
 	 */
-	public Long getClientDealOwnerMobile() {
-		return clientDealOwnerMobile;
+	public Long getDealOwnerMobile() {
+		return dealOwnerMobile;
 	}
 	/**
-	 * @param clientDealOwnerMobile the clientDealOwnerMobile to set
+	 * @param dealOwnerMobile the dealOwnerMobile to set
 	 */
-	public void setClientDealOwnerMobile(Long clientDealOwnerMobile) {
-		this.clientDealOwnerMobile = clientDealOwnerMobile;
+	public void setDealOwnerMobile(Long dealOwnerMobile) {
+		this.dealOwnerMobile = dealOwnerMobile;
 	}
 	/**
 	 * @return the status
 	 */
-	public Long getStatus() {
+	public String getStatus() {
 		return status;
 	}
 	/**
 	 * @param status the status to set
 	 */
-	public void setStatus(Long status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 	/**
@@ -136,17 +136,16 @@ public class OrganisationRequestPayload implements Serializable {
 	public void setModifiedBy(String modifiedBy) {
 		this.modifiedBy = modifiedBy;
 	}
-	public OrganisationRequestPayload(String orgName, String orgId, String location, String industry,
-			String clientDealOwnerName, String clientDealOwnerEmail, Long clientDealOwnerMobile, Long status,
-			Long creditLimit, String modifiedBy) {
+	public OrganisationRequestPayload(String orgName, String orgId, String location, String industry, String dealOwner,
+			String dealOwnerEmail, Long dealOwnerMobile, String status, Long creditLimit, String modifiedBy) {
 		super();
 		this.orgName = orgName;
 		this.orgId = orgId;
 		this.location = location;
 		this.industry = industry;
-		this.clientDealOwnerName = clientDealOwnerName;
-		this.clientDealOwnerEmail = clientDealOwnerEmail;
-		this.clientDealOwnerMobile = clientDealOwnerMobile;
+		this.dealOwner = dealOwner;
+		this.dealOwnerEmail = dealOwnerEmail;
+		this.dealOwnerMobile = dealOwnerMobile;
 		this.status = status;
 		this.creditLimit = creditLimit;
 		this.modifiedBy = modifiedBy;
@@ -154,9 +153,9 @@ public class OrganisationRequestPayload implements Serializable {
 	@Override
 	public String toString() {
 		return "OrganisationRequestPayload [orgName=" + orgName + ", orgId=" + orgId + ", location=" + location
-				+ ", industry=" + industry + ", clientDealOwnerName=" + clientDealOwnerName + ", clientDealOwnerEmail="
-				+ clientDealOwnerEmail + ", clientDealOwnerMobile=" + clientDealOwnerMobile + ", status=" + status
-				+ ", creditLimit=" + creditLimit + ", modifiedBy=" + modifiedBy + "]";
+				+ ", industry=" + industry + ", dealOwner=" + dealOwner + ", dealOwnerEmail=" + dealOwnerEmail
+				+ ", dealOwnerMobile=" + dealOwnerMobile + ", status=" + status + ", creditLimit=" + creditLimit
+				+ ", modifiedBy=" + modifiedBy + "]";
 	}
-	
+		
 }

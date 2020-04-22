@@ -40,4 +40,10 @@ public class RoleHasPermissionServiceImpl extends BaseService implements IRoleHa
 		return null;
 	}
 
+	@Override
+	public List<RoleHasPermission> getrolesByid(String permissionid) {
+		// TODO Auto-generated method stub
+		return repository.findByPermissionid(permissionid);
+	}
+
 }

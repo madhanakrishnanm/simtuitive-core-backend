@@ -35,7 +35,7 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 	private Organisation buildOrganisation(OrganisationRequestPayload payload) {
 		// TODO Auto-generated method stub
 		Organisation client = new Organisation(payload.getOrgName(), payload.getLocation(), payload.getIndustry(),
-				payload.getClientDealOwnerName(), payload.getClientDealOwnerEmail(), payload.getClientDealOwnerMobile(),
+				payload.getDealOwner(), payload.getDealOwnerEmail(), payload.getDealOwnerMobile(),
 				new Date(), payload.getStatus(), payload.getCreditLimit(), new Date(), payload.getModifiedBy());
 
 		return client;
@@ -53,9 +53,9 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 		Organisation needtobeupdate = getOrganisation(payload.getOrgId());
 		needtobeupdate.setOrgName(payload.getOrgName());
 		needtobeupdate.setModifiedBy(payload.getModifiedBy());
-		needtobeupdate.setClientDealOwnerName(payload.getClientDealOwnerName());
-		needtobeupdate.setClientDealOwnerEmail(payload.getClientDealOwnerEmail());
-		needtobeupdate.setClientDealOwnerMobile(payload.getClientDealOwnerMobile());
+		needtobeupdate.setClientDealOwnerName(payload.getDealOwner());
+		needtobeupdate.setClientDealOwnerEmail(payload.getDealOwnerEmail());
+		needtobeupdate.setClientDealOwnerMobile(payload.getDealOwnerMobile());
 		needtobeupdate.setModifiedDate(new Date());
 		needtobeupdate.setIndustry(payload.getIndustry());
 		needtobeupdate.setCreditLimit(payload.getCreditLimit());

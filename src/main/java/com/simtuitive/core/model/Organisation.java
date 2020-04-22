@@ -26,7 +26,7 @@ public class Organisation implements Serializable {
 	private String clientDealOwnerEmail;
 	private Long clientDealOwnerMobile;
 	private Date creationDate;
-	private Long status;
+	private String status;
 	private Long creditLimit;
 	private Date modifiedDate;
 	private String modifiedBy;
@@ -146,14 +146,14 @@ public class Organisation implements Serializable {
 	/**
 	 * @return the status
 	 */
-	public Long getStatus() {
+	public String getStatus() {
 		return status;
 	}
 
 	/**
 	 * @param status the status to set
 	 */
-	public void setStatus(Long status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 
@@ -205,7 +205,7 @@ public class Organisation implements Serializable {
 	}
 
 	public Organisation(String orgName, String location, String industry, String clientDealOwnerName,
-			String clientDealOwnerEmail, Long clientDealOwnerMobile, Date creationDate, Long status, Long creditLimit,
+			String clientDealOwnerEmail, Long clientDealOwnerMobile, Date creationDate, String status, Long creditLimit,
 			Date modifiedDate, String modifiedBy) {
 		super();
 		this.orgName = orgName;

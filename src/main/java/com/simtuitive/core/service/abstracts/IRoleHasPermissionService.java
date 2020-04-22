@@ -16,5 +16,7 @@ public interface IRoleHasPermissionService {
 	public RoleHasPermission getPermission(String roleid);
 
 	public List<RoleHasPermission> getpermissionByid(String roleid);
+	
+	public List<RoleHasPermission> getrolesByid(String permissionid);
 
 }
