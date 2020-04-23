@@ -112,7 +112,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	private User buildAdminUser(UserRequestPayload payload) {
 		List<Permissions> permissionlist = buildRolePermission(payload);
 		System.out.println("List" + permissionlist.toString());
-		User user = new User(payload.getUserName(), payload.getUserEmail(),
+		User user = new User(payload.getName(), payload.getEmail(),
 				passwordEncoder.encode(payload.getPassword()), 1L, permissionlist, payload.getRole());
 		return user;
 	}
@@ -132,15 +132,15 @@ public class UserServiceImpl extends BaseService implements IUserService {
 
 	private User modifyAdminUser(UserRequestPayload payload) {
 		User existinguser = userrepository.findByUserId(payload.getUserId());
-		existinguser.setUserName(payload.getUserName());
-		existinguser.setUserEmail(payload.getUserEmail());		
+		existinguser.setUserName(payload.getName());
+		existinguser.setUserEmail(payload.getEmail());		
 		return existinguser;
 
 	}
 
 	private User buildClientUser(UserRequestPayload payload) {
 		List<Permissions> permissionlist = buildRolePermission(payload);
-		User user = new User(payload.getUserName(), payload.getUserEmail(), payload.getClientOrgname(),
+		User user = new User(payload.getName(), payload.getEmail(), payload.getClientOrgname(),
 				passwordEncoder.encode(payload.getPassword()), 1L, payload.getClientDealOwner(), new Date(),
 				payload.getClientGst(), payload.getClientPan(), permissionlist, payload.getRole());
 		return user;
@@ -149,8 +149,8 @@ public class UserServiceImpl extends BaseService implements IUserService {
 
 	private User modifyClientUser(UserRequestPayload payload) {
 		User existinguser = userrepository.findByUserId(payload.getUserId());
-		existinguser.setUserName(payload.getUserName());
-		existinguser.setUserEmail(payload.getUserEmail());
+		existinguser.setUserName(payload.getName());
+		existinguser.setUserEmail(payload.getEmail());
 		existinguser.setClientOrgname(payload.getClientOrgname());
 		existinguser.setClientDealOwner(payload.getClientDealOwner());		
 		existinguser.setClientGst(payload.getClientGst());
@@ -161,7 +161,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 
 	private User buildLearnerUser(UserRequestPayload payload) {
 
-		User user = new User(payload.getUserName(), payload.getUserEmail(), payload.getClientOrgname(),
+		User user = new User(payload.getName(), payload.getEmail(), payload.getClientOrgname(),
 				passwordEncoder.encode(payload.getPassword()), 1L, new Date(), payload.getSimEventName(),
 				payload.getSmeAssigned(), payload.getNoOfMilestone(), payload.getNoOfMilestoneAttended(),
 				payload.getNoOfMilestoneCompleted(), payload.getPermissions(), payload.getUserType());
@@ -170,9 +170,9 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	}
 
 	private User modifyLearnerUser(UserRequestPayload payload) {
-		User existinguser = userrepository.findByuserEmail(payload.getUserEmail());
-		existinguser.setUserName(payload.getUserName());
-		existinguser.setUserEmail(payload.getUserEmail());
+		User existinguser = userrepository.findByuserEmail(payload.getEmail());
+		existinguser.setUserName(payload.getName());
+		existinguser.setUserEmail(payload.getEmail());
 		existinguser.setClientOrgname(payload.getClientOrgname());
 		existinguser.setSimEventName(payload.getSimEventName());
 		existinguser.setSmeAssigned(payload.getSmeAssigned());

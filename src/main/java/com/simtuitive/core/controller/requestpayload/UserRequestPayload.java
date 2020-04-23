@@ -14,8 +14,8 @@ public class UserRequestPayload implements Serializable {
 	 * 
 	 */
 	private String userId;
-	private String userName;	
-	private String userEmail;
+	private String name;	
+	private String email;
 	private String clientOrgname;
 	private String password;
 	private Long status;
@@ -45,29 +45,30 @@ public class UserRequestPayload implements Serializable {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
+	
 	/**
-	 * @return the userName
+	 * @return the name
 	 */
-	public String getUserName() {
-		return userName;
+	public String getName() {
+		return name;
 	}
 	/**
-	 * @param userName the userName to set
+	 * @param name the name to set
 	 */
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setName(String name) {
+		this.name = name;
 	}
 	/**
-	 * @return the userEmail
+	 * @return the email
 	 */
-	public String getUserEmail() {
-		return userEmail;
+	public String getEmail() {
+		return email;
 	}
 	/**
-	 * @param userEmail the userEmail to set
+	 * @param email the email to set
 	 */
-	public void setUserEmail(String userEmail) {
-		this.userEmail = userEmail;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	/**
 	 * @return the clientOrgname
@@ -273,15 +274,15 @@ public class UserRequestPayload implements Serializable {
 	public void setUserType(String userType) {
 		this.userType = userType;
 	}
-	public UserRequestPayload(String userId, String userName, String userEmail, String clientOrgname, String password,
+	public UserRequestPayload(String userId, String name, String email, String clientOrgname, String password,
 			Long status, String clientDealOwner, Date createdDate, String clientLocation, String clientGst,
 			String clientPan, List<User> clientSpoc, String simEventName, String smeAssigned, Long noOfMilestone,
 			Long noOfMilestoneAttended, Long noOfMilestoneCompleted, List<Permissions> permissions, String role,
 			String userType) {
 		super();
 		this.userId = userId;
-		this.userName = userName;
-		this.userEmail = userEmail;
+		this.name = name;
+		this.email = email;
 		this.clientOrgname = clientOrgname;
 		this.password = password;
 		this.status = status;
@@ -302,14 +303,15 @@ public class UserRequestPayload implements Serializable {
 	}
 	@Override
 	public String toString() {
-		return "UserRequestPayload [userId=" + userId + ", userName=" + userName + ", userEmail=" + userEmail
-				+ ", clientOrgname=" + clientOrgname + ", password=" + password + ", status=" + status
-				+ ", clientDealOwner=" + clientDealOwner + ", createdDate=" + createdDate + ", clientLocation="
-				+ clientLocation + ", clientGst=" + clientGst + ", clientPan=" + clientPan + ", clientSpoc="
-				+ clientSpoc + ", simEventName=" + simEventName + ", smeAssigned=" + smeAssigned + ", noOfMilestone="
-				+ noOfMilestone + ", noOfMilestoneAttended=" + noOfMilestoneAttended + ", noOfMilestoneCompleted="
+		return "UserRequestPayload [userId=" + userId + ", name=" + name + ", email=" + email + ", clientOrgname="
+				+ clientOrgname + ", password=" + password + ", status=" + status + ", clientDealOwner="
+				+ clientDealOwner + ", createdDate=" + createdDate + ", clientLocation=" + clientLocation
+				+ ", clientGst=" + clientGst + ", clientPan=" + clientPan + ", clientSpoc=" + clientSpoc
+				+ ", simEventName=" + simEventName + ", smeAssigned=" + smeAssigned + ", noOfMilestone=" + noOfMilestone
+				+ ", noOfMilestoneAttended=" + noOfMilestoneAttended + ", noOfMilestoneCompleted="
 				+ noOfMilestoneCompleted + ", permissions=" + permissions + ", role=" + role + ", userType=" + userType
 				+ "]";
 	}
+
 	
 }

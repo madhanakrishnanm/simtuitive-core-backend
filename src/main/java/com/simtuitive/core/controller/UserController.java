@@ -73,7 +73,7 @@ public class UserController extends BaseController {
 	public JsonApiWrapper<User> createUser(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody UserRequestPayload userpayload, HttpServletRequest request, HttpServletResponse response) {
 		checkArguments(userpayload);
-		checkArguments(userpayload.getUserEmail());
+		checkArguments(userpayload.getEmail());
 //		checkArguments(userpayload.getUserType());
 		User userResponse = null;
 		userResponse = userservice.addUser(userpayload);
