@@ -33,6 +33,20 @@ public class UserRequestPayload implements Serializable {
 	private List<Permissions> permissions;
 	private String role;
 	private String userType;
+	private String roleid;
+	
+	/**
+	 * @return the roleid
+	 */
+	public String getRoleid() {
+		return roleid;
+	}
+	/**
+	 * @param roleid the roleid to set
+	 */
+	public void setRoleid(String roleid) {
+		this.roleid = roleid;
+	}
 	/**
 	 * @return the userId
 	 */
@@ -278,7 +292,7 @@ public class UserRequestPayload implements Serializable {
 			Long status, String clientDealOwner, Date createdDate, String clientLocation, String clientGst,
 			String clientPan, List<User> clientSpoc, String simEventName, String smeAssigned, Long noOfMilestone,
 			Long noOfMilestoneAttended, Long noOfMilestoneCompleted, List<Permissions> permissions, String role,
-			String userType) {
+			String userType,String roleid) {
 		super();
 		this.userId = userId;
 		this.name = name;
@@ -300,6 +314,7 @@ public class UserRequestPayload implements Serializable {
 		this.permissions = permissions;
 		this.role = role;
 		this.userType = userType;
+		this.roleid = roleid;
 	}
 	@Override
 	public String toString() {
@@ -310,8 +325,9 @@ public class UserRequestPayload implements Serializable {
 				+ ", simEventName=" + simEventName + ", smeAssigned=" + smeAssigned + ", noOfMilestone=" + noOfMilestone
 				+ ", noOfMilestoneAttended=" + noOfMilestoneAttended + ", noOfMilestoneCompleted="
 				+ noOfMilestoneCompleted + ", permissions=" + permissions + ", role=" + role + ", userType=" + userType
-				+ "]";
+				+ ", roleid=" + roleid + "]";
 	}
+	
 
 	
 }

@@ -119,7 +119,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 
 	private List<Permissions> buildRolePermission(UserRequestPayload payload) {
 		List<Permissions> permissionlist = new ArrayList<Permissions>();
-		Roles role = roleRepository.findByRolename(payload.getRole());
+		Roles role = roleRepository.findByRoleid((payload.getRoleid()));
 		System.out.println("veera role" + role.toString());
 		List<RoleHasPermission> haspermission = roleHasPermissionRepository.findByRoleid(role.getRoleid());
 		for (RoleHasPermission permission : haspermission) {
