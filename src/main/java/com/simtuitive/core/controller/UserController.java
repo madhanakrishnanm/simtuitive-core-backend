@@ -104,7 +104,7 @@ public class UserController extends BaseController {
 
 	}
 	// update
-	@PreAuthorize("hasAuthority('ADMIN')")
+	
 	@ResponseStatus(HttpStatus.IM_USED)
 	@ApiOperation(value = " Updates a user ", response = User.class)
 	@ApiResponses(value = {

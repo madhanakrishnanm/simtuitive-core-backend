@@ -183,4 +183,10 @@ public class UserServiceImpl extends BaseService implements IUserService {
 
 	}
 
+	@Override
+	public User getUserDetailsById(String id) {
+		// TODO Auto-generated method stub
+		return userrepository.findByUserId(id);
+	}
+
 }

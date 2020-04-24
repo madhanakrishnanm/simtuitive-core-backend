@@ -21,6 +21,8 @@ public interface IUserService {
 	public List<User> deleteUser(String email);
 
 	public User getUserDetails(UserRequestPayload UserRequestPayload);
+	
+	public User getUserDetailsById(String id);
 
 	public boolean samePasswordOrNOr(UserRequestPayload UserRequestPayload);
 
