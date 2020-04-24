@@ -63,7 +63,7 @@ public class PermissionController extends BaseController {
 	// Create Role
 	@ResponseStatus(HttpStatus.CREATED)
 //	@PreAuthorize("@customPermissionsEvaluator.has")
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasAuthority('Super Admin')")
 	@ApiOperation(value = " Creates a role ", response = Permissions.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "Successful Creation of User Data.", response = JsonApiWrapper.class),
@@ -85,7 +85,7 @@ public class PermissionController extends BaseController {
 
 	// update
 	@ResponseStatus(HttpStatus.IM_USED)
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasAuthority('Super Admin')")
 	@ApiOperation(value = " Get a role ", response = Permissions.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "Successful Creation of User Data.", response = JsonApiWrapper.class),
@@ -108,6 +108,7 @@ public class PermissionController extends BaseController {
 
 	// getAll
 	@ResponseStatus(HttpStatus.ACCEPTED)
+	@PreAuthorize("hasAuthority('Super Admin')")
 	@ApiOperation(value = " Get all roles ", response = Permissions.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "Successful Creation of User Data.", response = JsonApiWrapper.class),
@@ -116,17 +117,18 @@ public class PermissionController extends BaseController {
 			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	@RequestMapping(value = "/getAll", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/get-permissions", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<List<Permissions>> getAllRoles(@ApiIgnore UriComponentsBuilder builder,
 			HttpServletRequest request, HttpServletResponse response)
 			throws UserRoleServiceException, ResourceNotFoundException {
 		List<Permissions> roleresponse = permissionservice.findAll();
-		String tmp = builder.path("/getAll").build().toString();
+		String tmp = builder.path("/get-permissions").build().toString();
 		Link l1 = new Link(tmp, " All Permission Detail");
 		return new JsonApiWrapper<>(roleresponse, request.getRequestURL().toString(), Arrays.asList(l1));
 	}
 	
 	@ResponseStatus(HttpStatus.ACCEPTED)
+	@PreAuthorize("hasAuthority('Super Admin')")
 	@ApiOperation(value = " Get all roles ", response = Permissions.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "Successful Creation of User Data.", response = JsonApiWrapper.class),
@@ -140,11 +142,12 @@ public class PermissionController extends BaseController {
 			HttpServletRequest request, HttpServletResponse response)
 			throws UserRoleServiceException, ResourceNotFoundException {
 		Permissions roleresponse = permissionservice.get(payload.getPermissionId());
-		String tmp = builder.path("/getAll").build().toString();
+		String tmp = builder.path("/get-permission").build().toString();
 		Link l1 = new Link(tmp, " All Permission Detail");
 		return new JsonApiWrapper<>(roleresponse, request.getRequestURL().toString(), Arrays.asList(l1));
 	}
 	@ResponseStatus(HttpStatus.ACCEPTED)
+	@PreAuthorize("hasAuthority('Super Admin')")
 	@ApiOperation(value = " Get all roles ", response = Permissions.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "Successful Creation of User Data.", response = JsonApiWrapper.class),
@@ -153,7 +156,7 @@ public class PermissionController extends BaseController {
 			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	@RequestMapping(value = "/get-permission-roleids", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/get-permission-roles", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<List<Roles>> getRoleId(@ApiIgnore UriComponentsBuilder builder,@RequestBody PermissionsRequestPayload payload,
 			HttpServletRequest request, HttpServletResponse response)
 			throws UserRoleServiceException, ResourceNotFoundException {		

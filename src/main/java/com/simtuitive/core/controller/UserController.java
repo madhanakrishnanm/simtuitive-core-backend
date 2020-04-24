@@ -212,7 +212,7 @@ public class UserController extends BaseController {
 	public JsonApiWrapper<User> getUser(@ApiIgnore UriComponentsBuilder builder, HttpServletRequest request,
 			HttpServletResponse response) {
 		User userResponse = userservice.getUser(request.getUserPrincipal().getName());
-		userResponse.setPassword(null);
+		userResponse.setPassword(null);		
 		String tmp = builder.path("/get").build().toString();
 		Link l1 = new Link(tmp, " User Detail get");
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));

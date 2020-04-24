@@ -39,7 +39,7 @@ public class RoleHasPermisssionController extends BaseController{
 	private IRoleHasPermissionService rolehasspservice;
 	
 	@ResponseStatus(HttpStatus.CREATED)
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasAuthority('Super Admin')")
 	@ApiOperation(value = " Creates a HasPermission ", response = RoleHasPermission.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "Successful Creation of User Data.", response = JsonApiWrapper.class),
@@ -59,7 +59,7 @@ public class RoleHasPermisssionController extends BaseController{
 
 	}
 	@ResponseStatus(HttpStatus.CREATED)
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasAuthority('Super Admin')")
 	@ApiOperation(value = " Creates a HasPermission ", response = RoleHasPermission.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "Successful Creation of User Data.", response = JsonApiWrapper.class),
@@ -79,7 +79,7 @@ public class RoleHasPermisssionController extends BaseController{
 
 	}
 	@ResponseStatus(HttpStatus.CREATED)
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasAuthority('Super Admin')")
 	@ApiOperation(value = " Get a HasPermission ", response = RoleHasPermission.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "Successful Creation of User Data.", response = JsonApiWrapper.class),
