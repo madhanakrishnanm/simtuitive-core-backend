@@ -1,10 +1,14 @@
 package com.simtuitive.core.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.jaxb.SortAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +22,7 @@ import com.simtuitive.core.repository.RoleHasPermissionRepository;
 import com.simtuitive.core.repository.RolesRepository;
 import com.simtuitive.core.repository.UserRepository;
 import com.simtuitive.core.service.abstracts.IUserService;
+import com.simtuitive.core.util.SortbyRank;
 
 @Service
 public class UserServiceImpl extends BaseService implements IUserService {
@@ -110,25 +115,15 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	}
 
 	private User buildAdminUser(UserRequestPayload payload) {
-		List<Permissions> permissionlist = buildRolePermission(payload);
+		Roles role= roleRepository.findByRolename(payload.getRole());
+		List<Permissions> permissionlist = buildRolePermission(role.getRoleid());
 		System.out.println("List" + permissionlist.toString());
 		User user = new User(payload.getName(), payload.getEmail(),
 				passwordEncoder.encode(payload.getPassword()), 1L, permissionlist, payload.getRole());
 		return user;
 	}
 
-	private List<Permissions> buildRolePermission(UserRequestPayload payload) {
-		List<Permissions> permissionlist = new ArrayList<Permissions>();
-		Roles role = roleRepository.findByRoleid((payload.getRoleid()));
-		System.out.println("veera role" + role.toString());
-		List<RoleHasPermission> haspermission = roleHasPermissionRepository.findByRoleid(role.getRoleid());
-		for (RoleHasPermission permission : haspermission) {
-			System.out.println("permission" + permission.getPermissionid());
-			Permissions per = permissionsRepository.findBypermissionId(permission.getPermissionid());
-			permissionlist.add(per);
-		}
-		return permissionlist;
-	}
+	
 
 	private User modifyAdminUser(UserRequestPayload payload) {
 		User existinguser = userrepository.findByUserId(payload.getUserId());
@@ -139,7 +134,8 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	}
 
 	private User buildClientUser(UserRequestPayload payload) {
-		List<Permissions> permissionlist = buildRolePermission(payload);
+		Roles role= roleRepository.findByRolename(payload.getRole());
+		List<Permissions> permissionlist = buildRolePermission(role.getRoleid());
 		User user = new User(payload.getName(), payload.getEmail(), payload.getClientOrgname(),
 				passwordEncoder.encode(payload.getPassword()), 1L, payload.getClientDealOwner(), new Date(),
 				payload.getClientGst(), payload.getClientPan(), permissionlist, payload.getRole());
@@ -187,6 +183,22 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	public User getUserDetailsById(String id) {
 		// TODO Auto-generated method stub
 		return userrepository.findByUserId(id);
+	}
+
+	@Override
+	public List<Permissions> buildRolePermission(String  roleid) {
+		// TODO Auto-generated method stub
+		List<Permissions> permissionlist = new ArrayList<Permissions>();
+		Roles role = roleRepository.findByRoleid((roleid));
+		System.out.println("veera role" + role.toString());
+		List<RoleHasPermission> haspermission = roleHasPermissionRepository.findByRoleid(role.getRoleid());
+		for (RoleHasPermission permission : haspermission) {
+			System.out.println("permission" + permission.getPermissionid());
+			Permissions per = permissionsRepository.findBypermissionId(permission.getPermissionid());
+			permissionlist.add(per);		
+			permissionlist.sort(new SortbyRank());
+		}
+		return permissionlist;
 	}
 
 }

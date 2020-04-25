@@ -316,6 +316,11 @@ public class UserRequestPayload implements Serializable {
 		this.userType = userType;
 		this.roleid = roleid;
 	}
+	
+	public UserRequestPayload() {
+
+		// TODO Auto-generated constructor stub
+	}
 	@Override
 	public String toString() {
 		return "UserRequestPayload [userId=" + userId + ", name=" + name + ", email=" + email + ", clientOrgname="

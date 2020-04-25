@@ -66,4 +66,10 @@ public class RolesServiceImpl extends BaseService implements IRolesService{
 		return rolesrepository.findAll();
 	}
 
+	@Override
+	public Roles getRoleId(String role) {
+		// TODO Auto-generated method stub
+		return rolesrepository.findByRolename(role) ;
+	}
+
 }

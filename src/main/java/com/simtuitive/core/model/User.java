@@ -35,7 +35,7 @@ public class User implements GrantedAuthority,Serializable {
 	private String userEmail;
 	private String clientOrgname;
 	private String password;
-	private Long status;
+	private Long status;//1-active,2-inactive,3-suspend
 	private String clientDealOwner;
 	private Date createdDate;
 	private String clientLocation;

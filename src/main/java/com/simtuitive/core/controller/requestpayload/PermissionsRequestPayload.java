@@ -15,6 +15,21 @@ public class PermissionsRequestPayload implements Serializable {
 	private String type;
 	private String description;	
 	private List<String> roleids;
+	private int rank;
+	
+	
+	/**
+	 * @return the rank
+	 */
+	public int getRank() {
+		return rank;
+	}
+	/**
+	 * @param rank the rank to set
+	 */
+	public void setRank(int rank) {
+		this.rank = rank;
+	}
 	/**
 	 * @return the permissionId
 	 */
@@ -75,18 +90,22 @@ public class PermissionsRequestPayload implements Serializable {
 	public void setRoleids(List<String> roleids) {
 		this.roleids = roleids;
 	}
-	public PermissionsRequestPayload(String permissionId, String name, String type, String description) {
+	public PermissionsRequestPayload(String permissionId, String name, String type, String description,
+			List<String> roleids, int rank) {
 		super();
 		this.permissionId = permissionId;
 		this.name = name;
 		this.type = type;
 		this.description = description;
+		this.roleids = roleids;
+		this.rank = rank;
 	}
 	@Override
 	public String toString() {
 		return "PermissionsRequestPayload [permissionId=" + permissionId + ", name=" + name + ", type=" + type
-				+ ", description=" + description + "]";
+				+ ", description=" + description + ", roleids=" + roleids + ", rank=" + rank + "]";
 	}
+	
 	
 	
 }

@@ -26,8 +26,9 @@ public interface IUserService {
 
 	public boolean samePasswordOrNOr(UserRequestPayload UserRequestPayload);
 
-	public Long getActiveUser(Long status);
+	public Long getActiveUser(Long status);	
 	
+	public List<Permissions>buildRolePermission(String roleid);
 	
 
 }

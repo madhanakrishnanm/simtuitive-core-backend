@@ -12,6 +12,8 @@ public interface IRolesService {
 	public Roles updateRole(RolesRequestPayload payload);
 
 	public Roles getRole(String roleid);
+	
+	public Roles getRoleId(String role);
 
 	public void deleteRole(String roleid);
 

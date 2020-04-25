@@ -31,6 +31,21 @@ public class Permissions implements Serializable {
 	private String description;
 	private Date createdOn;
 	private Date modifiedOn;
+	
+	private int rank;
+	
+	/**
+	 * @return the rank
+	 */
+	public int getRank() {
+		return rank;
+	}
+	/**
+	 * @param rank the rank to set
+	 */
+	public void setRank(int rank) {
+		this.rank = rank;
+	}
 	/**
 	 * @return the permissionId
 	 */
@@ -103,13 +118,17 @@ public class Permissions implements Serializable {
 	public void setModifiedOn(Date modifiedOn) {
 		this.modifiedOn = modifiedOn;
 	}
-	public Permissions(String name, String type, String description, Date createdOn, Date modifiedOn) {
+	
+	public Permissions( String name, String type, String description, Date createdOn,
+			Date modifiedOn, int rank) {
 		super();
+		
 		this.name = name;
 		this.type = type;
 		this.description = description;
 		this.createdOn = createdOn;
 		this.modifiedOn = modifiedOn;
+		this.rank = rank;
 	}
 	public Permissions() {
 		
@@ -118,8 +137,9 @@ public class Permissions implements Serializable {
 	@Override
 	public String toString() {
 		return "Permissions [permissionId=" + permissionId + ", name=" + name + ", type=" + type + ", description="
-				+ description + ", createdOn=" + createdOn + ", modifiedOn=" + modifiedOn + "]";
+				+ description + ", createdOn=" + createdOn + ", modifiedOn=" + modifiedOn + ", rank=" + rank + "]";
 	}
+	
 	
 	
 	

@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -36,8 +35,12 @@ import com.simtuitive.core.controller.productmgmt.api.Link;
 import com.simtuitive.core.controller.requestpayload.UserRequestPayload;
 import com.simtuitive.core.globalexception.ResourceNotFoundException;
 import com.simtuitive.core.globalexception.UserServiceException;
+import com.simtuitive.core.model.Permissions;
 import com.simtuitive.core.model.ProductUsers;
+import com.simtuitive.core.model.Roles;
 import com.simtuitive.core.model.User;
+import com.simtuitive.core.service.abstracts.IRoleHasPermissionService;
+import com.simtuitive.core.service.abstracts.IRolesService;
 import com.simtuitive.core.service.abstracts.IUserService;
 
 import io.swagger.annotations.ApiOperation;
@@ -56,6 +59,12 @@ public class UserController extends BaseController {
 
 	@Autowired
 	private IUserService userservice;
+	
+	@Autowired
+	private IRoleHasPermissionService rolehasservice;
+	
+	@Autowired
+	private IRolesService roleservice;
 
 	// Create User
 //	@PreAuthorize("hasAuthority('ADMIN')")
@@ -211,8 +220,14 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "/get-user", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<User> getUser(@ApiIgnore UriComponentsBuilder builder, HttpServletRequest request,
 			HttpServletResponse response) {
-		User userResponse = userservice.getUser(request.getUserPrincipal().getName());
+		User userResponse = userservice.getUser(request.getUserPrincipal().getName());	
+		System.out.println("userresponse"+userResponse.getRole());
+		Roles userrole=roleservice.getRoleId(userResponse.getRole());
+		System.out.println("Role"+userrole.toString());
 		userResponse.setPassword(null);		
+		List<Permissions>permissionlist=userservice.buildRolePermission(userrole.getRoleid());
+		
+		userResponse.setPermissions(permissionlist);
 		String tmp = builder.path("/get").build().toString();
 		Link l1 = new Link(tmp, " User Detail get");
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));

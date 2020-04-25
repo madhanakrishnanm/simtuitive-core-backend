@@ -70,7 +70,7 @@ public class PermissionsServiceImpl implements IPermissionService {
 
 	private Permissions buildPermisssion(PermissionsRequestPayload payload) {
 		Permissions userrole = new Permissions(payload.getName(), payload.getType(), payload.getDescription(),
-				new Date(), new Date());
+				new Date(), new Date(),payload.getRank());
 		return userrole;
 	}
 
