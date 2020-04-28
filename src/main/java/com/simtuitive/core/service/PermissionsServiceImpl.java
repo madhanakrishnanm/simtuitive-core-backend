@@ -46,7 +46,7 @@ public class PermissionsServiceImpl implements IPermissionService {
 
 		Permissions userroletobecreate = buildPermisssion(userrole);
 		Permissions created = permissionrepository.save(userroletobecreate);
-		List<String> roleids = userrole.getRoleids();
+		List<String> roleids = userrole.getRoleIds();
 		for (String role : roleids) {
 			RoleHasPermission permission = new RoleHasPermission(role, created.getPermissionId());
 			rolehaspermissionrepository.save(permission);
@@ -63,14 +63,14 @@ public class PermissionsServiceImpl implements IPermissionService {
 		Roles rolepermission = null;
 		for (RoleHasPermission per : permissions) {
 			rolepermission = rolerepository.findByRoleId(per.getRoleid());
-			roleresponse.add(rolepermission);			
+			roleresponse.add(rolepermission);
 		}
-		for (Roles role : roleresponse) {			
+		for (Roles role : roleresponse) {
 			role.setModifiedOn(null);
 			role.setDescription(null);
 			role.setStatus(null);
-			role.setCreatedOn(null);			
-			mapping.add(role);			
+			role.setCreatedOn(null);
+			mapping.add(role);
 		}
 		PermissionsResponsePayload payload = new PermissionsResponsePayload(created.getPermissionId(),
 				created.getName(), created.getType(), created.getDescription(), created.getCreatedOn(),
@@ -83,7 +83,7 @@ public class PermissionsServiceImpl implements IPermissionService {
 	public PermissionsResponsePayload update(PermissionsRequestPayload userrole) {
 		Permissions userroleupdate = modifyUserRole(userrole);
 		Permissions updated = permissionrepository.save(userroleupdate);
-		List<String> roleids = userrole.getRoleids();
+		List<String> roleids = userrole.getRoleIds();
 		List<RoleHasPermission> oldlist = rolehaspermissionrepository.findByPermissionid(userrole.getPermissionId());
 
 		for (RoleHasPermission needtodelete : oldlist) {
@@ -102,11 +102,13 @@ public class PermissionsServiceImpl implements IPermissionService {
 	// GetAll Roles
 	@Override
 	public List<PermissionsResponsePayload> findAll() {
-		List<Permissions> permlist=permissionrepository.findAll();
-		List<PermissionsResponsePayload>result=new ArrayList<PermissionsResponsePayload>();
-		for(Permissions perm:permlist) {
-			PermissionsResponsePayload payload = buildPermissionsResponsePayload(perm);
-			result.add(payload);
+		List<Permissions> permlist = permissionrepository.findAll();
+		List<PermissionsResponsePayload> result = new ArrayList<PermissionsResponsePayload>();
+		for (Permissions perm : permlist) {
+			if (perm.getStatus() == 1L) {
+				PermissionsResponsePayload payload = buildPermissionsResponsePayload(perm);
+				result.add(payload);
+			}
 		}
 		return result;
 	}
@@ -130,8 +132,19 @@ public class PermissionsServiceImpl implements IPermissionService {
 	@Override
 	public PermissionsResponsePayload get(String permissionId) {
 		// TODO Auto-generated method stub
-		Permissions get=permissionrepository.findBypermissionId(permissionId);
+		Permissions get = permissionrepository.findBypermissionId(permissionId);
 		PermissionsResponsePayload payload = buildPermissionsResponsePayload(get);
 		return payload;
 	}
+
+	@Override
+	public PermissionsResponsePayload delete(String permissionId) {
+		// TODO Auto-generated method stub
+		Permissions get = permissionrepository.findBypermissionId(permissionId);
+		get.setStatus(2L);
+		permissionrepository.save(get);
+		PermissionsResponsePayload payload = buildPermissionsResponsePayload(get);
+		return payload;
+	}
+
 }

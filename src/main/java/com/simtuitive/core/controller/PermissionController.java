@@ -106,6 +106,26 @@ public class PermissionController extends BaseController {
 		return new JsonApiWrapper<>(roleresponse, request.getRequestURL().toString(), Arrays.asList(l1));
 	}
 
+	@ResponseStatus(HttpStatus.IM_USED)
+	@PreAuthorize("hasAuthority('Super Admin')")
+	@ApiOperation(value = " Get a role ", response = Permissions.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Successful Creation of User Data.", response = JsonApiWrapper.class),
+			@ApiResponse(code = 401, message = "Not authorized!"),
+			@ApiResponse(code = 403, message = "Not authorized to perform this action."),
+			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
+			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
+			@ApiResponse(code = 500, message = "Internal server error") })
+	@RequestMapping(value = "/delete-permission", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public JsonApiWrapper<PermissionsResponsePayload> deletePermission(@ApiIgnore UriComponentsBuilder builder,
+			@RequestBody PermissionsRequestPayload payload, HttpServletRequest request, HttpServletResponse response)
+			throws UserRoleServiceException, ResourceNotFoundException {
+		PermissionsResponsePayload roleresponse = permissionservice.delete(payload.getPermissionId());
+		String tmp = builder.path("/delete").build().toString();
+		Link l1 = new Link(tmp, " Permission Detail");
+
+		return new JsonApiWrapper<>(roleresponse, request.getRequestURL().toString(), Arrays.asList(l1));
+	}
 	// getAll
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	@PreAuthorize("hasAuthority('Super Admin')")

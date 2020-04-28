@@ -16,5 +16,7 @@ public interface IPermissionService {
 	public List<PermissionsResponsePayload> findAll();
 	
 	public PermissionsResponsePayload get(String permissionId);
+	
+	public PermissionsResponsePayload delete(String permissionId);
 
 }
