@@ -1,67 +1,58 @@
 package com.simtuitive.core.controller.requestpayload;
 
-import java.util.Date;
-
 public class RolesRequestPayload {
-	private String roleid;
-	private String rolename;
-	private String description;	
+	private String roleId;
+	private String roleName;
+	private String description;
 	/**
-	 * @return the roleid
+	 * @return the roleId
 	 */
-	public String getRoleid() {
-		return roleid;
+	public String getRoleId() {
+		return roleId;
 	}
-
 	/**
-	 * @param roleid the roleid to set
+	 * @param roleId the roleId to set
 	 */
-	public void setRoleid(String roleid) {
-		this.roleid = roleid;
+	public void setRoleId(String roleId) {
+		this.roleId = roleId;
 	}
-
 	/**
-	 * @return the rolename
+	 * @return the roleName
 	 */
-	public String getRolename() {
-		return rolename;
+	public String getRoleName() {
+		return roleName;
 	}
-
 	/**
-	 * @param rolename the rolename to set
+	 * @param roleName the roleName to set
 	 */
-	public void setRolename(String rolename) {
-		this.rolename = rolename;
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
 	}
-
 	/**
 	 * @return the description
 	 */
 	public String getDescription() {
 		return description;
 	}
-
 	/**
 	 * @param description the description to set
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-	public RolesRequestPayload(String roleid, String rolename, String description) {
+	public RolesRequestPayload(String roleId, String roleName, String description) {
 		super();
-		this.roleid = roleid;
-		this.rolename = rolename;
+		this.roleId = roleId;
+		this.roleName = roleName;
 		this.description = description;
-		
 	}
-
 	@Override
 	public String toString() {
-		return "RolesRequestPayload [roleid=" + roleid + ", rolename=" + rolename + ", description=" + description
+		return "RolesRequestPayload [roleId=" + roleId + ", roleName=" + roleName + ", description=" + description
 				+ "]";
-	}
-
+	}	
+	
+	
 	
 
 }

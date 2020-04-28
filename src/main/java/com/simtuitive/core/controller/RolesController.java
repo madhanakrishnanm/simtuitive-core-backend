@@ -57,6 +57,7 @@ public class RolesController extends BaseController {
 	public JsonApiWrapper<RolesResponsePayload> createRole(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody RolesRequestPayload payload, HttpServletRequest request, HttpServletResponse response)
 			throws UserRoleServiceException, ResourceNotFoundException {
+		System.out.println("new value"+payload.toString());
 		RolesResponsePayload roleresponse = roleservice.addRole(payload);
 		String tmp = builder.path("/create").build().toString();
 		Link l1 = new Link(tmp, " Role Detail");
@@ -99,7 +100,7 @@ public class RolesController extends BaseController {
 	public JsonApiWrapper<RolesResponsePayload> deleteRole(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody RolesRequestPayload payload, HttpServletRequest request, HttpServletResponse response)
 			throws UserRoleServiceException, ResourceNotFoundException {
-		RolesResponsePayload roleresponse = roleservice.deleteRole(payload.getRoleid());
+		RolesResponsePayload roleresponse = roleservice.deleteRole(payload.getRoleId());
 		String tmp = builder.path("/delete").build().toString();
 		Link l1 = new Link(tmp, " Role Detail");
 		return new JsonApiWrapper<>(roleresponse, request.getRequestURL().toString(), Arrays.asList(l1));
@@ -119,7 +120,7 @@ public class RolesController extends BaseController {
 	public JsonApiWrapper<RolesResponsePayload> getRole(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody RolesRequestPayload payload, HttpServletRequest request, HttpServletResponse response)
 			throws UserRoleServiceException, ResourceNotFoundException {
-		RolesResponsePayload roleresponse = roleservice.getRole(payload.getRoleid());
+		RolesResponsePayload roleresponse = roleservice.getRole(payload.getRoleId());
 		String tmp = builder.path("/get").build().toString();
 		Link l1 = new Link(tmp, " Role Detail");
 		return new JsonApiWrapper<>(roleresponse, request.getRequestURL().toString(), Arrays.asList(l1));

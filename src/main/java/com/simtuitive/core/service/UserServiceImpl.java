@@ -113,14 +113,20 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		if (userType.equalsIgnoreCase("ADMIN")
 				|| userType.equalsIgnoreCase("Super Admin")) {
 			for(User user:userlist) {
-				UserResponsePayload payload=buildPayloadbyUser(user);
-				result.add(payload);
+				
+				if(user.getStatus()==1L) {
+					UserResponsePayload payload=buildPayloadbyUser(user);
+					result.add(payload);
+				}
+				
 			}
 		}
 		if (userType.equalsIgnoreCase("CLIENT")) {
-			for(User user:userlist) {
-				UserResponsePayload payload=buildPayloadbyUser(user);
-				result.add(payload);
+			for(User user:userlist) {				
+				if(user.getStatus()==1L) {
+					UserResponsePayload payload=buildPayloadbyUser(user);
+					result.add(payload);
+				}
 			}
 		}
 		return result;

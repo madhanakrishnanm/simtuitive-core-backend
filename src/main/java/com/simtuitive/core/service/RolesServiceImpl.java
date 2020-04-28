@@ -37,7 +37,8 @@ public class RolesServiceImpl extends BaseService implements IRolesService {
 
 	private Roles buildRole(RolesRequestPayload payload) {
 		// TODO Auto-generated method stub
-		Roles role = new Roles(payload.getRolename(), payload.getDescription(), new Date(), new Date(), 1L);
+		System.out.println("Rolename"+payload.getRoleName());
+		Roles role = new Roles(payload.getRoleName(), payload.getDescription(), new Date(), new Date(), 1L);
 		return role;
 	}
 
@@ -51,8 +52,8 @@ public class RolesServiceImpl extends BaseService implements IRolesService {
 
 	private Roles modifyRole(RolesRequestPayload payload) {
 		// TODO Auto-generated method stub
-		Roles role = rolesrepository.findByRoleId(payload.getRoleid());
-		role.setRoleName(payload.getRolename());
+		Roles role = rolesrepository.findByRoleId(payload.getRoleId());
+		role.setRoleName(payload.getRoleName());
 		role.setDescription(payload.getDescription());
 		return role;
 	}
