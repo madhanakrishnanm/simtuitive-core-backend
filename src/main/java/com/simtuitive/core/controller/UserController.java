@@ -263,9 +263,9 @@ public class UserController extends BaseController {
 			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	@RequestMapping(value = "/getAllByType", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/get-users-by-role", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<List<UserResponsePayload>> getAllUser(@ApiIgnore UriComponentsBuilder builder,
-			@RequestParam("userType") String userType, HttpServletRequest request, HttpServletResponse response) {
+			@RequestParam("role") String userType, HttpServletRequest request, HttpServletResponse response) {
 		List<UserResponsePayload> userresponse = userservice.getAllUser(userType);
 		String tmp = builder.path("/getAll").build().toString();
 		Link l1 = new Link(tmp, " User Detail getAll");
