@@ -222,7 +222,7 @@ public class UserController extends BaseController {
 	public JsonApiWrapper<UserResponsePayload> getUser(@ApiIgnore UriComponentsBuilder builder, HttpServletRequest request,
 			HttpServletResponse response) {
 		UserResponsePayload userResponse = userservice.getUser(request.getUserPrincipal().getName());	
-		Roles userrole=roleservice.getRoleId(userResponse.getRole());		
+		Roles userrole=roleservice.getRoleId(userResponse.getRole());
 		userResponse.setPassword(null);		
 		List<Permissions>permissionlist=userservice.buildRolePermission(userrole.getRoleId());		
 		userResponse.setPermissions(permissionlist);

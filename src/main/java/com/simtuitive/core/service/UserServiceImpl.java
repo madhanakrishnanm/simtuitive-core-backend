@@ -231,7 +231,9 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		List<RoleHasPermission> haspermission = roleHasPermissionRepository.findByRoleid(role.getRoleId());
 		for (RoleHasPermission permission : haspermission) {		
 			Permissions per = permissionsRepository.findBypermissionId(permission.getPermissionid());
-			permissionlist.add(per);
+			if(per.getStatus()==1L) {
+				permissionlist.add(per);	
+			}
 			permissionlist.sort(new SortbyRank());
 		}
 		return permissionlist;
