@@ -40,7 +40,7 @@ public class OrganisationController extends BaseController {
 	@Autowired
 	private IOrganisationService organisationservice;
 	
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasAuthority('Admin')")
 	@ResponseStatus(HttpStatus.CREATED)
 	@ApiOperation(value = " Creates an Organisation", response = Organisation.class)
 	@ApiResponses(value = {
@@ -64,7 +64,7 @@ public class OrganisationController extends BaseController {
 
 	}
 
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasAuthority('Admin')")
 	@ResponseStatus(HttpStatus.IM_USED)
 	@ApiOperation(value = " Updates an Organisation ", response = Organisation.class)
 	@ApiResponses(value = {
@@ -87,7 +87,7 @@ public class OrganisationController extends BaseController {
 
 	}
 	
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasAuthority('Admin')")
 	@ResponseStatus(HttpStatus.IM_USED)
 	@ApiOperation(value = " get an Organisation ", response = Organisation.class)
 	@ApiResponses(value = {
@@ -108,7 +108,7 @@ public class OrganisationController extends BaseController {
 
 	}
 	
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasAuthority('Admin')")
 	@ResponseStatus(HttpStatus.IM_USED)
 	@ApiOperation(value = " getall Organisations ", response = Organisation.class)
 	@ApiResponses(value = {
@@ -128,7 +128,7 @@ public class OrganisationController extends BaseController {
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
 
 	}
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasAuthority('Admin')")
 	@ResponseStatus(HttpStatus.IM_USED)
 	@ApiOperation(value = " getall Organisations ", response = Organisation.class)
 	@ApiResponses(value = {
