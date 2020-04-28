@@ -119,6 +119,11 @@ public class PermissionsServiceImpl implements IPermissionService {
 
 	private Permissions modifyUserRole(PermissionsRequestPayload payload) {
 		Permissions userroleupdate = permissionrepository.findBypermissionId(payload.getPermissionId());
+		userroleupdate.setModifiedOn(new Date());
+		userroleupdate.setName(payload.getName());
+		userroleupdate.setRank(payload.getRank());
+		userroleupdate.setDescription(payload.getDescription());
+		userroleupdate.setType(payload.getType());
 		return userroleupdate;
 	}
 
