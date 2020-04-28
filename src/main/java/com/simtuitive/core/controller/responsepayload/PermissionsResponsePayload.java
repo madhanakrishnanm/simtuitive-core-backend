@@ -1,30 +1,19 @@
-/**
- * 
- */
-package com.simtuitive.core.model;
+package com.simtuitive.core.controller.responsepayload;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.simtuitive.core.model.Roles;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-/**
- * @author Veeramani N S
- *
- */
 
-@Document
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Permissions implements Serializable {
-
+public class PermissionsResponsePayload implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	@Id
+	private static final long serialVersionUID = 4918027656475893756L;
 	private String permissionId;
 	private String name;
 	private String type;
@@ -33,31 +22,7 @@ public class Permissions implements Serializable {
 	private Date modifiedOn;
 	private Long status;
 	private int rank;
-	
-	/**
-	 * @return the status
-	 */
-	public Long getStatus() {
-		return status;
-	}
-	/**
-	 * @param status the status to set
-	 */
-	public void setStatus(Long status) {
-		this.status = status;
-	}
-	/**
-	 * @return the rank
-	 */
-	public int getRank() {
-		return rank;
-	}
-	/**
-	 * @param rank the rank to set
-	 */
-	public void setRank(int rank) {
-		this.rank = rank;
-	}
+	private List<Roles> roles;
 	/**
 	 * @return the permissionId
 	 */
@@ -130,32 +95,67 @@ public class Permissions implements Serializable {
 	public void setModifiedOn(Date modifiedOn) {
 		this.modifiedOn = modifiedOn;
 	}
-	
-	public Permissions( String name, String type, String description, Date createdOn,
-			Date modifiedOn, int rank,Long status) {
+	/**
+	 * @return the status
+	 */
+	public Long getStatus() {
+		return status;
+	}
+	/**
+	 * @param status the status to set
+	 */
+	public void setStatus(Long status) {
+		this.status = status;
+	}
+	/**
+	 * @return the rank
+	 */
+	public int getRank() {
+		return rank;
+	}
+	/**
+	 * @param rank the rank to set
+	 */
+	public void setRank(int rank) {
+		this.rank = rank;
+	}
+	/**
+	 * @return the roles
+	 */
+	public List<Roles> getRoles() {
+		return roles;
+	}
+	/**
+	 * @param roles the roles to set
+	 */
+	public void setRoles(List<Roles> roles) {
+		this.roles = roles;
+	}
+	public PermissionsResponsePayload(String permissionId, String name, String type, String description, Date createdOn,
+			Date modifiedOn, Long status, int rank, List<Roles> roles) {
 		super();
-		
+		this.permissionId = permissionId;
 		this.name = name;
 		this.type = type;
 		this.description = description;
 		this.createdOn = createdOn;
 		this.modifiedOn = modifiedOn;
-		this.rank = rank;
 		this.status = status;
+		this.rank = rank;
+		this.roles = roles;
 	}
-	public Permissions() {
+	
+	public PermissionsResponsePayload() {
 		
 		// TODO Auto-generated constructor stub
 	}
 	@Override
 	public String toString() {
-		return "Permissions [permissionId=" + permissionId + ", name=" + name + ", type=" + type + ", description="
-				+ description + ", createdOn=" + createdOn + ", modifiedOn=" + modifiedOn + ", status=" + status
-				+ ", rank=" + rank + "]";
+		return "PermissionsResponsePayload [permissionId=" + permissionId + ", name=" + name + ", type=" + type
+				+ ", description=" + description + ", createdOn=" + createdOn + ", modifiedOn=" + modifiedOn
+				+ ", status=" + status + ", rank=" + rank + ", roles=" + roles + "]";
 	}
 	
 	
-	
-	
-	
+		
 }

@@ -26,6 +26,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.simtuitive.core.controller.productmgmt.api.JsonApiWrapper;
 import com.simtuitive.core.controller.productmgmt.api.Link;
 import com.simtuitive.core.controller.requestpayload.PermissionsRequestPayload;
+import com.simtuitive.core.controller.responsepayload.PermissionsResponsePayload;
 import com.simtuitive.core.globalexception.ResourceNotFoundException;
 import com.simtuitive.core.globalexception.UserRoleServiceException;
 import com.simtuitive.core.model.Permissions;
@@ -73,10 +74,10 @@ public class PermissionController extends BaseController {
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/add-permission", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<Permissions> createPermission(@ApiIgnore UriComponentsBuilder builder,
+	public JsonApiWrapper<PermissionsResponsePayload> createPermission(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody PermissionsRequestPayload payload, HttpServletRequest request, HttpServletResponse response)
 			throws UserRoleServiceException, ResourceNotFoundException {
-		Permissions roleresponse = permissionservice.create(payload);
+		PermissionsResponsePayload roleresponse = permissionservice.create(payload);
 		String tmp = builder.path("/create").build().toString();
 		Link l1 = new Link(tmp, " Permission Detail");
 		return new JsonApiWrapper<>(roleresponse, request.getRequestURL().toString(), Arrays.asList(l1));
@@ -95,11 +96,10 @@ public class PermissionController extends BaseController {
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/update-permission", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<Permissions> updatePermission(@ApiIgnore UriComponentsBuilder builder,
+	public JsonApiWrapper<PermissionsResponsePayload> updatePermission(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody PermissionsRequestPayload payload, HttpServletRequest request, HttpServletResponse response)
 			throws UserRoleServiceException, ResourceNotFoundException {
-
-		Permissions roleresponse = permissionservice.update(payload);
+		PermissionsResponsePayload roleresponse = permissionservice.update(payload);
 		String tmp = builder.path("/update").build().toString();
 		Link l1 = new Link(tmp, " Role Detail");
 
@@ -118,10 +118,10 @@ public class PermissionController extends BaseController {
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/get-permissions", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<List<Permissions>> getAllRoles(@ApiIgnore UriComponentsBuilder builder,
+	public JsonApiWrapper<List<PermissionsResponsePayload>> getAllRoles(@ApiIgnore UriComponentsBuilder builder,
 			HttpServletRequest request, HttpServletResponse response)
 			throws UserRoleServiceException, ResourceNotFoundException {
-		List<Permissions> roleresponse = permissionservice.findAll();
+		List<PermissionsResponsePayload> roleresponse = permissionservice.findAll();
 		String tmp = builder.path("/get-permissions").build().toString();
 		Link l1 = new Link(tmp, " All Permission Detail");
 		return new JsonApiWrapper<>(roleresponse, request.getRequestURL().toString(), Arrays.asList(l1));
@@ -138,37 +138,37 @@ public class PermissionController extends BaseController {
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/get-permission", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<Permissions> getById(@ApiIgnore UriComponentsBuilder builder,@RequestBody PermissionsRequestPayload payload,
+	public JsonApiWrapper<PermissionsResponsePayload> getById(@ApiIgnore UriComponentsBuilder builder,@RequestBody PermissionsRequestPayload payload,
 			HttpServletRequest request, HttpServletResponse response)
 			throws UserRoleServiceException, ResourceNotFoundException {
-		Permissions roleresponse = permissionservice.get(payload.getPermissionId());
+		PermissionsResponsePayload roleresponse = permissionservice.get(payload.getPermissionId());
 		String tmp = builder.path("/get-permission").build().toString();
 		Link l1 = new Link(tmp, " All Permission Detail");
 		return new JsonApiWrapper<>(roleresponse, request.getRequestURL().toString(), Arrays.asList(l1));
 	}
-	@ResponseStatus(HttpStatus.ACCEPTED)
-	@PreAuthorize("hasAuthority('Super Admin')")
-	@ApiOperation(value = " Get all roles ", response = Permissions.class)
-	@ApiResponses(value = {
-			@ApiResponse(code = 201, message = "Successful Creation of User Data.", response = JsonApiWrapper.class),
-			@ApiResponse(code = 401, message = "Not authorized!"),
-			@ApiResponse(code = 403, message = "Not authorized to perform this action."),
-			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
-			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
-			@ApiResponse(code = 500, message = "Internal server error") })
-	@RequestMapping(value = "/get-permission-roles", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<List<Roles>> getRoleId(@ApiIgnore UriComponentsBuilder builder,@RequestBody PermissionsRequestPayload payload,
-			HttpServletRequest request, HttpServletResponse response)
-			throws UserRoleServiceException, ResourceNotFoundException {		
-		List<RoleHasPermission> permissions=haspermissionservice.getrolesByid(payload.getPermissionId());
-		List<Roles>roleresponse=new ArrayList<>();
-		Roles role = null;
-		for(RoleHasPermission per:permissions) {
-			 role=roleservice.getRole(per.getRoleid());
-			 roleresponse.add(role);
-		}		
-		String tmp = builder.path("/get-permission-roleids").build().toString();
-		Link l1 = new Link(tmp, " All Permission Detail");
-		return new JsonApiWrapper<>(roleresponse, request.getRequestURL().toString(), Arrays.asList(l1));
-	}
+//	@ResponseStatus(HttpStatus.ACCEPTED)
+//	@PreAuthorize("hasAuthority('Super Admin')")
+//	@ApiOperation(value = " Get all roles ", response = Permissions.class)
+//	@ApiResponses(value = {
+//			@ApiResponse(code = 201, message = "Successful Creation of User Data.", response = JsonApiWrapper.class),
+//			@ApiResponse(code = 401, message = "Not authorized!"),
+//			@ApiResponse(code = 403, message = "Not authorized to perform this action."),
+//			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
+//			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
+//			@ApiResponse(code = 500, message = "Internal server error") })
+//	@RequestMapping(value = "/get-permission-roles", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+//	public JsonApiWrapper<List<Roles>> getRoleId(@ApiIgnore UriComponentsBuilder builder,@RequestBody PermissionsRequestPayload payload,
+//			HttpServletRequest request, HttpServletResponse response)
+//			throws UserRoleServiceException, ResourceNotFoundException {		
+//		List<RoleHasPermission> permissions=haspermissionservice.getrolesByid(payload.getPermissionId());
+//		List<Roles>roleresponse=new ArrayList<>();
+//		Roles role = null;
+//		for(RoleHasPermission per:permissions) {
+//			 role=roleservice.getRole(per.getRoleid());
+//			 roleresponse.add(role);
+//		}		
+//		String tmp = builder.path("/get-permission-roleids").build().toString();
+//		Link l1 = new Link(tmp, " All Permission Detail");
+//		return new JsonApiWrapper<>(roleresponse, request.getRequestURL().toString(), Arrays.asList(l1));
+//	}
 }

@@ -1,9 +1,6 @@
 package com.simtuitive.core.controller.requestpayload;
 
 import java.io.Serializable;
-import java.util.Date;
-
-import org.springframework.data.annotation.Id;
 
 public class OrganisationRequestPayload implements Serializable {
 	/**

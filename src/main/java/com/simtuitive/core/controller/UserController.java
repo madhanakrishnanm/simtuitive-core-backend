@@ -33,6 +33,7 @@ import com.simtuitive.core.common.Constants;
 import com.simtuitive.core.controller.productmgmt.api.JsonApiWrapper;
 import com.simtuitive.core.controller.productmgmt.api.Link;
 import com.simtuitive.core.controller.requestpayload.UserRequestPayload;
+import com.simtuitive.core.controller.responsepayload.UserResponsePayload;
 import com.simtuitive.core.globalexception.ResourceNotFoundException;
 import com.simtuitive.core.globalexception.UserServiceException;
 import com.simtuitive.core.model.Permissions;
@@ -79,12 +80,12 @@ public class UserController extends BaseController {
 			@ApiResponse(code = 500, message = "Internal server error") })
 
 	@RequestMapping(value = "/add-user", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<User> createUser(@ApiIgnore UriComponentsBuilder builder,
+	public JsonApiWrapper<UserResponsePayload> createUser(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody UserRequestPayload userpayload, HttpServletRequest request, HttpServletResponse response) {
 		checkArguments(userpayload);
 		checkArguments(userpayload.getEmail());
 //		checkArguments(userpayload.getUserType());
-		User userResponse = null;
+		UserResponsePayload userResponse = null;
 		userResponse = userservice.addUser(userpayload);
 		String tmp = builder.path(Constants.PATH_CREATE_ADMIN).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_CREATE_ADMIN_DETAIL);
@@ -102,10 +103,10 @@ public class UserController extends BaseController {
 			@ApiResponse(code = 500, message = "Internal server error") })
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<User> login(@ApiIgnore UriComponentsBuilder builder,
+	public JsonApiWrapper<UserResponsePayload> login(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody UserRequestPayload userpayload, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 //		request.getRequestDispatcher("/oauth/token").forward(request, response);	
-		User userResponse = null;
+		UserResponsePayload userResponse = null;
 		userResponse = userservice.addUser(userpayload);
 		String tmp = builder.path(Constants.PATH_CREATE_ADMIN).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_CREATE_ADMIN_DETAIL);
@@ -124,9 +125,9 @@ public class UserController extends BaseController {
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/update-user", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<User> updateAdminUser(@ApiIgnore UriComponentsBuilder builder,
+	public JsonApiWrapper<UserResponsePayload> updateAdminUser(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody UserRequestPayload userpayload, HttpServletRequest request, HttpServletResponse response) {
-		User userResponse = userservice.updateUser(userpayload);
+		UserResponsePayload userResponse = userservice.updateUser(userpayload);
 		String tmp = builder.path(Constants.PATH_UPDATE_ADMIN).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_UPDATE_ADMIN_DETAIL);
 
@@ -134,30 +135,30 @@ public class UserController extends BaseController {
 
 	}
 
-	@ResponseStatus(HttpStatus.IM_USED)
-	@ApiOperation(value = " Changes password of a user ", response = User.class)
-	@ApiResponses(value = {
-			@ApiResponse(code = 201, message = "Successful Creation of User Data.", response = JsonApiWrapper.class),
-			@ApiResponse(code = 401, message = "Not authorized!"),
-			@ApiResponse(code = 403, message = "Not authorized to perform this action."),
-			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
-			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
-			@ApiResponse(code = 500, message = "Internal server error") })
-	@RequestMapping(value = "/changepassword", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<User> changePasswordUser(@ApiIgnore UriComponentsBuilder builder,
-			@RequestBody UserRequestPayload userpayload, HttpServletRequest request, HttpServletResponse response) {
-		String tmp = builder.path(Constants.PATH_PASSWORD_CHANGE).build().toString();
-		boolean same = userservice.samePasswordOrNOr(userpayload);
-		if (same) {
-			User userResponse = userservice.getUserDetails(userpayload);
-			Link l2 = new Link(tmp, Constants.PASSWORD_UPDATE_FAILURE);
-			return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l2));
-		} else {
-			User userResponse = userservice.changePasswordUser(userpayload);
-			Link l1 = new Link(tmp, Constants.PASSWORD_UPDATED_SUCCESS);
-			return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
-		}
-	}
+//	@ResponseStatus(HttpStatus.IM_USED)
+//	@ApiOperation(value = " Changes password of a user ", response = User.class)
+//	@ApiResponses(value = {
+//			@ApiResponse(code = 201, message = "Successful Creation of User Data.", response = JsonApiWrapper.class),
+//			@ApiResponse(code = 401, message = "Not authorized!"),
+//			@ApiResponse(code = 403, message = "Not authorized to perform this action."),
+//			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
+//			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
+//			@ApiResponse(code = 500, message = "Internal server error") })
+//	@RequestMapping(value = "/changepassword", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+//	public JsonApiWrapper<UserResponsePayload> changePasswordUser(@ApiIgnore UriComponentsBuilder builder,
+//			@RequestBody UserRequestPayload userpayload, HttpServletRequest request, HttpServletResponse response) {
+//		String tmp = builder.path(Constants.PATH_PASSWORD_CHANGE).build().toString();
+//		boolean same = userservice.samePasswordOrNOr(userpayload);
+//		if (same) {
+//			UserResponsePayload userResponse = userservice.getUserDetails(userpayload);
+//			Link l2 = new Link(tmp, Constants.PASSWORD_UPDATE_FAILURE);
+//			return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l2));
+//		} else {
+//			UserResponsePayload userResponse = userservice.changePasswordUser(userpayload);
+//			Link l1 = new Link(tmp, Constants.PASSWORD_UPDATED_SUCCESS);
+//			return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
+//		}
+//	}
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "Successful delete of User Data.", response = JsonApiWrapper.class),
@@ -218,15 +219,12 @@ public class UserController extends BaseController {
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/get-user", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<User> getUser(@ApiIgnore UriComponentsBuilder builder, HttpServletRequest request,
+	public JsonApiWrapper<UserResponsePayload> getUser(@ApiIgnore UriComponentsBuilder builder, HttpServletRequest request,
 			HttpServletResponse response) {
-		User userResponse = userservice.getUser(request.getUserPrincipal().getName());	
-		System.out.println("userresponse"+userResponse.getRole());
-		Roles userrole=roleservice.getRoleId(userResponse.getRole());
-		System.out.println("Role"+userrole.toString());
+		UserResponsePayload userResponse = userservice.getUser(request.getUserPrincipal().getName());	
+		Roles userrole=roleservice.getRoleId(userResponse.getRole());		
 		userResponse.setPassword(null);		
-		List<Permissions>permissionlist=userservice.buildRolePermission(userrole.getRoleid());
-		
+		List<Permissions>permissionlist=userservice.buildRolePermission(userrole.getRoleId());		
 		userResponse.setPermissions(permissionlist);
 		String tmp = builder.path("/get").build().toString();
 		Link l1 = new Link(tmp, " User Detail get");
@@ -243,9 +241,13 @@ public class UserController extends BaseController {
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/get-user-id", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<User> getUserById(@ApiIgnore UriComponentsBuilder builder,@RequestBody UserRequestPayload userpayload, HttpServletRequest request,
+	public JsonApiWrapper<UserResponsePayload> getUserById(@ApiIgnore UriComponentsBuilder builder,@RequestBody UserRequestPayload userpayload, HttpServletRequest request,
 			HttpServletResponse response) {
-		User userResponse = userservice.getUserDetails(userpayload);
+		UserResponsePayload userResponse = userservice.getUserDetails(userpayload);
+		Roles userrole=roleservice.getRoleId(userResponse.getRole());		
+		userResponse.setPassword(null);		
+		List<Permissions>permissionlist=userservice.buildRolePermission(userrole.getRoleId());		
+		userResponse.setPermissions(permissionlist);
 		userResponse.setPassword(null);		
 		String tmp = builder.path("/get").build().toString();
 		Link l1 = new Link(tmp, " User Detail get");
@@ -262,9 +264,9 @@ public class UserController extends BaseController {
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/getAllByType", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<List<User>> getAllUser(@ApiIgnore UriComponentsBuilder builder,
+	public JsonApiWrapper<List<UserResponsePayload>> getAllUser(@ApiIgnore UriComponentsBuilder builder,
 			@RequestParam("userType") String userType, HttpServletRequest request, HttpServletResponse response) {
-		List<User> userresponse = userservice.getAllUser(userType);
+		List<UserResponsePayload> userresponse = userservice.getAllUser(userType);
 		String tmp = builder.path("/getAll").build().toString();
 		Link l1 = new Link(tmp, " User Detail getAll");
 		return new JsonApiWrapper<>(userresponse, getSelfLink(request), Arrays.asList(l1));
@@ -279,12 +281,12 @@ public class UserController extends BaseController {
 			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	@RequestMapping(value = "/delete", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<List<User>> deleteUserByEmail(@ApiIgnore UriComponentsBuilder builder,
+	@RequestMapping(value = "/delete-id", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public JsonApiWrapper<UserResponsePayload> deleteUserByEmail(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody UserRequestPayload userpayload, HttpServletRequest request, HttpServletResponse response)
 			throws UserServiceException, ResourceNotFoundException {
 		checkArguments(userpayload);
-		List<User> userresponse = userservice.deleteUser(userpayload.getUserId());
+		UserResponsePayload userresponse = userservice.deleteUser(userpayload.getUserId());
 		String tmp = builder.path("/delete").build().toString();
 		Link l1 = new Link(tmp, " User Detail Delete");
 		return new JsonApiWrapper<>(userresponse, getSelfLink(request), Arrays.asList(l1));

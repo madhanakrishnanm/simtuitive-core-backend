@@ -23,6 +23,7 @@ import com.simtuitive.core.common.Constants;
 import com.simtuitive.core.controller.productmgmt.api.JsonApiWrapper;
 import com.simtuitive.core.controller.productmgmt.api.Link;
 import com.simtuitive.core.controller.requestpayload.OrganisationRequestPayload;
+import com.simtuitive.core.controller.responsepayload.OrganisationResponsePayload;
 import com.simtuitive.core.model.Organisation;
 import com.simtuitive.core.service.abstracts.IOrganisationService;
 
@@ -51,9 +52,9 @@ public class OrganisationController extends BaseController {
 			@ApiResponse(code = 500, message = "Internal server error") })
 
 	@RequestMapping(value = "/add-org", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<Organisation> createOrganisation(@ApiIgnore UriComponentsBuilder builder,
+	public JsonApiWrapper<OrganisationResponsePayload> createOrganisation(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody OrganisationRequestPayload payload, HttpServletRequest request, HttpServletResponse response) {
-		Organisation userResponse = null;
+		OrganisationResponsePayload userResponse = null;
 		String createdby=request.getUserPrincipal().getName();
 		payload.setModifiedBy(createdby);
 		userResponse = organisationservice.addOrganisation(payload);
@@ -74,11 +75,11 @@ public class OrganisationController extends BaseController {
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/update-org", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<Organisation> updateOrganisation(@ApiIgnore UriComponentsBuilder builder,
+	public JsonApiWrapper<OrganisationResponsePayload> updateOrganisation(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody OrganisationRequestPayload payload, HttpServletRequest request, HttpServletResponse response) {
 		String modify=request.getUserPrincipal().getName();
 		payload.setModifiedBy(modify);
-		Organisation userResponse = organisationservice.updateOrganisation(payload);
+		OrganisationResponsePayload userResponse = organisationservice.updateOrganisation(payload);
 		String tmp = builder.path(Constants.PATH_UPDATE_ORGANISATION).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_UPDATE_ORGANISATION_DETAIL);
 
@@ -97,9 +98,9 @@ public class OrganisationController extends BaseController {
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/get-org", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<Organisation> findOrganisation(@ApiIgnore UriComponentsBuilder builder,
+	public JsonApiWrapper<OrganisationResponsePayload> findOrganisation(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody OrganisationRequestPayload payload, HttpServletRequest request, HttpServletResponse response) {
-		Organisation userResponse = organisationservice.getOrganisation(payload.getId());
+		OrganisationResponsePayload userResponse = organisationservice.getOrganisation(payload.getId());
 		String tmp = builder.path(Constants.PATH_GET_ORG).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_GET_ORGANISATION_DETAIL);
 
@@ -118,9 +119,9 @@ public class OrganisationController extends BaseController {
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/getall-org", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<List<Organisation>> findAllOrganisation(@ApiIgnore UriComponentsBuilder builder,
+	public JsonApiWrapper<List<OrganisationResponsePayload>> findAllOrganisation(@ApiIgnore UriComponentsBuilder builder,
 			 HttpServletRequest request, HttpServletResponse response) {
-		List<Organisation> userResponse = organisationservice.findAll();
+		List<OrganisationResponsePayload> userResponse = organisationservice.findAll();
 		String tmp = builder.path(Constants.PATH_GET_ALL_ORG).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_GET_ALL_ORGANISATION_DETAIL);
 

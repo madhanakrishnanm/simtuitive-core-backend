@@ -1,75 +1,95 @@
 package com.simtuitive.core.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import javax.management.relation.Role;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.simtuitive.core.controller.requestpayload.RolesRequestPayload;
+import com.simtuitive.core.controller.responsepayload.RolesResponsePayload;
 import com.simtuitive.core.model.Roles;
 import com.simtuitive.core.repository.RolesRepository;
 import com.simtuitive.core.service.abstracts.IRolesService;
-@Service
-public class RolesServiceImpl extends BaseService implements IRolesService{
 
-	
+@Service
+public class RolesServiceImpl extends BaseService implements IRolesService {
+
 	@Autowired
 	private RolesRepository rolesrepository;
+
 	@Override
-	public Roles addRole(RolesRequestPayload payload) {
+	public RolesResponsePayload addRole(RolesRequestPayload payload) {
 		// TODO Auto-generated method stub
-		Roles rolesneedtoadd=buildRole(payload);
-		return rolesrepository.save(rolesneedtoadd);
+		Roles rolesneedtoadd = buildRole(payload);
+		RolesResponsePayload respayload = buildpayload(rolesrepository.save(rolesneedtoadd));
+		return respayload;
+	}
+
+	private RolesResponsePayload buildpayload(Roles rolesneedtoadd) {
+		// TODO Auto-generated method stub
+		RolesResponsePayload payload = new RolesResponsePayload(rolesneedtoadd.getRoleId(),
+				rolesneedtoadd.getRoleName(), rolesneedtoadd.getDescription(), rolesneedtoadd.getCreatedOn(),
+				rolesneedtoadd.getModifiedOn(), rolesneedtoadd.getStatus());
+		return payload;
 	}
 
 	private Roles buildRole(RolesRequestPayload payload) {
 		// TODO Auto-generated method stub
-		Roles role= new Roles(payload.getRolename(), payload.getDescription(), new Date(), new Date());
+		Roles role = new Roles(payload.getRolename(), payload.getDescription(), new Date(), new Date(), 1L);
 		return role;
 	}
 
 	@Override
-	public Roles updateRole(RolesRequestPayload payload) {
+	public RolesResponsePayload updateRole(RolesRequestPayload payload) {
 		// TODO Auto-generated method stub
-		
-		Roles rolesneedtomodify=modifyRole(payload);
-		return rolesrepository.save(rolesneedtomodify);
+		Roles rolesneedtomodify = modifyRole(payload);
+		RolesResponsePayload respayload = buildpayload(rolesrepository.save(rolesneedtomodify));
+		return respayload;
 	}
 
 	private Roles modifyRole(RolesRequestPayload payload) {
 		// TODO Auto-generated method stub
-		Roles role=getRole(payload.getRoleid());
-		role.setRolename(payload.getRolename());
+		Roles role = rolesrepository.findByRoleId(payload.getRoleid());
+		role.setRoleName(payload.getRolename());
 		role.setDescription(payload.getDescription());
 		return role;
 	}
 
 	@Override
-	public Roles getRole(String roleid) {
+	public RolesResponsePayload getRole(String roleid) {
 		// TODO Auto-generated method stub
-		return rolesrepository.findByRoleid(roleid);
+		Roles get = rolesrepository.findByRoleId(roleid);
+		return buildpayload(get);
 	}
 
 	@Override
-	public void deleteRole(String roleid) {
+	public RolesResponsePayload deleteRole(String roleid) {
 		// TODO Auto-generated method stub
-		Roles role=getRole(roleid);
-		rolesrepository.delete(role);
+		Roles role = rolesrepository.findByRoleId(roleid);
+		role.setStatus(2L);
+		rolesrepository.save(role);
+		return buildpayload(role);
 	}
 
 	@Override
-	public List<Roles> getall() {
+	public List<RolesResponsePayload> getall() {
 		// TODO Auto-generated method stub
-		return rolesrepository.findAll();
+		List<RolesResponsePayload> result = new ArrayList<RolesResponsePayload>();
+		List<Roles> roles = rolesrepository.findAll();
+		for (Roles role : roles) {
+			if (role.getStatus() == 1L) {
+				result.add(buildpayload(role));
+			}
+		}
+		return result;
 	}
 
 	@Override
 	public Roles getRoleId(String role) {
 		// TODO Auto-generated method stub
-		return rolesrepository.findByRolename(role) ;
+		return rolesrepository.findByRoleName(role);
 	}
 
 }

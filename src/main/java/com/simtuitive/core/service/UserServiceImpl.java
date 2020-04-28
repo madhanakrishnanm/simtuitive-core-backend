@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.simtuitive.core.controller.requestpayload.UserRequestPayload;
+import com.simtuitive.core.controller.responsepayload.UserResponsePayload;
 import com.simtuitive.core.model.Permissions;
 import com.simtuitive.core.model.RoleHasPermission;
 import com.simtuitive.core.model.Roles;
@@ -42,12 +43,30 @@ public class UserServiceImpl extends BaseService implements IUserService {
 
 	// Get User By Email
 	@Override
-	public User getUser(String email) {
-		return userrepository.findByuserEmail(email);
+	public UserResponsePayload getUser(String email) {
+		UserResponsePayload returnpayload = null;
+		User user = userrepository.findByuserEmail(email);
+		returnpayload = buildPayloadbyUser(user);
+		return returnpayload;
+	}
+
+	private UserResponsePayload buildPayloadbyUser(User user) {
+		// TODO Auto-generated method stub
+		UserResponsePayload payload = null;
+		if (user.getRole().equalsIgnoreCase("ADMIN") || user.getRole().equalsIgnoreCase("Super Admin")) {
+			payload = new UserResponsePayload(user.getUserId(), user.getUserName(), user.getUserEmail(),
+					null, user.getStatus(), user.getPermissions(), user.getRole());
+		}
+		if (user.getRole().equalsIgnoreCase("CLIENT")) {
+			payload=new UserResponsePayload(user.getUserName(), user.getUserEmail(), user.getClientOrgname(),
+					null, 1L, user.getClientDealOwner(), user.getCreatedDate(),
+					user.getClientGst(), user.getClientPan(), user.getPermissions(), user.getRole());
+		}		
+		return payload;
 	}
 
 	@Override
-	public User addUser(UserRequestPayload UserRequestPayload) {
+	public UserResponsePayload addUser(UserRequestPayload UserRequestPayload) {
 		// TODO Auto-generated method stub
 		User buildUserNeedsToBeCreated = null;
 		if (UserRequestPayload.getRole().equalsIgnoreCase("ADMIN")
@@ -61,11 +80,12 @@ public class UserServiceImpl extends BaseService implements IUserService {
 			buildUserNeedsToBeCreated = buildLearnerUser(UserRequestPayload);
 		}
 		User savedUser = userrepository.save(buildUserNeedsToBeCreated);
-		return savedUser;
+		UserResponsePayload newuser= buildPayloadbyUser(savedUser);
+		return newuser;
 	}
 
 	@Override
-	public User updateUser(UserRequestPayload UserRequestPayload) {
+	public UserResponsePayload updateUser(UserRequestPayload UserRequestPayload) {
 		// TODO Auto-generated method stub
 		User updateuser = null;
 		if (UserRequestPayload.getRole().equalsIgnoreCase("ADMIN")
@@ -75,67 +95,79 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		if (UserRequestPayload.getRole().equalsIgnoreCase("CLIENT")) {
 			updateuser = modifyClientUser(UserRequestPayload);
 		}
-		return userrepository.save(updateuser);
+		User savedUser =userrepository.save(updateuser);
+		UserResponsePayload updateUser= buildPayloadbyUser(savedUser);
+		return updateUser;
 	}
 
 	@Override
-	public User changePasswordUser(UserRequestPayload UserRequestPayload) {
+	public UserResponsePayload changePasswordUser(UserRequestPayload UserRequestPayload) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<User> getAllUser(String userType) {
-
-		return userrepository.findByRole(userType);
+	public List<UserResponsePayload> getAllUser(String userType) {
+		List<UserResponsePayload>result=new ArrayList<UserResponsePayload>();
+		List<User> userlist=userrepository.findByRole(userType);
+		if (userType.equalsIgnoreCase("ADMIN")
+				|| userType.equalsIgnoreCase("Super Admin")) {
+			for(User user:userlist) {
+				UserResponsePayload payload=buildPayloadbyUser(user);
+				result.add(payload);
+			}
+		}
+		if (userType.equalsIgnoreCase("CLIENT")) {
+			for(User user:userlist) {
+				UserResponsePayload payload=buildPayloadbyUser(user);
+				result.add(payload);
+			}
+		}
+		return result;
 	}
 
 	@Override
-	public List<User> deleteUser(String email) {
+	public UserResponsePayload deleteUser (String userId) {
 		// TODO Auto-generated method stub
-		return null;
+		User savedUser =userrepository.findByUserId(userId);
+		savedUser.setStatus(2L);
+		User updated=userrepository.save(savedUser);
+		return buildPayloadbyUser(updated);
 	}
 
 	@Override
-	public User getUserDetails(UserRequestPayload UserRequestPayload) {
+	public UserResponsePayload getUserDetails(UserRequestPayload UserRequestPayload) {
 		// TODO Auto-generated method stub
-		return userrepository.findByUserId(UserRequestPayload.getUserId());
+		User user=userrepository.findByUserId(UserRequestPayload.getUserId());
+		return buildPayloadbyUser(user);
 	}
 
 	@Override
 	public boolean samePasswordOrNOr(UserRequestPayload UserRequestPayload) {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	@Override
-	public Long getActiveUser(Long status) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	}	
 
 	private User buildAdminUser(UserRequestPayload payload) {
-		Roles role= roleRepository.findByRolename(payload.getRole());
-		List<Permissions> permissionlist = buildRolePermission(role.getRoleid());
+		Roles role = roleRepository.findByRoleName(payload.getRole());
+		List<Permissions> permissionlist = buildRolePermission(role.getRoleId());
 		System.out.println("List" + permissionlist.toString());
-		User user = new User(payload.getName(), payload.getEmail(),
-				passwordEncoder.encode(payload.getPassword()), 1L, permissionlist, payload.getRole());
+		User user = new User(payload.getName(), payload.getEmail(), passwordEncoder.encode(payload.getPassword()), 1L,
+				permissionlist, payload.getRole());
 		return user;
 	}
-
-	
 
 	private User modifyAdminUser(UserRequestPayload payload) {
 		User existinguser = userrepository.findByUserId(payload.getUserId());
 		existinguser.setUserName(payload.getName());
-		existinguser.setUserEmail(payload.getEmail());		
+		existinguser.setUserEmail(payload.getEmail());
 		return existinguser;
 
 	}
 
 	private User buildClientUser(UserRequestPayload payload) {
-		Roles role= roleRepository.findByRolename(payload.getRole());
-		List<Permissions> permissionlist = buildRolePermission(role.getRoleid());
+		Roles role = roleRepository.findByRoleName(payload.getRole());
+		List<Permissions> permissionlist = buildRolePermission(role.getRoleId());
 		User user = new User(payload.getName(), payload.getEmail(), payload.getClientOrgname(),
 				passwordEncoder.encode(payload.getPassword()), 1L, payload.getClientDealOwner(), new Date(),
 				payload.getClientGst(), payload.getClientPan(), permissionlist, payload.getRole());
@@ -148,9 +180,9 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		existinguser.setUserName(payload.getName());
 		existinguser.setUserEmail(payload.getEmail());
 		existinguser.setClientOrgname(payload.getClientOrgname());
-		existinguser.setClientDealOwner(payload.getClientDealOwner());		
+		existinguser.setClientDealOwner(payload.getClientDealOwner());
 		existinguser.setClientGst(payload.getClientGst());
-		existinguser.setClientPan(payload.getClientPan());		
+		existinguser.setClientPan(payload.getClientPan());
 		return existinguser;
 
 	}
@@ -186,19 +218,21 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	}
 
 	@Override
-	public List<Permissions> buildRolePermission(String  roleid) {
+	public List<Permissions> buildRolePermission(String roleid) {
 		// TODO Auto-generated method stub
 		List<Permissions> permissionlist = new ArrayList<Permissions>();
-		Roles role = roleRepository.findByRoleid((roleid));
-		System.out.println("veera role" + role.toString());
-		List<RoleHasPermission> haspermission = roleHasPermissionRepository.findByRoleid(role.getRoleid());
-		for (RoleHasPermission permission : haspermission) {
-			System.out.println("permission" + permission.getPermissionid());
+		Roles role = roleRepository.findByRoleId((roleid));		
+		List<RoleHasPermission> haspermission = roleHasPermissionRepository.findByRoleid(role.getRoleId());
+		for (RoleHasPermission permission : haspermission) {		
 			Permissions per = permissionsRepository.findBypermissionId(permission.getPermissionid());
-			permissionlist.add(per);		
+			permissionlist.add(per);
 			permissionlist.sort(new SortbyRank());
 		}
 		return permissionlist;
 	}
+
+	
+
+	
 
 }

@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.simtuitive.core.model.User;
+import com.simtuitive.core.repository.UserRepository;
 import com.simtuitive.core.model.Permissions;
 import com.simtuitive.core.service.abstracts.IUserService;
 
@@ -27,13 +28,13 @@ import com.simtuitive.core.service.abstracts.IUserService;
 public class CustomUserDetailsServiceImpl implements UserDetailsService {
 
 	@Autowired
-	IUserService userservice;
+	UserRepository userservice;
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
 		User dbUser;
-		dbUser = userservice.getUser(email);
+		dbUser = userservice.findByuserEmail(email);
 
 		Collection<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 
@@ -49,7 +50,7 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService {
 	public String getUserDetails(String email) throws UsernameNotFoundException {
 
 		User dbUser;
-		dbUser = userservice.getUser(email);
+		dbUser = userservice.findByuserEmail(email);
 		return dbUser.getRole();
 	}
 

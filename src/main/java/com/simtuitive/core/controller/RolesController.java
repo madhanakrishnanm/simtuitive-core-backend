@@ -22,6 +22,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.simtuitive.core.controller.productmgmt.api.JsonApiWrapper;
 import com.simtuitive.core.controller.productmgmt.api.Link;
 import com.simtuitive.core.controller.requestpayload.RolesRequestPayload;
+import com.simtuitive.core.controller.responsepayload.RolesResponsePayload;
 import com.simtuitive.core.globalexception.ResourceNotFoundException;
 import com.simtuitive.core.globalexception.UserRoleServiceException;
 import com.simtuitive.core.model.Roles;
@@ -53,10 +54,10 @@ public class RolesController extends BaseController {
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/add-role", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<Roles> createRole(@ApiIgnore UriComponentsBuilder builder,
+	public JsonApiWrapper<RolesResponsePayload> createRole(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody RolesRequestPayload payload, HttpServletRequest request, HttpServletResponse response)
 			throws UserRoleServiceException, ResourceNotFoundException {
-		Roles roleresponse = roleservice.addRole(payload);
+		RolesResponsePayload roleresponse = roleservice.addRole(payload);
 		String tmp = builder.path("/create").build().toString();
 		Link l1 = new Link(tmp, " Role Detail");
 		return new JsonApiWrapper<>(roleresponse, request.getRequestURL().toString(), Arrays.asList(l1));
@@ -74,16 +75,36 @@ public class RolesController extends BaseController {
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/update-role", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<Roles> updateRole(@ApiIgnore UriComponentsBuilder builder,
+	public JsonApiWrapper<RolesResponsePayload> updateRole(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody RolesRequestPayload payload, HttpServletRequest request, HttpServletResponse response)
 			throws UserRoleServiceException, ResourceNotFoundException {
-		Roles roleresponse = roleservice.updateRole(payload);
+		RolesResponsePayload roleresponse = roleservice.updateRole(payload);
 		String tmp = builder.path("/update").build().toString();
 		Link l1 = new Link(tmp, " Role Detail");
 		return new JsonApiWrapper<>(roleresponse, request.getRequestURL().toString(), Arrays.asList(l1));
 
 	}
 
+	@ResponseStatus(HttpStatus.CREATED)
+	@PreAuthorize("hasAuthority('Super Admin')")
+	@ApiOperation(value = " Update a role ", response = Roles.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Successful Creation of User Data.", response = JsonApiWrapper.class),
+			@ApiResponse(code = 401, message = "Not authorized!"),
+			@ApiResponse(code = 403, message = "Not authorized to perform this action."),
+			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
+			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
+			@ApiResponse(code = 500, message = "Internal server error") })
+	@RequestMapping(value = "/delete-role", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public JsonApiWrapper<RolesResponsePayload> deleteRole(@ApiIgnore UriComponentsBuilder builder,
+			@RequestBody RolesRequestPayload payload, HttpServletRequest request, HttpServletResponse response)
+			throws UserRoleServiceException, ResourceNotFoundException {
+		RolesResponsePayload roleresponse = roleservice.deleteRole(payload.getRoleid());
+		String tmp = builder.path("/delete").build().toString();
+		Link l1 = new Link(tmp, " Role Detail");
+		return new JsonApiWrapper<>(roleresponse, request.getRequestURL().toString(), Arrays.asList(l1));
+
+	}
 	@ResponseStatus(HttpStatus.CREATED)
 	@PreAuthorize("hasAuthority('Super Admin')")
 	@ApiOperation(value = " Creates a role ", response = Roles.class)
@@ -95,10 +116,10 @@ public class RolesController extends BaseController {
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/get-role", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<Roles> getRole(@ApiIgnore UriComponentsBuilder builder,
+	public JsonApiWrapper<RolesResponsePayload> getRole(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody RolesRequestPayload payload, HttpServletRequest request, HttpServletResponse response)
 			throws UserRoleServiceException, ResourceNotFoundException {
-		Roles roleresponse = roleservice.getRole(payload.getRoleid());
+		RolesResponsePayload roleresponse = roleservice.getRole(payload.getRoleid());
 		String tmp = builder.path("/get").build().toString();
 		Link l1 = new Link(tmp, " Role Detail");
 		return new JsonApiWrapper<>(roleresponse, request.getRequestURL().toString(), Arrays.asList(l1));
@@ -115,9 +136,9 @@ public class RolesController extends BaseController {
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/get-all-role", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<List<Roles>> getAllRole(@ApiIgnore UriComponentsBuilder builder, HttpServletRequest request,
+	public JsonApiWrapper<List<RolesResponsePayload>> getAllRole(@ApiIgnore UriComponentsBuilder builder, HttpServletRequest request,
 			HttpServletResponse response) throws UserRoleServiceException, ResourceNotFoundException {
-		List<Roles> roleresponse = roleservice.getall();
+		List<RolesResponsePayload> roleresponse = roleservice.getall();
 		String tmp = builder.path("/get-all-role").build().toString();
 		Link l1 = new Link(tmp, " Role Details");
 		return new JsonApiWrapper<>(roleresponse, request.getRequestURL().toString(), Arrays.asList(l1));

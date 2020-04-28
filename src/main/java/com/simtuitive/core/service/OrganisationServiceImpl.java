@@ -1,5 +1,6 @@
 package com.simtuitive.core.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.simtuitive.core.controller.requestpayload.OrganisationRequestPayload;
+import com.simtuitive.core.controller.responsepayload.OrganisationResponsePayload;
 import com.simtuitive.core.model.Organisation;
 import com.simtuitive.core.repository.OrganisationRepository;
 import com.simtuitive.core.repository.UserRepository;
@@ -23,34 +25,48 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 	private OrganisationRepository organisationrepository;
 
 	@Override
-	public Organisation addOrganisation(OrganisationRequestPayload payload) {
+	public OrganisationResponsePayload addOrganisation(OrganisationRequestPayload payload) {
 		// TODO Auto-generated method stub
 
 		Organisation buildOrganisationNeeded = null;
 		buildOrganisationNeeded = buildOrganisation(payload);
 		Organisation createdOrganisation = organisationrepository.save(buildOrganisationNeeded);
-		return createdOrganisation;
+		OrganisationResponsePayload result = buildOrganisationResponsePayload(createdOrganisation);
+		return result;
+	}
+
+	private OrganisationResponsePayload buildOrganisationResponsePayload(Organisation createdOrganisation) {
+		// TODO Auto-generated method stub
+		OrganisationResponsePayload addresponse = new OrganisationResponsePayload(
+				createdOrganisation.getOrganizationName(), createdOrganisation.getOrganizationId(),
+				createdOrganisation.getLocation(), createdOrganisation.getIndustry(),
+				createdOrganisation.getDealOwnerName(), createdOrganisation.getDealOwnerEmail(),
+				createdOrganisation.getDealOwnerMobile(), createdOrganisation.getCreatedAt(),
+				createdOrganisation.getStatus(), createdOrganisation.getCreditLimit(),
+				createdOrganisation.getUpdatedAt(), createdOrganisation.getModifiedBy());
+		return addresponse;
 	}
 
 	private Organisation buildOrganisation(OrganisationRequestPayload payload) {
 		// TODO Auto-generated method stub
 		Organisation client = new Organisation(payload.getName(), payload.getLocation(), payload.getIndustry(),
-				payload.getDealOwner(), payload.getDealOwnerEmail(), payload.getDealOwnerMobile(),
-				new Date(), payload.getStatus(), payload.getCreditLimit(), new Date(),payload.getModifiedBy());
+				payload.getDealOwner(), payload.getDealOwnerEmail(), payload.getDealOwnerMobile(), new Date(),
+				payload.getStatus(), payload.getCreditLimit(), new Date(), payload.getModifiedBy());
 
 		return client;
 	}
 
 	@Override
-	public Organisation updateOrganisation(OrganisationRequestPayload payload) {
+	public OrganisationResponsePayload updateOrganisation(OrganisationRequestPayload payload) {
 		// TODO Auto-generated method stub
 		Organisation clientupdate = modifyOrganisation(payload);
-		return organisationrepository.save(clientupdate);
+		Organisation clientupdated = organisationrepository.save(clientupdate);
+		return buildOrganisationResponsePayload(clientupdated);
 	}
 
 	private Organisation modifyOrganisation(OrganisationRequestPayload payload) {
 		// TODO Auto-generated method stub
-		Organisation needtobeupdate = getOrganisation(payload.getId());
+		Organisation needtobeupdate = organisationrepository.findByOrganizationId(payload.getId());
 		needtobeupdate.setOrganizationName((payload.getName()));
 		needtobeupdate.setModifiedBy(payload.getModifiedBy());
 		needtobeupdate.setDealOwnerName(payload.getDealOwner());
@@ -64,24 +80,31 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 	}
 
 	@Override
-	public Organisation getOrganisation(String Id) {
+	public OrganisationResponsePayload getOrganisation(String Id) {
 		// TODO Auto-generated method stub
-		return organisationrepository.findByOrganizationId(Id);
+		Organisation client=organisationrepository.findByOrganizationId(Id);
+		return buildOrganisationResponsePayload(client);
 	}
 
 	@Override
-	public List<Organisation> findAll() {
+	public List<OrganisationResponsePayload> findAll() {
 		// TODO Auto-generated method stub
-		return organisationrepository.findAll();
+		List<OrganisationResponsePayload> result=new ArrayList<OrganisationResponsePayload>();
+		List<Organisation> list=organisationrepository.findAll();
+		for(Organisation org:list) {
+			OrganisationResponsePayload value=buildOrganisationResponsePayload(org);
+			result.add(value);
+		}
+		return result;
 	}
 
 	@Override
-	public Map<String,String> findAllOrganisationName() {
+	public Map<String, String> findAllOrganisationName() {
 		// TODO Auto-generated method stub
-		List<Organisation>organisations=organisationrepository.findAll();
-		Map<String,String>listorgname=new HashMap<>();
-		for(Organisation org:organisations) {
-			listorgname.put(org.getOrganizationId(), org.getOrganizationName());			
+		List<Organisation> organisations = organisationrepository.findAll();
+		Map<String, String> listorgname = new HashMap<>();
+		for (Organisation org : organisations) {
+			listorgname.put(org.getOrganizationId(), org.getOrganizationName());
 		}
 		return listorgname;
 	}

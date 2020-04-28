@@ -4,17 +4,18 @@ import java.util.List;
 import java.util.Map;
 
 import com.simtuitive.core.controller.requestpayload.OrganisationRequestPayload;
+import com.simtuitive.core.controller.responsepayload.OrganisationResponsePayload;
 import com.simtuitive.core.model.Organisation;
 
 public interface IOrganisationService {
 
-	public Organisation addOrganisation(OrganisationRequestPayload payload);
+	public OrganisationResponsePayload addOrganisation(OrganisationRequestPayload payload);
 
-	public Organisation updateOrganisation(OrganisationRequestPayload payload);
+	public OrganisationResponsePayload updateOrganisation(OrganisationRequestPayload payload);
 
-	public Organisation getOrganisation(String Id);
+	public OrganisationResponsePayload getOrganisation(String Id);
 
-	public List<Organisation> findAll();
+	public List<OrganisationResponsePayload> findAll();
 	
 	public Map<String,String>findAllOrganisationName();
 }

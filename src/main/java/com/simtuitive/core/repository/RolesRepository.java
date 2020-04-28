@@ -6,9 +6,9 @@ import com.simtuitive.core.model.Roles;
 
 public interface RolesRepository extends MongoRepository<Roles, String> {
 
-	public Roles findByRoleid(String roleid);
+	public Roles findByRoleId(String roleid);
 	
-	public Roles findByRolename(String rolename);
+	public Roles findByRoleName(String rolename);
 
 	
 }
