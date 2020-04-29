@@ -92,8 +92,11 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 		List<OrganisationResponsePayload> result=new ArrayList<OrganisationResponsePayload>();
 		List<Organisation> list=organisationrepository.findAll();
 		for(Organisation org:list) {
-			OrganisationResponsePayload value=buildOrganisationResponsePayload(org);
-			result.add(value);
+			if(org.getStatus().equalsIgnoreCase("active")) {
+				OrganisationResponsePayload value=buildOrganisationResponsePayload(org);
+				result.add(value);	
+			}
+			
 		}
 		return result;
 	}
@@ -113,7 +116,7 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 	public OrganisationResponsePayload deleteOrganisation(String Id) {
 		// TODO Auto-generated method stub
 		Organisation client=organisationrepository.findByOrganizationId(Id);
-		client.setStatus("in_active");
+		client.setStatus("inactive");
 		Organisation deleted=organisationrepository.save(client);
 		return buildOrganisationResponsePayload(deleted);
 	}

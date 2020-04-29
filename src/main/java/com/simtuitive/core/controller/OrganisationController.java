@@ -98,7 +98,7 @@ public class OrganisationController extends BaseController {
 			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	@RequestMapping(value = "/delete-org", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/delete-org", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<OrganisationResponsePayload> deleteOrganisation(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody OrganisationRequestPayload payload, HttpServletRequest request, HttpServletResponse response) {
 		String modify=request.getUserPrincipal().getName();
