@@ -127,7 +127,7 @@ public class RolesController extends BaseController {
 
 	}
 
-	@PreAuthorize("hasAuthority('Super Admin')")
+	@PreAuthorize("hasAuthority('Super Admin') or hasAuthority('Admin') ")
 	@ApiOperation(value = " Creates a role ", response = Roles.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "Successful Creation of User Data.", response = JsonApiWrapper.class),
