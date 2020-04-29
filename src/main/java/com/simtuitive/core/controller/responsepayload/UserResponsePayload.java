@@ -19,6 +19,7 @@ public class UserResponsePayload implements Serializable {
 	private String userName;
 	private String userEmail;
 	private String organisationId;
+	private String organizationName;
 	private String password;
 	private Long status;
 	private String clientDealOwner;
@@ -36,6 +37,20 @@ public class UserResponsePayload implements Serializable {
 	private String role;
 	private String userType;
 	private String roleid;
+
+	/**
+	 * @return the organizationName
+	 */
+	public String getOrganizationName() {
+		return organizationName;
+	}
+
+	/**
+	 * @param organizationName the organizationName to set
+	 */
+	public void setOrganizationName(String organizationName) {
+		this.organizationName = organizationName;
+	}
 
 	/**
 	 * @return the roleid
@@ -333,7 +348,7 @@ public class UserResponsePayload implements Serializable {
 
 	// client specific
 	public UserResponsePayload(String userId, String userName, String userEmail, String organisationId, String password,
-			Long status, Date createdDate, String gst, String pan, List<Permissions> permissions, String role) {
+			Long status, Date createdDate, String gst, String pan, List<Permissions> permissions, String role,String organizationName) {
 		super();
 		this.userId = userId;
 		this.userName = userName;
@@ -344,6 +359,7 @@ public class UserResponsePayload implements Serializable {
 		this.createdDate = createdDate;
 		this.gst = gst;
 		this.pan = pan;
+		this.organizationName = organizationName;
 		this.permissions = permissions;
 		this.role = role;
 	}
@@ -388,13 +404,15 @@ public class UserResponsePayload implements Serializable {
 	@Override
 	public String toString() {
 		return "UserResponsePayload [userId=" + userId + ", userName=" + userName + ", userEmail=" + userEmail
-				+ ", organisationId=" + organisationId + ", password=" + password + ", status=" + status
-				+ ", clientDealOwner=" + clientDealOwner + ", createdDate=" + createdDate + ", clientLocation="
-				+ clientLocation + ", gst=" + gst + ", pan=" + pan + ", clientSpoc=" + clientSpoc + ", simEventName="
-				+ simEventName + ", smeAssigned=" + smeAssigned + ", noOfMilestone=" + noOfMilestone
-				+ ", noOfMilestoneAttended=" + noOfMilestoneAttended + ", noOfMilestoneCompleted="
+				+ ", organisationId=" + organisationId + ", organizationName=" + organizationName + ", password="
+				+ password + ", status=" + status + ", clientDealOwner=" + clientDealOwner + ", createdDate="
+				+ createdDate + ", clientLocation=" + clientLocation + ", gst=" + gst + ", pan=" + pan + ", clientSpoc="
+				+ clientSpoc + ", simEventName=" + simEventName + ", smeAssigned=" + smeAssigned + ", noOfMilestone="
+				+ noOfMilestone + ", noOfMilestoneAttended=" + noOfMilestoneAttended + ", noOfMilestoneCompleted="
 				+ noOfMilestoneCompleted + ", permissions=" + permissions + ", role=" + role + ", userType=" + userType
 				+ ", roleid=" + roleid + "]";
 	}
+
+	
 
 }

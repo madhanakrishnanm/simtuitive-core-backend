@@ -14,10 +14,12 @@ import org.springframework.stereotype.Service;
 
 import com.simtuitive.core.controller.requestpayload.UserRequestPayload;
 import com.simtuitive.core.controller.responsepayload.UserResponsePayload;
+import com.simtuitive.core.model.Organisation;
 import com.simtuitive.core.model.Permissions;
 import com.simtuitive.core.model.RoleHasPermission;
 import com.simtuitive.core.model.Roles;
 import com.simtuitive.core.model.User;
+import com.simtuitive.core.repository.OrganisationRepository;
 import com.simtuitive.core.repository.PermissionsRepository;
 import com.simtuitive.core.repository.RoleHasPermissionRepository;
 import com.simtuitive.core.repository.RolesRepository;
@@ -40,6 +42,8 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	private PermissionsRepository permissionsRepository;
 	@Autowired
 	private RolesRepository roleRepository;
+	@Autowired
+	private OrganisationRepository orgrepository;
 
 	// Get User By Email
 	@Override
@@ -58,9 +62,10 @@ public class UserServiceImpl extends BaseService implements IUserService {
 					null, user.getStatus(), user.getPermissions(), user.getRole());
 		}
 		if (user.getRole().equalsIgnoreCase("CLIENT")) {
+			Organisation org=orgrepository.findByOrganizationId(user.getOrgId());
 			payload=new UserResponsePayload(user.getUserId(),user.getUserName(), user.getUserEmail(), user.getOrgId(),
 					null, user.getStatus(), user.getCreatedDate(),
-					user.getClientGst(), user.getClientPan(), user.getPermissions(), user.getRole());
+					user.getClientGst(), user.getClientPan(),user.getPermissions(), user.getRole(),org.getOrganizationName());
 		}		
 		return payload;
 	}

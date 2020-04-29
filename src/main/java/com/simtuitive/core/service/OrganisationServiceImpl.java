@@ -109,4 +109,13 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 		return listorgname;
 	}
 
+	@Override
+	public OrganisationResponsePayload deleteOrganisation(String Id) {
+		// TODO Auto-generated method stub
+		Organisation client=organisationrepository.findByOrganizationId(Id);
+		client.setStatus("in_active");
+		Organisation deleted=organisationrepository.save(client);
+		return buildOrganisationResponsePayload(deleted);
+	}
+
 }

@@ -87,6 +87,29 @@ public class OrganisationController extends BaseController {
 
 	}
 	
+	
+	@PreAuthorize("hasAuthority('Admin')")
+	@ResponseStatus(HttpStatus.IM_USED)
+	@ApiOperation(value = " Updates an Organisation ", response = Organisation.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Successful Creation of User Data.", response = JsonApiWrapper.class),
+			@ApiResponse(code = 401, message = "Not authorized!"),
+			@ApiResponse(code = 403, message = "Not authorized to perform this action."),
+			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
+			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
+			@ApiResponse(code = 500, message = "Internal server error") })
+	@RequestMapping(value = "/delete-org", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public JsonApiWrapper<OrganisationResponsePayload> deleteOrganisation(@ApiIgnore UriComponentsBuilder builder,
+			@RequestBody OrganisationRequestPayload payload, HttpServletRequest request, HttpServletResponse response) {
+		String modify=request.getUserPrincipal().getName();
+		payload.setModifiedBy(modify);
+		OrganisationResponsePayload userResponse = organisationservice.deleteOrganisation(payload.getId());
+		String tmp = builder.path(Constants.PATH_UPDATE_ORGANISATION).build().toString();
+		Link l1 = new Link(tmp, Constants.LINK_UPDATE_ORGANISATION_DETAIL);
+
+		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
+
+	}
 	@PreAuthorize("hasAuthority('Admin')")
 	@ResponseStatus(HttpStatus.IM_USED)
 	@ApiOperation(value = " get an Organisation ", response = Organisation.class)
@@ -103,7 +126,6 @@ public class OrganisationController extends BaseController {
 		OrganisationResponsePayload userResponse = organisationservice.getOrganisation(payload.getId());
 		String tmp = builder.path(Constants.PATH_GET_ORG).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_GET_ORGANISATION_DETAIL);
-
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
 
 	}

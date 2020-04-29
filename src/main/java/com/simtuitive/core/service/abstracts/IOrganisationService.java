@@ -18,4 +18,6 @@ public interface IOrganisationService {
 	public List<OrganisationResponsePayload> findAll();
 	
 	public Map<String,String>findAllOrganisationName();
+	
+	public OrganisationResponsePayload deleteOrganisation(String Id);
 }
