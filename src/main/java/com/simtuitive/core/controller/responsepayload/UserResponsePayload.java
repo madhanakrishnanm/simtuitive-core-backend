@@ -18,14 +18,14 @@ public class UserResponsePayload implements Serializable {
 	private String userId;
 	private String userName;
 	private String userEmail;
-	private String clientOrgname;
+	private String organisationId;
 	private String password;
 	private Long status;
 	private String clientDealOwner;
 	private Date createdDate;
 	private String clientLocation;
-	private String clientGst;
-	private String clientPan;
+	private String gst;
+	private String pan;
 	private List<User> clientSpoc;
 	private String simEventName;
 	private String smeAssigned;
@@ -91,20 +91,6 @@ public class UserResponsePayload implements Serializable {
 	 */
 	public void setUserEmail(String userEmail) {
 		this.userEmail = userEmail;
-	}
-
-	/**
-	 * @return the clientOrgname
-	 */
-	public String getClientOrgname() {
-		return clientOrgname;
-	}
-
-	/**
-	 * @param clientOrgname the clientOrgname to set
-	 */
-	public void setClientOrgname(String clientOrgname) {
-		this.clientOrgname = clientOrgname;
 	}
 
 	/**
@@ -178,31 +164,45 @@ public class UserResponsePayload implements Serializable {
 	}
 
 	/**
-	 * @return the clientGst
+	 * @return the organisationId
 	 */
-	public String getClientGst() {
-		return clientGst;
+	public String getOrganisationId() {
+		return organisationId;
 	}
 
 	/**
-	 * @param clientGst the clientGst to set
+	 * @param organisationId the organisationId to set
 	 */
-	public void setClientGst(String clientGst) {
-		this.clientGst = clientGst;
+	public void setOrganisationId(String organisationId) {
+		this.organisationId = organisationId;
 	}
 
 	/**
-	 * @return the clientPan
+	 * @return the gst
 	 */
-	public String getClientPan() {
-		return clientPan;
+	public String getGst() {
+		return gst;
 	}
 
 	/**
-	 * @param clientPan the clientPan to set
+	 * @param gst the gst to set
 	 */
-	public void setClientPan(String clientPan) {
-		this.clientPan = clientPan;
+	public void setGst(String gst) {
+		this.gst = gst;
+	}
+
+	/**
+	 * @return the pan
+	 */
+	public String getPan() {
+		return pan;
+	}
+
+	/**
+	 * @param pan the pan to set
+	 */
+	public void setPan(String pan) {
+		this.pan = pan;
 	}
 
 	/**
@@ -332,31 +332,30 @@ public class UserResponsePayload implements Serializable {
 	}
 
 	// client specific
-	public UserResponsePayload(String userName, String userEmail, String clientOrgname, String password, Long status,
-			String clientDealOwner, Date createdDate, String clientGst, String clientPan, List<Permissions> permissions,
-			String role) {
+	public UserResponsePayload(String userId, String userName, String userEmail, String organisationId, String password,
+			Long status, Date createdDate, String gst, String pan, List<Permissions> permissions, String role) {
 		super();
+		this.userId = userId;
 		this.userName = userName;
 		this.userEmail = userEmail;
-		this.clientOrgname = clientOrgname;
+		this.organisationId = organisationId;
 		this.password = password;
 		this.status = status;
-		this.clientDealOwner = clientDealOwner;
 		this.createdDate = createdDate;
-		this.clientGst = clientGst;
-		this.clientPan = clientPan;
+		this.gst = gst;
+		this.pan = pan;
 		this.permissions = permissions;
 		this.role = role;
 	}
 
 	// learner specific
-	public UserResponsePayload(String userName, String userEmail, String clientOrgname, String password, Long status,
+	public UserResponsePayload(String userName, String userEmail, String organisationId, String password, Long status,
 			Date createdDate, String simEventName, String smeAssigned, Long noOfMilestone, Long noOfMilestoneAttended,
 			Long noOfMilestoneCompleted, List<Permissions> permissions, String role) {
 		super();
 		this.userName = userName;
 		this.userEmail = userEmail;
-		this.clientOrgname = clientOrgname;
+		this.organisationId = organisationId;
 		this.password = password;
 		this.status = status;
 		this.createdDate = createdDate;
@@ -389,11 +388,11 @@ public class UserResponsePayload implements Serializable {
 	@Override
 	public String toString() {
 		return "UserResponsePayload [userId=" + userId + ", userName=" + userName + ", userEmail=" + userEmail
-				+ ", clientOrgname=" + clientOrgname + ", password=" + password + ", status=" + status
+				+ ", organisationId=" + organisationId + ", password=" + password + ", status=" + status
 				+ ", clientDealOwner=" + clientDealOwner + ", createdDate=" + createdDate + ", clientLocation="
-				+ clientLocation + ", clientGst=" + clientGst + ", clientPan=" + clientPan + ", clientSpoc="
-				+ clientSpoc + ", simEventName=" + simEventName + ", smeAssigned=" + smeAssigned + ", noOfMilestone="
-				+ noOfMilestone + ", noOfMilestoneAttended=" + noOfMilestoneAttended + ", noOfMilestoneCompleted="
+				+ clientLocation + ", gst=" + gst + ", pan=" + pan + ", clientSpoc=" + clientSpoc + ", simEventName="
+				+ simEventName + ", smeAssigned=" + smeAssigned + ", noOfMilestone=" + noOfMilestone
+				+ ", noOfMilestoneAttended=" + noOfMilestoneAttended + ", noOfMilestoneCompleted="
 				+ noOfMilestoneCompleted + ", permissions=" + permissions + ", role=" + role + ", userType=" + userType
 				+ ", roleid=" + roleid + "]";
 	}

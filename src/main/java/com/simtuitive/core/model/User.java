@@ -33,7 +33,7 @@ public class User implements GrantedAuthority,Serializable {
 	private String userName;
 	@Email
 	private String userEmail;
-	private String clientOrgname;
+	private String orgId;
 	private String password;
 	private Long status;//1-active,2-inactive,3-suspend
 	private String clientDealOwner;
@@ -92,18 +92,19 @@ public class User implements GrantedAuthority,Serializable {
 		this.userEmail = userEmail;
 	}
 
+	
 	/**
-	 * @return the clientOrgname
+	 * @return the orgId
 	 */
-	public String getClientOrgname() {
-		return clientOrgname;
+	public String getOrgId() {
+		return orgId;
 	}
 
 	/**
-	 * @param clientOrgname the clientOrgname to set
+	 * @param orgId the orgId to set
 	 */
-	public void setClientOrgname(String clientOrgname) {
-		this.clientOrgname = clientOrgname;
+	public void setOrgId(String orgId) {
+		this.orgId = orgId;
 	}
 
 	/**
@@ -320,16 +321,15 @@ public class User implements GrantedAuthority,Serializable {
 	}
 
 	// client specific
-	public User(String userName, String userEmail, String clientOrgname, String password, Long status,
-			String clientDealOwner, Date createdDate, String clientGst, String clientPan,
+	public User(String userName, String userEmail, String orgId, String password, Long status,
+			 Date createdDate, String clientGst, String clientPan,
 			 List<Permissions> permissions,String role) {
 		super();
 		this.userName = userName;
 		this.userEmail = userEmail;
-		this.clientOrgname = clientOrgname;
+		this.orgId = orgId;
 		this.password = password;
-		this.status = status;
-		this.clientDealOwner = clientDealOwner;
+		this.status = status;		
 		this.createdDate = createdDate;		
 		this.clientGst = clientGst;
 		this.clientPan = clientPan;	
@@ -338,13 +338,13 @@ public class User implements GrantedAuthority,Serializable {
 	}
 
 	// learner specific
-	public User(String userName, String userEmail, String clientOrgname, String password, Long status, Date createdDate,
+	public User(String userName, String userEmail, String orgId, String password, Long status, Date createdDate,
 			String simEventName, String smeAssigned, Long noOfMilestone, Long noOfMilestoneAttended,
 			Long noOfMilestoneCompleted,  List<Permissions> permissions,String role) {
 		super();
 		this.userName = userName;
 		this.userEmail = userEmail;
-		this.clientOrgname = clientOrgname;
+		this.orgId = orgId;
 		this.password = password;
 		this.status = status;
 		this.createdDate = createdDate;
@@ -371,15 +371,17 @@ public class User implements GrantedAuthority,Serializable {
 
 	
 
+	
+
 	@Override
 	public String toString() {
-		return "User [userId=" + userId + ", userName=" + userName + ", userEmail=" + userEmail + ", clientOrgname="
-				+ clientOrgname + ", password=" + password + ", status=" + status + ", clientDealOwner="
-				+ clientDealOwner + ", createdDate=" + createdDate + ", clientLocation=" + clientLocation
-				+ ", clientGst=" + clientGst + ", clientPan=" + clientPan + ", clientSpoc=" + clientSpoc
-				+ ", simEventName=" + simEventName + ", smeAssigned=" + smeAssigned + ", noOfMilestone=" + noOfMilestone
-				+ ", noOfMilestoneAttended=" + noOfMilestoneAttended + ", noOfMilestoneCompleted="
-				+ noOfMilestoneCompleted + ", permissions=" + permissions + ", role=" + role + "]";
+		return "User [userId=" + userId + ", userName=" + userName + ", userEmail=" + userEmail + ", orgId=" + orgId
+				+ ", password=" + password + ", status=" + status + ", clientDealOwner=" + clientDealOwner
+				+ ", createdDate=" + createdDate + ", clientLocation=" + clientLocation + ", clientGst=" + clientGst
+				+ ", clientPan=" + clientPan + ", clientSpoc=" + clientSpoc + ", simEventName=" + simEventName
+				+ ", smeAssigned=" + smeAssigned + ", noOfMilestone=" + noOfMilestone + ", noOfMilestoneAttended="
+				+ noOfMilestoneAttended + ", noOfMilestoneCompleted=" + noOfMilestoneCompleted + ", permissions="
+				+ permissions + ", role=" + role + "]";
 	}
 
 	public User() {

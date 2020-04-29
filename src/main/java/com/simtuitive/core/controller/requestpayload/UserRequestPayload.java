@@ -18,14 +18,14 @@ public class UserRequestPayload implements Serializable {
 	private String userId;
 	private String name;	
 	private String email;
-	private String clientOrgname;
+	private String organisationId;
 	private String password;
 	private Long status;
 	private String clientDealOwner;
 	private Date createdDate;
 	private String clientLocation;
-	private String clientGst;
-	private String clientPan;
+	private String gst;
+	private String pan;
 	private List<User> clientSpoc;	
 	private String simEventName;
 	private String smeAssigned;
@@ -86,17 +86,18 @@ public class UserRequestPayload implements Serializable {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	
 	/**
-	 * @return the clientOrgname
+	 * @return the organisationId
 	 */
-	public String getClientOrgname() {
-		return clientOrgname;
+	public String getOrganisationId() {
+		return organisationId;
 	}
 	/**
-	 * @param clientOrgname the clientOrgname to set
+	 * @param organisationId the organisationId to set
 	 */
-	public void setClientOrgname(String clientOrgname) {
-		this.clientOrgname = clientOrgname;
+	public void setOrganisationId(String organisationId) {
+		this.organisationId = organisationId;
 	}
 	/**
 	 * @return the password
@@ -161,32 +162,36 @@ public class UserRequestPayload implements Serializable {
 	/**
 	 * @return the clientGst
 	 */
-	public String getClientGst() {
-		return clientGst;
-	}
-	/**
-	 * @param clientGst the clientGst to set
-	 */
-	public void setClientGst(String clientGst) {
-		this.clientGst = clientGst;
-	}
-	/**
-	 * @return the clientPan
-	 */
-	public String getClientPan() {
-		return clientPan;
-	}
-	/**
-	 * @param clientPan the clientPan to set
-	 */
-	public void setClientPan(String clientPan) {
-		this.clientPan = clientPan;
-	}
+	
 	/**
 	 * @return the clientSpoc
 	 */
 	public List<User> getClientSpoc() {
 		return clientSpoc;
+	}
+	/**
+	 * @return the gst
+	 */
+	public String getGst() {
+		return gst;
+	}
+	/**
+	 * @param gst the gst to set
+	 */
+	public void setGst(String gst) {
+		this.gst = gst;
+	}
+	/**
+	 * @return the pan
+	 */
+	public String getPan() {
+		return pan;
+	}
+	/**
+	 * @param pan the pan to set
+	 */
+	public void setPan(String pan) {
+		this.pan = pan;
 	}
 	/**
 	 * @param clientSpoc the clientSpoc to set
@@ -290,23 +295,25 @@ public class UserRequestPayload implements Serializable {
 	public void setUserType(String userType) {
 		this.userType = userType;
 	}
-	public UserRequestPayload(String userId, String name, String email, String clientOrgname, String password,
-			Long status, String clientDealOwner, Date createdDate, String clientLocation, String clientGst,
-			String clientPan, List<User> clientSpoc, String simEventName, String smeAssigned, Long noOfMilestone,
+	
+	
+	public UserRequestPayload(String userId, String name, String email, String organisationId, String password,
+			Long status, String clientDealOwner, Date createdDate, String clientLocation, String gst, String pan,
+			List<User> clientSpoc, String simEventName, String smeAssigned, Long noOfMilestone,
 			Long noOfMilestoneAttended, Long noOfMilestoneCompleted, List<Permissions> permissions, String role,
-			String userType,String roleid) {
+			String userType, String roleid) {
 		super();
 		this.userId = userId;
 		this.name = name;
 		this.email = email;
-		this.clientOrgname = clientOrgname;
+		this.organisationId = organisationId;
 		this.password = password;
 		this.status = status;
 		this.clientDealOwner = clientDealOwner;
 		this.createdDate = createdDate;
 		this.clientLocation = clientLocation;
-		this.clientGst = clientGst;
-		this.clientPan = clientPan;
+		this.gst = gst;
+		this.pan = pan;
 		this.clientSpoc = clientSpoc;
 		this.simEventName = simEventName;
 		this.smeAssigned = smeAssigned;
@@ -318,22 +325,21 @@ public class UserRequestPayload implements Serializable {
 		this.userType = userType;
 		this.roleid = roleid;
 	}
-	
 	public UserRequestPayload() {
 
 		// TODO Auto-generated constructor stub
 	}
 	@Override
 	public String toString() {
-		return "UserRequestPayload [userId=" + userId + ", name=" + name + ", email=" + email + ", clientOrgname="
-				+ clientOrgname + ", password=" + password + ", status=" + status + ", clientDealOwner="
-				+ clientDealOwner + ", createdDate=" + createdDate + ", clientLocation=" + clientLocation
-				+ ", clientGst=" + clientGst + ", clientPan=" + clientPan + ", clientSpoc=" + clientSpoc
-				+ ", simEventName=" + simEventName + ", smeAssigned=" + smeAssigned + ", noOfMilestone=" + noOfMilestone
-				+ ", noOfMilestoneAttended=" + noOfMilestoneAttended + ", noOfMilestoneCompleted="
-				+ noOfMilestoneCompleted + ", permissions=" + permissions + ", role=" + role + ", userType=" + userType
-				+ ", roleid=" + roleid + "]";
+		return "UserRequestPayload [userId=" + userId + ", name=" + name + ", email=" + email + ", organisationId="
+				+ organisationId + ", password=" + password + ", status=" + status + ", clientDealOwner="
+				+ clientDealOwner + ", createdDate=" + createdDate + ", clientLocation=" + clientLocation + ", gst="
+				+ gst + ", pan=" + pan + ", clientSpoc=" + clientSpoc + ", simEventName=" + simEventName
+				+ ", smeAssigned=" + smeAssigned + ", noOfMilestone=" + noOfMilestone + ", noOfMilestoneAttended="
+				+ noOfMilestoneAttended + ", noOfMilestoneCompleted=" + noOfMilestoneCompleted + ", permissions="
+				+ permissions + ", role=" + role + ", userType=" + userType + ", roleid=" + roleid + "]";
 	}
+	
 	
 
 	
