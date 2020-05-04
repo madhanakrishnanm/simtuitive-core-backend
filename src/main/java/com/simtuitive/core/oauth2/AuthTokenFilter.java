@@ -69,6 +69,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 				String clientTrueToken = TokenUtil.getToken(clientToken);//				
 				Map<?, ?> newtoken = (Map<?, ?>) redis.redisTemplate().opsForHash().get(clientTrueToken,
 						clientTrueToken);
+				if(newtoken!=null) { 
 				String truetoken = (String) newtoken.get(Constants.STR_AUTH_TOKEN);//
 				System.out.println("truetoken::" + truetoken);
 				username = (String) newtoken.get(Constants.STR_AUTH_EMAIL);
@@ -103,7 +104,11 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 						}						
 					}
 				} else {
-					throw new InvalidTokenException(clientTrueToken);
+					throw new InvalidTokenException("Invalid Token "+clientToken);
+				}
+			}
+				else {
+					throw new InvalidTokenException("Invalid Token "+clientToken);
 				}
 
 			} else {
