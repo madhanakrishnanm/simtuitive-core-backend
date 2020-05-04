@@ -62,7 +62,10 @@ public class UserServiceImpl extends BaseService implements IUserService {
 					null, user.getStatus(), user.getPermissions(), user.getRole());
 		}
 		if (user.getRole().equalsIgnoreCase("CLIENT")) {
+			System.out.println("welcome issue"+user.getOrgId());
 			Organisation org=orgrepository.findByOrganizationId(user.getOrgId());
+			System.out.println("welcome issue");
+			System.out.println("organisaton"+org.getOrganizationId());
 			payload=new UserResponsePayload(user.getUserId(),user.getUserName(), user.getUserEmail(), user.getOrgId(),
 					null, user.getStatus(), user.getCreatedDate(),
 					user.getClientGst(), user.getClientPan(),user.getPermissions(), user.getRole(),org.getOrganizationName());
@@ -130,8 +133,10 @@ public class UserServiceImpl extends BaseService implements IUserService {
 			}
 		}
 		if (userType.equalsIgnoreCase("CLIENT")) {
+			System.out.println("checking coming");
 			for(User user:userlist) {				
 				if(user.getStatus()==1L) {
+					System.out.println("checking"+user.getUserId());
 					UserResponsePayload payload=buildPayloadbyUser(user);
 					result.add(payload);
 				}

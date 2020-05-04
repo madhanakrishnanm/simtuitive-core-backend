@@ -1,6 +1,7 @@
 package com.simtuitive.core.oauth2;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Map;
 
 import javax.servlet.FilterChain;
@@ -20,11 +21,16 @@ import org.springframework.security.oauth2.common.exceptions.InvalidTokenExcepti
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.authentication.session.SessionAuthenticationException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.simtuitive.core.common.Constants;
 import com.simtuitive.core.config.RedisConfiguration;
+import com.simtuitive.core.globalexception.BadArgumentException;
+import com.simtuitive.core.model.SessionInfo;
+import com.simtuitive.core.service.CustomUserDetailsServiceImpl;
 import com.simtuitive.core.util.TokenUtil;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
@@ -36,6 +42,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 	@Autowired
 	private RedisConnectionFactory redisConnectionFactory;
 
+	@Autowired
+	private CustomUserDetailsServiceImpl customuserdetail;
+	
 	private UserDetailsService customUserDetailsService;
 
 	public AuthTokenFilter(UserDetailsService userDetailsService) {
@@ -49,35 +58,119 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
+		String initrole=null;
+		String username=null;
 		try {
 
 			String clientToken = parseJwt(request);//
-			System.out.println("clientToken::"+clientToken);
-			if (clientToken != null && TokenUtil.validate(clientToken, secret)) {
-				System.out.println("validateclientToken::"+clientToken);
-				String clientTrueToken = TokenUtil.getToken(clientToken);//
-				System.out.println("clientTrueToken::"+clientTrueToken);
+			System.out.println("clientToken::" + clientToken);
+
+			if (clientToken != null && TokenUtil.validate(clientToken, secret)) {				
+				String clientTrueToken = TokenUtil.getToken(clientToken);//				
 				Map<?, ?> newtoken = (Map<?, ?>) redis.redisTemplate().opsForHash().get(clientTrueToken,
 						clientTrueToken);
 				String truetoken = (String) newtoken.get(Constants.STR_AUTH_TOKEN);//
-				System.out.println("truetoken::"+truetoken);
-				String username = (String) newtoken.get(Constants.STR_AUTH_EMAIL);
+				System.out.println("truetoken::" + truetoken);
+				username = (String) newtoken.get(Constants.STR_AUTH_EMAIL);
+				initrole = customuserdetail.getUserDetails(username);
+				String sessionkey=username+initrole;
+				Map<?, ?> sessioninfo = (Map<?, ?>) redis.redisTemplate().opsForHash().get(sessionkey, sessionkey);
+				long time = (long) newtoken.get("expirationTime");
+				long sessiontime=(long) sessioninfo.get("sessionCreatedTime");
+				long sessiontime1=(long) sessioninfo.get("sessionExpiryTime");
+				Date expirationTime = new java.util.Date(time);
+				Date sessionexpiretime= new java.util.Date(sessiontime1);
+				System.out.println("welcome sessionexpiretime"+sessionexpiretime);		
+				Date sessioncreatedtime = new java.util.Date(sessiontime);
+				System.out.println("welcome sessioncreatedtime"+sessioncreatedtime);
+				Date now = new Date();				
 				if (truetoken.matches(clientTrueToken)) {
-					UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
-					UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-							userDetails, null, userDetails.getAuthorities());
-					authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-					SecurityContextHolder.getContext().setAuthentication(authentication);
+					if (now.after(expirationTime)) {
+						System.out.println("cominghere");
+						throw new InvalidTokenException("Token expired");
+					} else {
+						if(now.after(sessioncreatedtime)&&now.before(sessionexpiretime)) {
+							System.out.println("coming session here");
+							UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+							System.out.println("userDetails"+userDetails.getUsername());
+							UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+									userDetails, null, userDetails.getAuthorities());
+							authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+							SecurityContextHolder.getContext().setAuthentication(authentication);
+							updateinRedis(username);
+						}else {
+							throw new InvalidTokenException("session Time out by token");
+						}						
+					}
 				} else {
 					throw new InvalidTokenException(clientTrueToken);
 				}
 
+			} else {
+				Boolean isSameUserRoleInLoggedIn = validateSameUser(request);
+				if (isSameUserRoleInLoggedIn) {
+					System.out.println("sameuser logged in");//DuplicateSessionException
+					
+				} else {
+					//need to check time out//proceed further
+					System.out.println("veryfirst login");
+				}
 			}
-		} catch (Exception e) {
-			throw new InvalidRequestException(request.toString());
+		} catch (BadArgumentException e) {
+			throw new BadArgumentException(e.getMessage());
 		}
-
+		catch (InvalidTokenException e) {
+			throw new InvalidTokenException(e.getMessage());
+		}
+		
 		filterChain.doFilter(request, response);
+	}
+
+	private void updateinRedis(String username) {
+		// TODO Auto-generated method stub
+		System.out.println("updated in redis method");
+		String initrole = customuserdetail.getUserDetails(username);			
+		String key = username + initrole;
+		Map<?, ?> sessioninfo = (Map<?, ?>) redis.redisTemplate().opsForHash().get(key, key);
+		System.out.println("sessioninfo"+sessioninfo.toString());
+		Date d=new Date();
+//		SessionInfo session=(SessionInfo) sessioninfo;
+//		session.setSessionCreatedTime(d);		
+//		Map<?, ?> ruleHash = new ObjectMapper().convertValue(session, Map.class);		
+		redis.redisTemplate().opsForHash().put(key,sessioninfo.get("sessionCreatedTime"), d);
+		Map<?, ?> sessioninfoUpdated = (Map<?, ?>) redis.redisTemplate().opsForHash().get(key, key);
+		System.out.println("redisUpdated"+sessioninfoUpdated.toString());
+	}
+
+	private Boolean validateSameUser(HttpServletRequest request) {
+		String initusername = request.getParameter("username");
+		String initrole = customuserdetail.getUserDetails(initusername);			
+		String key = initusername + initrole;
+		Map<?, ?> sessioninfo = (Map<?, ?>) redis.redisTemplate().opsForHash().get(key, key);
+		if(sessioninfo!=null&&!sessioninfo.isEmpty()) {
+		String sessionuser=(String) sessioninfo.get("emailId");		
+		long time=(long) sessioninfo.get("sessionCreatedTime");
+		long time1=(long) sessioninfo.get("sessionExpiryTime");//shortway adding 30 min created
+		Date sessionexpiretime= new java.util.Date(time1);
+		System.out.println("welcome sessionexpiretime"+sessionexpiretime);		
+		Date sessioncreatedtime = new java.util.Date(time);
+		System.out.println("welcome sessioncreatedtime"+sessioncreatedtime);
+		Date now = new Date();
+		if (sessionuser.equalsIgnoreCase(initusername)) {
+			System.out.println("sessioncreatedtime"+sessioncreatedtime);
+			System.out.println("true in same name"+sessionuser+"inituser"+initusername);
+			if(now.after(sessioncreatedtime)&&now.before(sessionexpiretime)) {
+				throw new BadArgumentException(initrole+" User "+initusername+"is already in logged in");
+			}else {	//previous session expired trying for re-login			
+				return false;	
+			}
+		}
+		else {
+			return false;	
+		}
+		}else {
+			return false;	
+		}	
 	}
 
 	private String parseJwt(HttpServletRequest request) {

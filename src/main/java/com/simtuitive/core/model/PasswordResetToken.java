@@ -22,15 +22,33 @@ public class PasswordResetToken implements Serializable {
 	    private String token;
 	    private String salt;
 	    private Date expirationTime;
+	    private Date tokenCreatedTime;
 
-	    public PasswordResetToken(String email, String token,String salt, Date expirationTime) {
-	        this.email = email;
-	        this.token = token;
-	        this.salt = salt;
-	        this.expirationTime = expirationTime;
-	    }
 
-	    public String getEmail() {
+	    public PasswordResetToken(String email, String token, String salt, Date expirationTime, Date tokenCreatedTime) {
+			super();
+			this.email = email;
+			this.token = token;
+			this.salt = salt;
+			this.expirationTime = expirationTime;
+			this.tokenCreatedTime = tokenCreatedTime;
+		}
+
+		/**
+		 * @return the tokenCreatedTime
+		 */
+		public Date getTokenCreatedTime() {
+			return tokenCreatedTime;
+		}
+
+		/**
+		 * @param tokenCreatedTime the tokenCreatedTime to set
+		 */
+		public void setTokenCreatedTime(Date tokenCreatedTime) {
+			this.tokenCreatedTime = tokenCreatedTime;
+		}
+
+		public String getEmail() {
 	        return email;
 	    }
 

@@ -15,11 +15,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.simtuitive.core.common.Constants;
+import com.simtuitive.core.config.RedisConfiguration;
 import com.simtuitive.core.controller.productmgmt.api.JsonApiWrapper;
 import com.simtuitive.core.controller.productmgmt.api.Link;
 import com.simtuitive.core.controller.requestpayload.UserRequestPayload;
@@ -40,9 +43,11 @@ import com.simtuitive.core.model.Permissions;
 import com.simtuitive.core.model.ProductUsers;
 import com.simtuitive.core.model.Roles;
 import com.simtuitive.core.model.User;
+import com.simtuitive.core.service.CustomUserDetailsServiceImpl;
 import com.simtuitive.core.service.abstracts.IRoleHasPermissionService;
 import com.simtuitive.core.service.abstracts.IRolesService;
 import com.simtuitive.core.service.abstracts.IUserService;
+import com.simtuitive.core.util.TokenUtil;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -58,6 +63,11 @@ import springfox.documentation.annotations.ApiIgnore;
 @RequestMapping("/api/v1/users")
 public class UserController extends BaseController {
 
+	@Value("${secret}")
+	private String secret;
+	
+	@Autowired
+	RedisConfiguration redis;
 	@Autowired
 	private IUserService userservice;
 	
@@ -66,6 +76,9 @@ public class UserController extends BaseController {
 	
 	@Autowired
 	private IRolesService roleservice;
+	
+	@Autowired
+	private CustomUserDetailsServiceImpl customuserdetail;
 
 	// Create User
 //	@PreAuthorize("hasAuthority('ADMIN')")
@@ -222,6 +235,7 @@ public class UserController extends BaseController {
 	public JsonApiWrapper<UserResponsePayload> getUser(@ApiIgnore UriComponentsBuilder builder, HttpServletRequest request,
 			HttpServletResponse response) {
 		UserResponsePayload userResponse = userservice.getUser(request.getUserPrincipal().getName());	
+		System.out.println("coming here controller");
 		Roles userrole=roleservice.getRoleId(userResponse.getRole());
 		userResponse.setPassword(null);		
 		List<Permissions>permissionlist=userservice.buildRolePermission(userrole.getRoleId());		
@@ -296,9 +310,32 @@ public class UserController extends BaseController {
 	public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth != null) {
+			String clientToken = parseJwt(request);
+			if(TokenUtil.validate(clientToken, secret)) {
+				String clientTrueToken = TokenUtil.getToken(clientToken);
+				Map<?, ?> newtoken = (Map<?, ?>) redis.redisTemplate().opsForHash().get(clientTrueToken,
+						clientTrueToken);
+				String username = (String) newtoken.get(Constants.STR_AUTH_EMAIL);
+				System.out.println("username"+username);
+				String initrole = customuserdetail.getUserDetails(username);
+				redis.redisTemplate().opsForHash().delete(clientTrueToken, clientTrueToken);
+				String key=username+initrole;
+				System.out.println("key"+key);				
+				deleteredis(key);
+			}
+			
 			new SecurityContextLogoutHandler().logout(request, response, auth);
 		}
 		return Constants.LOGOUT_URL;
+	}
+		private void deleteredis(String key) {
+		// TODO Auto-generated method stub
+			Map<?, ?> sessionifo = (Map<?, ?>)redis.redisTemplate().opsForHash().get(key, key);
+			String username=(String)sessionifo.get("emailId");
+			String role=(String)sessionifo.get("role");
+			String key1=username+role;
+			System.out.println("username"+username);
+			redis.redisTemplate().opsForHash().delete(key1, key1);
 	}
 		private Map<String, Map<String, Long>> generateCounts() {
 			Map<String, Long> retailUserscount = new HashMap<String, Long>();
@@ -316,4 +353,14 @@ public class UserController extends BaseController {
 		userresponse.put("usersOnlineNow", usersOnlineNowcount);		
 		return userresponse;
 	}
+		
+		private String parseJwt(HttpServletRequest request) {
+			String headerAuth = request.getHeader(Constants.STR_AUTH_AUTHORIZATION);
+
+			if (StringUtils.hasText(headerAuth) && headerAuth.startsWith(Constants.STR_AUTH_BEARER)) {
+				return headerAuth.substring(7, headerAuth.length());
+			}
+
+			return null;
+		}
 }

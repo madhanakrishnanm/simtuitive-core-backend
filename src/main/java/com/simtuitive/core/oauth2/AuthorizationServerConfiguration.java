@@ -38,6 +38,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.simtuitive.core.config.RedisConfiguration;
 import com.simtuitive.core.model.PasswordResetToken;
+import com.simtuitive.core.model.SessionInfo;
 import com.simtuitive.core.service.CustomUserDetailsServiceImpl;
 import com.simtuitive.core.util.TokenUtil;
 
@@ -121,7 +122,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 		tokenServices.setTokenStore(tokenStore());
 		tokenServices.setTokenEnhancer(tokenEnhancer());
 		tokenServices.setSupportRefreshToken(true);
-		tokenServices.setAccessTokenValiditySeconds(1800);
+		tokenServices.setAccessTokenValiditySeconds(600);
 
 		return tokenServices;
 	}
@@ -131,6 +132,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 		String value, TokenEnc, refreshTokenEnc, truerefreshtoken = null;
 		final Map<String, Object> additionalInfo = new HashMap<>();
 		PasswordResetToken redistoken = null;
+		SessionInfo sessioninfo=null;
 
 		@Override
 		public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
@@ -145,7 +147,8 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 			System.out.println("stronger_salt" + stronger_salt);
 			truerefreshtoken = accessToken.getRefreshToken().getValue() + BCrypt.gensalt(12);
 			refreshTokenEnc = TokenUtil.encrypt(truerefreshtoken, secret);
-			additionalInfo.put("role", userDetailsService.getUserDetails(user.getUsername()));
+			String role=userDetailsService.getUserDetails(user.getUsername());
+			additionalInfo.put("role", role);
 			Map<String, String> customvalues = (Map<String, String>) authentication.getDetails();
 			additionalInfo.put("key_super_key", customvalues.get("key_super_key"));
 			// Experienced to add extra salt and true token--but client can able to see
@@ -156,13 +159,21 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 			((DefaultOAuth2AccessToken) accessTokenGen).setRefreshToken(refreshToken);
 			((DefaultOAuth2AccessToken) accessTokenGen).setExpiration(accessToken.getExpiration());
 			// create token info class have the token information manually by me
+			Date createdtime=new Date();			
 			redistoken = new PasswordResetToken(user.getUsername(), accessToken.toString(), stronger_salt,
-					accessToken.getExpiration());
+					accessToken.getExpiration(),createdtime);
 			Map<?, ?> ruleHash = new ObjectMapper().convertValue(redistoken, Map.class);
 			System.out.println("Ruleshash:::" + ruleHash.toString());
 			// Publishing in redis
+			Date SessionExpire=new Date((System.currentTimeMillis()+360000L));
 			redis.redisTemplate().opsForHash().put(accessToken.toString(), accessToken.toString(), ruleHash);
-
+			sessioninfo=new SessionInfo(user.getUsername(), userDetailsService.getUserDetails(user.getUsername()), customvalues.get("key_super_key"), createdtime, createdtime,SessionExpire);
+			Map<?, ?> ruleHash1 = new ObjectMapper().convertValue(sessioninfo, Map.class);
+			redis.redisTemplate().opsForHash().put(user.getUsername()+role,user.getUsername()+role,ruleHash1);
+			Map<?, ?> sessioninfo = (Map<?, ?>) redis.redisTemplate().opsForHash().get(user.getUsername()+role,
+					user.getUsername()+role);
+			System.out.println("sessioninfo"+sessioninfo.toString());
+			
 //		 OAuth2AccessToken accessTokenOutput = redisTokenStore().readAccessToken(accessTokenGen.getValue());
 //		 System.out.println("Value retrive"+accessTokenOutput.getRefreshToken());
 			return accessTokenGen;
