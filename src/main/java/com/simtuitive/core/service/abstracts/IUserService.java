@@ -29,5 +29,7 @@ public interface IUserService {
 	
 	public List<Permissions>buildRolePermission(String roleid);
 	
+	public UserResponsePayload updateLastLoginUser(UserRequestPayload UserRequestPayload);
+	
 
 }

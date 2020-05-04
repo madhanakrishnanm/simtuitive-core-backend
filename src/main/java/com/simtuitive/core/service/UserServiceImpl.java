@@ -59,7 +59,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		UserResponsePayload payload = null;
 		if (user.getRole().equalsIgnoreCase("ADMIN") || user.getRole().equalsIgnoreCase("Super Admin")) {
 			payload = new UserResponsePayload(user.getUserId(), user.getUserName(), user.getUserEmail(),
-					null, user.getStatus(), user.getPermissions(), user.getRole());
+					null, user.getStatus(), user.getPermissions(), user.getRole(),user.getLastLoggedIn());
 		}
 		if (user.getRole().equalsIgnoreCase("CLIENT")) {
 			System.out.println("welcome issue"+user.getOrgId());
@@ -68,7 +68,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 			System.out.println("organisaton"+org.getOrganizationId());
 			payload=new UserResponsePayload(user.getUserId(),user.getUserName(), user.getUserEmail(), user.getOrgId(),
 					null, user.getStatus(), user.getCreatedDate(),
-					user.getClientGst(), user.getClientPan(),user.getPermissions(), user.getRole(),org.getOrganizationName());
+					user.getClientGst(), user.getClientPan(),user.getPermissions(), user.getRole(),org.getOrganizationName(),user.getLastLoggedIn());
 		}		
 		return payload;
 	}
@@ -172,7 +172,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		List<Permissions> permissionlist = buildRolePermission(role.getRoleId());
 		System.out.println("List" + permissionlist.toString());
 		User user = new User(payload.getName(), payload.getEmail(), passwordEncoder.encode(payload.getPassword()), 1L,
-				permissionlist, payload.getRole());
+				permissionlist, payload.getRole(),new Date());
 		return user;
 	}
 
@@ -191,7 +191,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		System.out.println("role"+permissionlist.toString());
 		User user = new User(payload.getName(), payload.getEmail(), payload.getOrganisationId(),
 				passwordEncoder.encode(payload.getPassword()), 1L, new Date(),
-				payload.getGst(), payload.getPan(), permissionlist, payload.getRole());
+				payload.getGst(), payload.getPan(), permissionlist, payload.getRole(),new Date());
 		return user;
 
 	}
@@ -251,6 +251,22 @@ public class UserServiceImpl extends BaseService implements IUserService {
 			permissionlist.sort(new SortbyRank());
 		}
 		return permissionlist;
+	}
+
+	@Override
+	public UserResponsePayload updateLastLoginUser(UserRequestPayload UserRequestPayload) {
+		// TODO Auto-generated method stub
+		User updateuser = null;
+		updateuser=updateLogoutUser(UserRequestPayload);
+		UserResponsePayload payload= buildPayloadbyUser(updateuser);
+		return payload;
+	}
+	
+	private User updateLogoutUser(UserRequestPayload payload) {
+		User existinguser = userrepository.findByUserId(payload.getUserId());
+		existinguser.setLastLoggedIn(new Date());
+		return existinguser;
+
 	}
 
 	

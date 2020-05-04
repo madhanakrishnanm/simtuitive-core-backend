@@ -49,6 +49,22 @@ public class User implements GrantedAuthority,Serializable {
 	private Long noOfMilestoneCompleted;
 	private List<Permissions> permissions;
 	private String role;
+	private Date lastLoggedIn;
+	
+
+	/**
+	 * @return the lastLoggedIn
+	 */
+	public Date getLastLoggedIn() {
+		return lastLoggedIn;
+	}
+
+	/**
+	 * @param lastLoggedIn the lastLoggedIn to set
+	 */
+	public void setLastLoggedIn(Date lastLoggedIn) {
+		this.lastLoggedIn = lastLoggedIn;
+	}
 
 	/**
 	 * @return the userId
@@ -323,7 +339,7 @@ public class User implements GrantedAuthority,Serializable {
 	// client specific
 	public User(String userName, String userEmail, String orgId, String password, Long status,
 			 Date createdDate, String clientGst, String clientPan,
-			 List<Permissions> permissions,String role) {
+			 List<Permissions> permissions,String role,Date lastLoggedIn) {
 		super();
 		this.userName = userName;
 		this.userEmail = userEmail;
@@ -335,6 +351,7 @@ public class User implements GrantedAuthority,Serializable {
 		this.clientPan = clientPan;	
 		this.permissions = permissions;
 		this.role =role;
+		this.lastLoggedIn = lastLoggedIn;
 	}
 
 	// learner specific
@@ -357,7 +374,7 @@ public class User implements GrantedAuthority,Serializable {
 		this.role =role;
 	}
 
-	public User(String userName, String userEmail, String password, Long status,  List<Permissions> permissions,String role) {
+	public User(String userName, String userEmail, String password, Long status,  List<Permissions> permissions,String role,Date lastLoggedIn) {
 		super();
 		this.userName = userName;
 		this.userEmail = userEmail;
@@ -365,6 +382,7 @@ public class User implements GrantedAuthority,Serializable {
 		this.status = status;
 		this.permissions = permissions;
 		this.role =role;
+		this.lastLoggedIn = lastLoggedIn;
 	}
 
 	

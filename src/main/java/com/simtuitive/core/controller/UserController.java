@@ -305,28 +305,43 @@ public class UserController extends BaseController {
 		Link l1 = new Link(tmp, " User Detail Delete");
 		return new JsonApiWrapper<>(userresponse, getSelfLink(request), Arrays.asList(l1));
 	}
-
-	@RequestMapping(value = "/logout", method = RequestMethod.POST)
-	public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Successful delete of User Data.", response = JsonApiWrapper.class),
+			@ApiResponse(code = 401, message = "Not authorized!"),
+			@ApiResponse(code = 403, message = "Not authorized to perform this action."),
+			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
+			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
+			@ApiResponse(code = 500, message = "Internal server error") })	
+	@RequestMapping(value = "/logout", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public  JsonApiWrapper<UserResponsePayload>  logoutPage(@ApiIgnore UriComponentsBuilder builder,HttpServletRequest request, HttpServletResponse response) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String username =null;
 		if (auth != null) {
 			String clientToken = parseJwt(request);
 			if(TokenUtil.validate(clientToken, secret)) {
 				String clientTrueToken = TokenUtil.getToken(clientToken);
 				Map<?, ?> newtoken = (Map<?, ?>) redis.redisTemplate().opsForHash().get(clientTrueToken,
 						clientTrueToken);
-				String username = (String) newtoken.get(Constants.STR_AUTH_EMAIL);
+				username= (String) newtoken.get(Constants.STR_AUTH_EMAIL);
 				System.out.println("username"+username);
 				String initrole = customuserdetail.getUserDetails(username);
 				redis.redisTemplate().opsForHash().delete(clientTrueToken, clientTrueToken);
 				String key=username+initrole;
 				System.out.println("key"+key);				
 				deleteredis(key);
+				
 			}
 			
 			new SecurityContextLogoutHandler().logout(request, response, auth);
 		}
-		return Constants.LOGOUT_URL;
+		UserResponsePayload logoutuser=userservice.getUser(username);
+		UserRequestPayload payload=new UserRequestPayload();
+		payload.setUserId(logoutuser.getUserId());
+		payload.setRole(logoutuser.getRole());
+		UserResponsePayload userresponse = userservice.updateLastLoginUser(payload);
+		String tmp = builder.path("/logout").build().toString();
+		Link l1 = new Link(tmp, " User Detail Delete");
+		return new JsonApiWrapper<>(userresponse, getSelfLink(request), Arrays.asList(l1));
 	}
 		private void deleteredis(String key) {
 		// TODO Auto-generated method stub
@@ -335,6 +350,8 @@ public class UserController extends BaseController {
 			String role=(String)sessionifo.get("role");
 			String key1=username+role;
 			System.out.println("username"+username);
+			System.out.println("role"+role);
+			System.out.println("key1"+key1);
 			redis.redisTemplate().opsForHash().delete(key1, key1);
 	}
 		private Map<String, Map<String, Long>> generateCounts() {
