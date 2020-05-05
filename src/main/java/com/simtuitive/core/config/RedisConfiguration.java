@@ -12,8 +12,6 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
 import org.springframework.session.data.redis.config.ConfigureRedisAction;
-import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
-import org.springframework.session.web.context.AbstractHttpSessionApplicationInitializer;
 
 import com.simtuitive.core.model.PasswordResetToken;
 
@@ -22,8 +20,7 @@ import redis.clients.jedis.JedisPoolConfig;
 
 @Configuration
 @EnableRedisRepositories
-@EnableRedisHttpSession
-public class RedisConfiguration extends AbstractHttpSessionApplicationInitializer {
+public class RedisConfiguration extends AbstractSecurityWebApplicationInitializer {
 	@Value("${spring.redis.host}")
 	private String REDIS_HOSTNAME;
 	@Value("${spring.redis.port}")
