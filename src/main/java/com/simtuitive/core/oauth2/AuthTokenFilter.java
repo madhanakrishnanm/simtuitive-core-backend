@@ -76,9 +76,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 				initrole = customuserdetail.getUserDetails(username);
 				String sessionkey=username+initrole;
 				Map<?, ?> sessioninfo = (Map<?, ?>) redis.redisTemplate().opsForHash().get(sessionkey, sessionkey);
-				long time = (long) newtoken.get("expirationTime");
-				long sessiontime=(long) sessioninfo.get("sessionCreatedTime");
-				long sessiontime1=(long) sessioninfo.get("sessionExpiryTime");
+				Long time = (Long) newtoken.get("expirationTime");
+				Long sessiontime=(Long) sessioninfo.get("sessionCreatedTime");
+				Long sessiontime1=(Long) sessioninfo.get("sessionExpiryTime");
 				Date expirationTime = new java.util.Date(time);
 				Date sessionexpiretime= new java.util.Date(sessiontime1);
 				System.out.println("welcome sessionexpiretime"+sessionexpiretime);		
@@ -154,8 +154,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 		Map<?, ?> sessioninfo = (Map<?, ?>) redis.redisTemplate().opsForHash().get(key, key);
 		if(sessioninfo!=null&&!sessioninfo.isEmpty()) {
 		String sessionuser=(String) sessioninfo.get("emailId");		
-		long time=(long) sessioninfo.get("sessionCreatedTime");
-		long time1=(long) sessioninfo.get("sessionExpiryTime");//shortway adding 30 min created
+		Long time=(Long) sessioninfo.get("sessionCreatedTime");
+		Long time1=(Long) sessioninfo.get("sessionExpiryTime");//shortway adding 30 min created
 		Date sessionexpiretime= new java.util.Date(time1);
 		System.out.println("welcome sessionexpiretime"+sessionexpiretime);		
 		Date sessioncreatedtime = new java.util.Date(time);
