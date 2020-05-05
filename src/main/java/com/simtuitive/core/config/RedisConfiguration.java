@@ -12,6 +12,8 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
 import org.springframework.session.data.redis.config.ConfigureRedisAction;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
+import org.springframework.session.web.context.AbstractHttpSessionApplicationInitializer;
 
 import com.simtuitive.core.model.PasswordResetToken;
 
@@ -20,19 +22,20 @@ import redis.clients.jedis.JedisPoolConfig;
 
 @Configuration
 @EnableRedisRepositories
-public class RedisConfiguration extends AbstractSecurityWebApplicationInitializer {
+@EnableRedisHttpSession
+public class RedisConfiguration extends AbstractHttpSessionApplicationInitializer {
 	@Value("${spring.redis.host}")
 	private String REDIS_HOSTNAME;
 	@Value("${spring.redis.port}")
 	private int REDIS_PORT;
 	
-	@Value("${spring.redis.password}")
-	private String REDIS_PASSWORD;
+//	@Value("${spring.redis.password}")
+//	private String REDIS_PASSWORD;
 
 	@Bean
 	protected JedisConnectionFactory jedisConnectionFactory() {
 		RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(REDIS_HOSTNAME, REDIS_PORT);
-		configuration.setPassword(REDIS_PASSWORD);
+//		configuration.setPassword(REDIS_PASSWORD);
 		JedisClientConfiguration jedisClientConfiguration = JedisClientConfiguration.builder().usePooling().build();
 		JedisConnectionFactory factory = new JedisConnectionFactory(configuration, jedisClientConfiguration);
 		factory.afterPropertiesSet();
