@@ -9,9 +9,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.simtuitive.core.controller.requestpayload.PermissionsRequestPayload;
 import com.simtuitive.core.controller.responsepayload.PermissionsResponsePayload;
@@ -101,8 +108,7 @@ public class PermissionsServiceImpl implements IPermissionService {
 
 	// GetAll Roles
 	@Override
-	public List<PermissionsResponsePayload> findAll() {
-		List<Permissions> permlist = permissionrepository.findAll();
+	public List<PermissionsResponsePayload> findAll(List<Permissions> permlist) {		
 		List<PermissionsResponsePayload> result = new ArrayList<PermissionsResponsePayload>();
 		for (Permissions perm : permlist) {
 			if (perm.getStatus() == 1L) {
@@ -145,6 +151,16 @@ public class PermissionsServiceImpl implements IPermissionService {
 		permissionrepository.save(get);
 		PermissionsResponsePayload payload = buildPermissionsResponsePayload(get);
 		return payload;
+	}
+
+	@Override
+	public Page<Permissions> getall(Optional<String> pageno) {
+		// TODO Auto-generated method stub
+		int pagenumber=Integer.parseInt(pageno.orElse("0"));
+		final Pageable pageable = PageRequest.of(pagenumber, 20,Sort.by("permissionId").ascending());
+		Query query = new Query();
+		query.with(pageable);		
+		return permissionrepository.findAll(pageable);
 	}
 
 }

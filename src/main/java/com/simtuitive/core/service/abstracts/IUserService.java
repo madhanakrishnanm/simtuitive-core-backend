@@ -1,6 +1,10 @@
 package com.simtuitive.core.service.abstracts;
 
 import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.simtuitive.core.controller.requestpayload.UserRequestPayload;
 import com.simtuitive.core.controller.responsepayload.UserResponsePayload;
@@ -17,8 +21,10 @@ public interface IUserService {
 
 	public UserResponsePayload changePasswordUser(UserRequestPayload UserRequestPayload);
 
-	public List<UserResponsePayload> getAllUser(String userType);
-
+	public List<UserResponsePayload> getAllUser(String userType,int pageno);
+	 
+	public Page<User> getAllUserByPaginationApplied(String userType,Optional<String> pageno);
+	
 	public UserResponsePayload deleteUser(String email);
 
 	public UserResponsePayload getUserDetails(UserRequestPayload UserRequestPayload);

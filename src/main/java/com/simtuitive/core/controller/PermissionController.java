@@ -6,12 +6,14 @@ package com.simtuitive.core.controller;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,12 +21,14 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.simtuitive.core.controller.productmgmt.api.JsonApiWrapper;
 import com.simtuitive.core.controller.productmgmt.api.Link;
+import com.simtuitive.core.controller.productmgmt.api.PaginationResponse;
 import com.simtuitive.core.controller.requestpayload.PermissionsRequestPayload;
 import com.simtuitive.core.controller.responsepayload.PermissionsResponsePayload;
 import com.simtuitive.core.globalexception.ResourceNotFoundException;
@@ -138,13 +142,15 @@ public class PermissionController extends BaseController {
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/get-permissions", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<List<PermissionsResponsePayload>> getAllRoles(@ApiIgnore UriComponentsBuilder builder,
-			HttpServletRequest request, HttpServletResponse response)
+	public JsonApiWrapper<List<PermissionsResponsePayload>> getAllRoles(@ApiIgnore UriComponentsBuilder builder,@RequestParam("pageno") Optional<String> pageno
+			,HttpServletRequest request, HttpServletResponse response)
 			throws UserRoleServiceException, ResourceNotFoundException {
-		List<PermissionsResponsePayload> roleresponse = permissionservice.findAll();
+		Page<Permissions> roleresponse = permissionservice.getall(pageno);
+		List<PermissionsResponsePayload> result = permissionservice.findAll(roleresponse.getContent());
 		String tmp = builder.path("/get-permissions").build().toString();
 		Link l1 = new Link(tmp, " All Permission Detail");
-		return new JsonApiWrapper<>(roleresponse, request.getRequestURL().toString(), Arrays.asList(l1));
+		PaginationResponse page=new PaginationResponse(roleresponse.getNumberOfElements(),roleresponse.getTotalPages() ,roleresponse.getSize(), roleresponse.getPageable().getPageNumber());
+		return new JsonApiWrapper<>(result, request.getRequestURL().toString(), Arrays.asList(l1),page);
 	}
 	
 	@ResponseStatus(HttpStatus.ACCEPTED)

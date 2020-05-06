@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -35,6 +37,7 @@ import com.simtuitive.core.common.Constants;
 import com.simtuitive.core.config.RedisConfiguration;
 import com.simtuitive.core.controller.productmgmt.api.JsonApiWrapper;
 import com.simtuitive.core.controller.productmgmt.api.Link;
+import com.simtuitive.core.controller.productmgmt.api.PaginationResponse;
 import com.simtuitive.core.controller.requestpayload.UserRequestPayload;
 import com.simtuitive.core.controller.responsepayload.UserResponsePayload;
 import com.simtuitive.core.globalexception.ResourceNotFoundException;
@@ -44,6 +47,7 @@ import com.simtuitive.core.model.ProductUsers;
 import com.simtuitive.core.model.Roles;
 import com.simtuitive.core.model.User;
 import com.simtuitive.core.service.CustomUserDetailsServiceImpl;
+import com.simtuitive.core.service.UserServiceImpl;
 import com.simtuitive.core.service.abstracts.IRoleHasPermissionService;
 import com.simtuitive.core.service.abstracts.IRolesService;
 import com.simtuitive.core.service.abstracts.IUserService;
@@ -76,6 +80,9 @@ public class UserController extends BaseController {
 	
 	@Autowired
 	private IRolesService roleservice;
+	
+	@Autowired
+	private UserServiceImpl userimpl;
 	
 	@Autowired
 	private CustomUserDetailsServiceImpl customuserdetail;
@@ -279,13 +286,65 @@ public class UserController extends BaseController {
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/get-users-by-role", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<List<UserResponsePayload>> getAllUser(@ApiIgnore UriComponentsBuilder builder,
-			@RequestParam("role") String userType, HttpServletRequest request, HttpServletResponse response) {
-		List<UserResponsePayload> userresponse = userservice.getAllUser(userType);
+			@RequestParam("role") String userType, @RequestParam("pageno") Optional<String> pageno, HttpServletRequest request, HttpServletResponse response) {
+		Page<User> userresponse = userservice.getAllUserByPaginationApplied(userType, pageno);
+		System.out.println("content"+userresponse.getContent().toString());
+		List<UserResponsePayload> result=createResponse(userresponse.getContent(),userType);
 		String tmp = builder.path("/getAll").build().toString();
 		Link l1 = new Link(tmp, " User Detail getAll");
-		return new JsonApiWrapper<>(userresponse, getSelfLink(request), Arrays.asList(l1));
+		PaginationResponse page=new PaginationResponse(userresponse.getNumberOfElements(),userresponse.getTotalPages() ,userresponse.getSize(), userresponse.getPageable().getPageNumber());
+		return new JsonApiWrapper<>(result, getSelfLink(request), Arrays.asList(l1),page);
 
 	}
+	
+private List<UserResponsePayload> createResponse(List<User> userresponse,String userType) {
+	List<UserResponsePayload>result=new ArrayList<UserResponsePayload>();
+	List<User>userList=userresponse;
+	System.out.println("UserListController"+userresponse.toString());
+	System.out.println("UserListController"+userList);
+	if (userType.equalsIgnoreCase("Admin")
+			|| userType.equalsIgnoreCase("Super Admin")) {
+		System.out.println("loop coming");
+		for(User user:userList) {
+			
+			if(user.getStatus()==1L) {
+				UserResponsePayload payload=userimpl.buildPayloadbyUser(user);
+				result.add(payload);
+			}
+			
+		}
+	}
+	if (userType.equalsIgnoreCase("CLIENT")) {
+		System.out.println("checking coming");
+		for(User user:userList) {				
+			if(user.getStatus()==1L) {
+				System.out.println("checking"+user.getUserId());
+				UserResponsePayload payload=userimpl.buildPayloadbyUser(user);
+				result.add(payload);
+			}
+		}
+	}
+	return result;	// TODO Auto-generated method stub
+		
+	}
+//	@ResponseStatus(HttpStatus.ACCEPTED)
+//	@ApiOperation(value = " Get all users ", response = User.class)
+//	@ApiResponses(value = {
+//			@ApiResponse(code = 201, message = "Successful getAll of User Data.", response = JsonApiWrapper.class),
+//			@ApiResponse(code = 401, message = "Not authorized!"),
+//			@ApiResponse(code = 403, message = "Not authorized to perform this action."),
+//			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
+//			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
+//			@ApiResponse(code = 500, message = "Internal server error") })
+//	@RequestMapping(value = "/get-pagination", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+//	public JsonApiWrapper<Page<User>> getAll(@ApiIgnore UriComponentsBuilder builder,
+//			@RequestParam("pageno") int pageno,	 HttpServletRequest request, HttpServletResponse response) {
+//		Page<User> userresponse = userservice.getAllUserByPaginationApplied(pageno);
+//		String tmp = builder.path("/getAll").build().toString();
+//		Link l1 = new Link(tmp, " User Detail getAll");
+//		return new JsonApiWrapper<>(userresponse, getSelfLink(request), Arrays.asList(l1));
+//
+//	}
 
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	@ApiResponses(value = {

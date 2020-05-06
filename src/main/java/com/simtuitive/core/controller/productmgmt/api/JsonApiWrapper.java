@@ -28,6 +28,22 @@ public class JsonApiWrapper<T> {
 	private MetaInfo meta;
 
 	private Links links;
+	
+	private PaginationResponse pageable;
+
+	/**
+	 * @return the pageable
+	 */
+	public PaginationResponse getPageable() {
+		return pageable;
+	}
+
+	/**
+	 * @param pageable the pageable to set
+	 */
+	public void setPageable(PaginationResponse pageable) {
+		this.pageable = pageable;
+	}
 
 	/**
 	 *
@@ -58,6 +74,17 @@ public class JsonApiWrapper<T> {
 		links = new Links(selfUrl, linkObjects);
 	}
 
+	/**
+	 *
+	 * @param data
+	 * @param selfUrl
+	 * @param linkObjects
+	 */
+	public JsonApiWrapper(T data, String selfUrl, List<Link> linkObjects,PaginationResponse page) {
+		this.data = data;
+		links = new Links(selfUrl, linkObjects);
+		this.pageable=page;
+	}
 	/**
 	 *
 	 * @param error

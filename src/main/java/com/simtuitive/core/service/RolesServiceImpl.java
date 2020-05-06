@@ -3,8 +3,14 @@ package com.simtuitive.core.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.simtuitive.core.controller.requestpayload.RolesRequestPayload;
@@ -75,10 +81,20 @@ public class RolesServiceImpl extends BaseService implements IRolesService {
 	}
 
 	@Override
-	public List<RolesResponsePayload> getall() {
-		// TODO Auto-generated method stub
+	public Page<Roles> getall(Optional<String> pageno) {
+		// TODO Auto-generated method stub		
+		int pagenumber=Integer.parseInt(pageno.orElse("0"));
+		final Pageable pageable = PageRequest.of(pagenumber, 20,Sort.by("roleId").ascending());
+		Query query = new Query();
+		query.with(pageable);
+		Page<Roles> pagerole=rolesrepository.findAll(pageable);
+		
+		return pagerole;
+		
+	}
+	
+	public List<RolesResponsePayload>getPayload(List<Roles> roles){
 		List<RolesResponsePayload> result = new ArrayList<RolesResponsePayload>();
-		List<Roles> roles = rolesrepository.findAll();
 		for (Roles role : roles) {
 			if (role.getStatus() == 1L) {
 				result.add(buildpayload(role));

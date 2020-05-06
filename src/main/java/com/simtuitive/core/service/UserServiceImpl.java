@@ -5,10 +5,18 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.jaxb.SortAdapter;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.CriteriaDefinition;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -54,7 +62,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		return returnpayload;
 	}
 
-	private UserResponsePayload buildPayloadbyUser(User user) {
+	public UserResponsePayload buildPayloadbyUser(User user) {
 		// TODO Auto-generated method stub
 		UserResponsePayload payload = null;
 		if (user.getRole().equalsIgnoreCase("ADMIN") || user.getRole().equalsIgnoreCase("Super Admin")) {
@@ -118,9 +126,17 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	}
 
 	@Override
-	public List<UserResponsePayload> getAllUser(String userType) {
+	public List<UserResponsePayload> getAllUser(String userType,int pageno) {
 		List<UserResponsePayload>result=new ArrayList<UserResponsePayload>();
-		List<User> userlist=userrepository.findByRole(userType);
+		final Pageable pageable = PageRequest.of(pageno, 20,Sort.by("userId").ascending());
+	
+		Query query = new Query();
+		query.with(pageable);		
+		
+		Page<User> pageuserlist=(Page<User>) userrepository.findByRole(userType,pageable);
+		
+		List<User>userlist=pageuserlist.getContent();
+		System.out.println("userlist"+userlist.toString());
 		if (userType.equalsIgnoreCase("ADMIN")
 				|| userType.equalsIgnoreCase("Super Admin")) {
 			for(User user:userlist) {
@@ -145,6 +161,19 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		return result;
 	}
 
+	
+	@Override
+	public Page<User> getAllUserByPaginationApplied(String userType,Optional<String> pageno) {
+		int pagenumber=Integer.parseInt(pageno.orElse("0"));
+		final Pageable pageable = PageRequest.of(pagenumber, 20,Sort.by("userId").ascending());
+		Query query = new Query();
+		query.with(pageable);;
+		//parameter rqueired to construct pageable
+		System.out.println("userrepository.findAll(pageable);"+userrepository.findAll(pageable));
+		Page<User> result=(Page<User>) userrepository.findByRole(userType,pageable);;
+		return result;
+		
+	}
 	@Override
 	public UserResponsePayload deleteUser (String userId) {
 		// TODO Auto-generated method stub

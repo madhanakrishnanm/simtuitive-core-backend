@@ -1,6 +1,9 @@
 package com.simtuitive.core.service.abstracts;
 
 import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
 
 import com.simtuitive.core.controller.requestpayload.RolesRequestPayload;
 import com.simtuitive.core.controller.responsepayload.RolesResponsePayload;
@@ -18,5 +21,5 @@ public interface IRolesService {
 
 	public RolesResponsePayload deleteRole(String roleid);
 
-	public List<RolesResponsePayload> getall();
+	public Page<Roles> getall(Optional<String> pageno);
 }

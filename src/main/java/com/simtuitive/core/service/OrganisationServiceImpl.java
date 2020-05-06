@@ -5,8 +5,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.simtuitive.core.controller.requestpayload.OrganisationRequestPayload;
@@ -87,11 +93,11 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 	}
 
 	@Override
-	public List<OrganisationResponsePayload> findAll() {
+	public List<OrganisationResponsePayload> findAll(List<Organisation> organisations) {
 		// TODO Auto-generated method stub
 		List<OrganisationResponsePayload> result=new ArrayList<OrganisationResponsePayload>();
-		List<Organisation> list=organisationrepository.findAll();
-		for(Organisation org:list) {
+		
+		for(Organisation org:organisations) {
 			
 				OrganisationResponsePayload value=buildOrganisationResponsePayload(org);
 				result.add(value);	
@@ -103,9 +109,9 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 
 	@Override
 	public Map<String, String> findAllOrganisationName() {
-		// TODO Auto-generated method stub
-		List<Organisation> organisations = organisationrepository.findAll();
+		// TODO Auto-generated method stub	
 		Map<String, String> listorgname = new HashMap<>();
+		List<Organisation>organisations=organisationrepository.findAll();
 		for (Organisation org : organisations) {
 			listorgname.put(org.getOrganizationId(), org.getOrganizationName());
 		}
@@ -119,6 +125,17 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 		client.setStatus("inactive");
 		Organisation deleted=organisationrepository.save(client);
 		return buildOrganisationResponsePayload(deleted);
+	}
+
+	@Override
+	public Page<Organisation> getAll(Optional<String> pageno) {
+		// TODO Auto-generated method stub
+		int pagenumber=Integer.parseInt(pageno.orElse("0"));
+		final Pageable pageable = PageRequest.of(pagenumber, 20,Sort.by("organizationId").ascending());
+		
+		Query query = new Query();
+		query.with(pageable);	
+		return organisationrepository.findAll(pageable);
 	}
 
 }
