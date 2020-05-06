@@ -117,13 +117,14 @@
 			<artifactId>jjwt</artifactId>
 			<version>0.2</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/joda-time/joda-time -->
-<dependency>
-    <groupId>joda-time</groupId>
-    <artifactId>joda-time</artifactId>    
-</dependency>
-		
-
+		<!-- messagingService.jar -->
+		<dependency>
+		  <groupId>MessagingService</groupId>
+		  <artifactId>MessagingService</artifactId>
+ 		  <version>0.0.1-SNAPSHOT</version>
+ 		  <scope>system</scope>
+          <systemPath>${project.basedir}/lib/MessagingService-0.0.1-SNAPSHOT-jar-with-dependencies.jar</systemPath>
+		</dependency>
 
 
 	</dependencies>
