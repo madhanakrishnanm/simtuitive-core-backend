@@ -26,13 +26,13 @@ public class RedisConfiguration extends AbstractSecurityWebApplicationInitialize
 	@Value("${spring.redis.port}")
 	private int REDIS_PORT;
 	
-//	@Value("${spring.redis.password}")
-//	private String REDIS_PASSWORD;
+	@Value("${spring.redis.password}")
+	private String REDIS_PASSWORD;
 
 	@Bean
 	protected JedisConnectionFactory jedisConnectionFactory() {
 		RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(REDIS_HOSTNAME, REDIS_PORT);
-//		configuration.setPassword(REDIS_PASSWORD);
+		configuration.setPassword(REDIS_PASSWORD);
 		JedisClientConfiguration jedisClientConfiguration = JedisClientConfiguration.builder().usePooling().build();
 		JedisConnectionFactory factory = new JedisConnectionFactory(configuration, jedisClientConfiguration);
 		factory.afterPropertiesSet();
