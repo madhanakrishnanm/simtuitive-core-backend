@@ -128,7 +128,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	@Override
 	public List<UserResponsePayload> getAllUser(String userType,int pageno) {
 		List<UserResponsePayload>result=new ArrayList<UserResponsePayload>();
-		final Pageable pageable = PageRequest.of(pageno, 20,Sort.by("userId").ascending());
+		final Pageable pageable = PageRequest.of(pageno, 5,Sort.by("userId").ascending());
 	
 		Query query = new Query();
 		query.with(pageable);		
@@ -165,7 +165,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	@Override
 	public Page<User> getAllUserByPaginationApplied(String userType,Optional<String> pageno) {
 		int pagenumber=Integer.parseInt(pageno.orElse("0"));
-		final Pageable pageable = PageRequest.of(pagenumber, 20,Sort.by("userId").ascending());
+		final Pageable pageable = PageRequest.of(pagenumber, 5,Sort.by("userId").ascending());
 		Query query = new Query();
 		query.with(pageable);;
 		//parameter rqueired to construct pageable
