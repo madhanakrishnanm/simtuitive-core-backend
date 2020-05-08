@@ -112,14 +112,14 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 				}
 
 			} else {
-				Boolean isSameUserRoleInLoggedIn = validateSameUser(request);
-				if (isSameUserRoleInLoggedIn) {
-					System.out.println("sameuser logged in");//DuplicateSessionException
-					
-				} else {
+				//Boolean isSameUserRoleInLoggedIn = validateSameUser(request);
+				//if (isSameUserRoleInLoggedIn) {
+				//	System.out.println("sameuser logged in");//DuplicateSessionException
+				//	
+				//} else {
 					//need to check time out//proceed further
-					System.out.println("veryfirst login");
-				}
+				//	System.out.println("veryfirst login");
+				//}
 			}
 		} catch (BadArgumentException e) {
 			throw new BadArgumentException(e.getMessage());
