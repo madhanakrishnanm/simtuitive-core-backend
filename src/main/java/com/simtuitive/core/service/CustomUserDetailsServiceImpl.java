@@ -51,7 +51,14 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService {
 
 		User dbUser;
 		dbUser = userservice.findByuserEmail(email);
-		return dbUser.getRole();
+		if(dbUser!=null) {
+			return dbUser.getRole();
+		}
+		else {
+			System.out.println("user role doesn't exist");
+		}
+//		return dbUser.getRole();
+		return null;
 	}
 
 }

@@ -157,7 +157,7 @@ public class PermissionsServiceImpl implements IPermissionService {
 	public Page<Permissions> getall(Optional<String> pageno) {
 		// TODO Auto-generated method stub
 		int pagenumber=Integer.parseInt(pageno.orElse("0"));
-		final Pageable pageable = PageRequest.of(pagenumber, 20,Sort.by("permissionId").ascending());
+		final Pageable pageable = PageRequest.of(pagenumber, 5,Sort.by("permissionId").ascending());
 		Query query = new Query();
 		query.with(pageable);		
 		return permissionrepository.findAll(pageable);

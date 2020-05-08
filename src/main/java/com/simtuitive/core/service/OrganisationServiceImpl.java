@@ -131,7 +131,7 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 	public Page<Organisation> getAll(Optional<String> pageno) {
 		// TODO Auto-generated method stub
 		int pagenumber=Integer.parseInt(pageno.orElse("0"));
-		final Pageable pageable = PageRequest.of(pagenumber, 20,Sort.by("organizationId").ascending());
+		final Pageable pageable = PageRequest.of(pagenumber, 5,Sort.by("organizationId").ascending());
 		
 		Query query = new Query();
 		query.with(pageable);	

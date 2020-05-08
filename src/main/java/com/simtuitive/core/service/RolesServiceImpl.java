@@ -84,7 +84,7 @@ public class RolesServiceImpl extends BaseService implements IRolesService {
 	public Page<Roles> getall(Optional<String> pageno) {
 		// TODO Auto-generated method stub		
 		int pagenumber=Integer.parseInt(pageno.orElse("0"));
-		final Pageable pageable = PageRequest.of(pagenumber, 20,Sort.by("roleId").ascending());
+		final Pageable pageable = PageRequest.of(pagenumber, 5,Sort.by("roleId").ascending());
 		Query query = new Query();
 		query.with(pageable);
 		Page<Roles> pagerole=rolesrepository.findAll(pageable);
