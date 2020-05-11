@@ -31,6 +31,7 @@ import com.simtuitive.core.controller.productmgmt.api.Link;
 import com.simtuitive.core.controller.productmgmt.api.PaginationResponse;
 import com.simtuitive.core.controller.requestpayload.PermissionsRequestPayload;
 import com.simtuitive.core.controller.responsepayload.PermissionsResponsePayload;
+import com.simtuitive.core.globalexception.BadArgumentException;
 import com.simtuitive.core.globalexception.ResourceNotFoundException;
 import com.simtuitive.core.globalexception.UserRoleServiceException;
 import com.simtuitive.core.model.Permissions;
@@ -81,11 +82,26 @@ public class PermissionController extends BaseController {
 	public JsonApiWrapper<PermissionsResponsePayload> createPermission(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody PermissionsRequestPayload payload, HttpServletRequest request, HttpServletResponse response)
 			throws UserRoleServiceException, ResourceNotFoundException {
-		PermissionsResponsePayload roleresponse = permissionservice.create(payload);
 		String tmp = builder.path("/create").build().toString();
 		Link l1 = new Link(tmp, " Permission Detail");
+		checkPermission(payload.getName(),payload.getType(),l1.getHref());
+		
+		PermissionsResponsePayload roleresponse = permissionservice.create(payload);		
 		return new JsonApiWrapper<>(roleresponse, request.getRequestURL().toString(), Arrays.asList(l1));
 
+	}
+
+	private void checkPermission(String name, String type, String href) {
+		// TODO Auto-generated method stub
+		if (name.isEmpty()|| type.isEmpty()) {
+			throw new BadArgumentException("204", "Create Permission", href,"Permission name or type is not entered");
+		} else {
+			boolean namecheck = permissionservice.permissionExistsByName(name);
+			boolean typecheck = permissionservice.permissionExistsByType(type);
+			if (namecheck&&typecheck) {				
+				throw new BadArgumentException("409", "Create Permission", href, name+" Permission Already exist");
+			}
+		}
 	}
 
 	// update

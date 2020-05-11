@@ -27,6 +27,7 @@ import com.simtuitive.core.controller.productmgmt.api.Link;
 import com.simtuitive.core.controller.productmgmt.api.PaginationResponse;
 import com.simtuitive.core.controller.requestpayload.RolesRequestPayload;
 import com.simtuitive.core.controller.responsepayload.RolesResponsePayload;
+import com.simtuitive.core.globalexception.BadArgumentException;
 import com.simtuitive.core.globalexception.ResourceNotFoundException;
 import com.simtuitive.core.globalexception.UserRoleServiceException;
 import com.simtuitive.core.model.Roles;
@@ -46,7 +47,7 @@ public class RolesController extends BaseController {
 
 	@Autowired
 	private IRolesService roleservice;
-	
+
 	@Autowired
 	private RolesServiceImpl impl;
 
@@ -65,12 +66,27 @@ public class RolesController extends BaseController {
 	public JsonApiWrapper<RolesResponsePayload> createRole(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody RolesRequestPayload payload, HttpServletRequest request, HttpServletResponse response)
 			throws UserRoleServiceException, ResourceNotFoundException {
-		System.out.println("new value"+payload.toString());
-		RolesResponsePayload roleresponse = roleservice.addRole(payload);
 		String tmp = builder.path("/create").build().toString();
 		Link l1 = new Link(tmp, " Role Detail");
+
+		checkExistingRole(payload.getRoleName(), l1.getHref());
+
+		RolesResponsePayload roleresponse = roleservice.addRole(payload);
+
 		return new JsonApiWrapper<>(roleresponse, request.getRequestURL().toString(), Arrays.asList(l1));
 
+	}
+
+	private void checkExistingRole(String role, String url) {
+
+		if (role.isEmpty()) {
+			throw new BadArgumentException("204", "Create role", url, "Role name is not entered");
+		} else {
+			boolean userResponse = roleservice.roleExists(role);
+			if (userResponse) {
+				throw new BadArgumentException("409", "Create role", url, role + " Role Already exist");
+			}
+		}
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
@@ -114,6 +130,7 @@ public class RolesController extends BaseController {
 		return new JsonApiWrapper<>(roleresponse, request.getRequestURL().toString(), Arrays.asList(l1));
 
 	}
+
 	@ResponseStatus(HttpStatus.CREATED)
 	@PreAuthorize("hasAuthority('Super Admin')")
 	@ApiOperation(value = " Creates a role ", response = Roles.class)
@@ -145,14 +162,17 @@ public class RolesController extends BaseController {
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/get-all-role", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<List<RolesResponsePayload>> getAllRole(@ApiIgnore UriComponentsBuilder builder, @RequestParam("pageno") Optional<String> pageno,HttpServletRequest request,
-			HttpServletResponse response) throws UserRoleServiceException, ResourceNotFoundException {
+	public JsonApiWrapper<List<RolesResponsePayload>> getAllRole(@ApiIgnore UriComponentsBuilder builder,
+			@RequestParam("pageno") Optional<String> pageno, HttpServletRequest request, HttpServletResponse response)
+			throws UserRoleServiceException, ResourceNotFoundException {
 		Page<Roles> roleresponse = roleservice.getall(pageno);
 		List<RolesResponsePayload> result = impl.getPayload(roleresponse.getContent());
 		String tmp = builder.path("/get-all-role").build().toString();
 		Link l1 = new Link(tmp, " Role Details");
-		PaginationResponse page=new PaginationResponse(roleresponse.getNumberOfElements(),roleresponse.getTotalPages() ,roleresponse.getSize(), roleresponse.getPageable().getPageNumber());
-		return new JsonApiWrapper<>(result, request.getRequestURL().toString(), Arrays.asList(l1),page);
+		
+		PaginationResponse page = new PaginationResponse(roleresponse.getNumberOfElements(),
+				roleresponse.getTotalPages(), roleresponse.getSize(), roleresponse.getPageable().getPageNumber());
+		return new JsonApiWrapper<>(result, request.getRequestURL().toString(), Arrays.asList(l1), page);
 
 	}
 }

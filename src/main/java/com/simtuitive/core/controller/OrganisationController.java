@@ -28,6 +28,7 @@ import com.simtuitive.core.controller.productmgmt.api.Link;
 import com.simtuitive.core.controller.productmgmt.api.PaginationResponse;
 import com.simtuitive.core.controller.requestpayload.OrganisationRequestPayload;
 import com.simtuitive.core.controller.responsepayload.OrganisationResponsePayload;
+import com.simtuitive.core.globalexception.BadArgumentException;
 import com.simtuitive.core.model.Organisation;
 import com.simtuitive.core.service.abstracts.IOrganisationService;
 
@@ -43,7 +44,7 @@ public class OrganisationController extends BaseController {
 
 	@Autowired
 	private IOrganisationService organisationservice;
-	
+
 	@PreAuthorize("hasAuthority('Admin')")
 	@ResponseStatus(HttpStatus.CREATED)
 	@ApiOperation(value = " Creates an Organisation", response = Organisation.class)
@@ -59,13 +60,27 @@ public class OrganisationController extends BaseController {
 	public JsonApiWrapper<OrganisationResponsePayload> createOrganisation(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody OrganisationRequestPayload payload, HttpServletRequest request, HttpServletResponse response) {
 		OrganisationResponsePayload userResponse = null;
-		String createdby=request.getUserPrincipal().getName();
+		String createdby = request.getUserPrincipal().getName();
 		payload.setModifiedBy(createdby);
-		userResponse = organisationservice.addOrganisation(payload);
 		String tmp = builder.path(Constants.PATH_CREATE_ORGANISATION).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_CREATE_ORGANISATION_DETAIL);
+		checkOrganisation(payload.getName(), l1.getHref());
+		userResponse = organisationservice.addOrganisation(payload);
+
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
 
+	}
+
+	private void checkOrganisation(String name, String href) {
+		// TODO Auto-generated method stub
+		if (name.isEmpty()) {
+			throw new BadArgumentException("204", "Create Organisation", href, "Organisation name not entered");
+		} else {
+			boolean userResponse = organisationservice.getExistsOrganisation(name);
+			if (userResponse) {
+				throw new BadArgumentException("409", "Create Organisation", href, "Organisation Already exist");
+			}
+		}
 	}
 
 	@PreAuthorize("hasAuthority('Admin')")
@@ -81,7 +96,7 @@ public class OrganisationController extends BaseController {
 	@RequestMapping(value = "/update-org", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<OrganisationResponsePayload> updateOrganisation(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody OrganisationRequestPayload payload, HttpServletRequest request, HttpServletResponse response) {
-		String modify=request.getUserPrincipal().getName();
+		String modify = request.getUserPrincipal().getName();
 		payload.setModifiedBy(modify);
 		OrganisationResponsePayload userResponse = organisationservice.updateOrganisation(payload);
 		String tmp = builder.path(Constants.PATH_UPDATE_ORGANISATION).build().toString();
@@ -90,8 +105,7 @@ public class OrganisationController extends BaseController {
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
 
 	}
-	
-	
+
 	@PreAuthorize("hasAuthority('Admin')")
 	@ResponseStatus(HttpStatus.IM_USED)
 	@ApiOperation(value = " Updates an Organisation ", response = Organisation.class)
@@ -105,7 +119,7 @@ public class OrganisationController extends BaseController {
 	@RequestMapping(value = "/delete-org", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<OrganisationResponsePayload> deleteOrganisation(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody OrganisationRequestPayload payload, HttpServletRequest request, HttpServletResponse response) {
-		String modify=request.getUserPrincipal().getName();
+		String modify = request.getUserPrincipal().getName();
 		payload.setModifiedBy(modify);
 		OrganisationResponsePayload userResponse = organisationservice.deleteOrganisation(payload.getId());
 		String tmp = builder.path(Constants.PATH_UPDATE_ORGANISATION).build().toString();
@@ -113,6 +127,7 @@ public class OrganisationController extends BaseController {
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
 
 	}
+
 	@PreAuthorize("hasAuthority('Admin')")
 	@ResponseStatus(HttpStatus.IM_USED)
 	@ApiOperation(value = " get an Organisation ", response = Organisation.class)
@@ -132,7 +147,7 @@ public class OrganisationController extends BaseController {
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
 
 	}
-	
+
 	@PreAuthorize("hasAuthority('Admin')")
 	@ResponseStatus(HttpStatus.IM_USED)
 	@ApiOperation(value = " getall Organisations ", response = Organisation.class)
@@ -144,16 +159,20 @@ public class OrganisationController extends BaseController {
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/getall-org", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<List<OrganisationResponsePayload>> findAllOrganisation(@ApiIgnore UriComponentsBuilder builder,@RequestParam("pageno") Optional<String> pageno,
-			 HttpServletRequest request, HttpServletResponse response) {
+	public JsonApiWrapper<List<OrganisationResponsePayload>> findAllOrganisation(
+			@ApiIgnore UriComponentsBuilder builder, @RequestParam("pageno") Optional<String> pageno,
+			HttpServletRequest request, HttpServletResponse response) {
 		Page<Organisation> userResponse = organisationservice.getAll(pageno);
-		List<OrganisationResponsePayload> resultresponse = organisationservice.findAll(userResponse.getContent());;
+		List<OrganisationResponsePayload> resultresponse = organisationservice.findAll(userResponse.getContent());
+		;
 		String tmp = builder.path(Constants.PATH_GET_ALL_ORG).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_GET_ALL_ORGANISATION_DETAIL);
-		PaginationResponse page=new PaginationResponse(userResponse.getNumberOfElements(),userResponse.getTotalPages() ,userResponse.getSize(), userResponse.getPageable().getPageNumber());
-		return new JsonApiWrapper<>(resultresponse, getSelfLink(request), Arrays.asList(l1),page);
+		PaginationResponse page = new PaginationResponse(userResponse.getNumberOfElements(),
+				userResponse.getTotalPages(), userResponse.getSize(), userResponse.getPageable().getPageNumber());
+		return new JsonApiWrapper<>(resultresponse, getSelfLink(request), Arrays.asList(l1), page);
 
 	}
+
 	@PreAuthorize("hasAuthority('Admin')")
 	@ResponseStatus(HttpStatus.IM_USED)
 	@ApiOperation(value = " getall Organisations ", response = Organisation.class)
@@ -165,9 +184,9 @@ public class OrganisationController extends BaseController {
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/getall-orgname", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<Map<String,String>> findAllOrganisationName(@ApiIgnore UriComponentsBuilder builder,
-			 HttpServletRequest request, HttpServletResponse response) {
-		Map<String,String>userResponse = organisationservice.findAllOrganisationName();
+	public JsonApiWrapper<Map<String, String>> findAllOrganisationName(@ApiIgnore UriComponentsBuilder builder,
+			HttpServletRequest request, HttpServletResponse response) {
+		Map<String, String> userResponse = organisationservice.findAllOrganisationName();
 		String tmp = builder.path(Constants.PATH_GET_ALL_ORG).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_GET_ALL_ORGANISATION_DETAIL);
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));

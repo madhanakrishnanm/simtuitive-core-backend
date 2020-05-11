@@ -37,5 +37,10 @@ public interface IUserService {
 	
 	public UserResponsePayload updateLastLoginUser(UserRequestPayload UserRequestPayload);
 	
+	public Long countofAdmin(String role);
+	
+	public boolean userExist(String email);
+	
+	public Long countByRoleAndStatus(String role,Long status);
 
 }

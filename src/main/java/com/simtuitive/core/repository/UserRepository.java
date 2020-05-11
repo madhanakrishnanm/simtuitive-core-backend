@@ -14,8 +14,13 @@ public interface UserRepository extends MongoRepository<User, String> {
 		
 	public User findByUserId(String userId);	
 	
-	public Page<User> findByRole(String role, Pageable pageable);	
+	public Page<User> findByRoleAndStatus(String role, Pageable pageable,Long status);	
 
-	Page<User> findByuserEmail(String firstname, Pageable pageable);
+	public Page<User> findByuserEmail(String firstname, Pageable pageable);
 
+	public Long countByRole(String role);
+	
+	public boolean existsByuserEmail(String email);
+	
+	public Long countByRoleAndStatus(String role,Long status);
 }

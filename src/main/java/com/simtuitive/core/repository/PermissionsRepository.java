@@ -12,4 +12,9 @@ public interface PermissionsRepository extends MongoRepository<Permissions, Stri
 
 	
 	public Permissions findBypermissionId(String permissionId);
+	
+	public boolean existsByName(String name);
+	
+	public boolean existsByType(String type);
+	
 }

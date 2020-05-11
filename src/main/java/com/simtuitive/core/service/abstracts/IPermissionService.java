@@ -24,4 +24,9 @@ public interface IPermissionService {
 	
 	public PermissionsResponsePayload delete(String permissionId);
 
+	public Long countofPermission();
+	
+	public boolean permissionExistsByName(String name);
+	
+	public boolean permissionExistsByType(String type);
 }

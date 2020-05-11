@@ -58,6 +58,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	public UserResponsePayload getUser(String email) {
 		UserResponsePayload returnpayload = null;
 		User user = userrepository.findByuserEmail(email);
+		System.out.println("user"+user.getUserId());
 		returnpayload = buildPayloadbyUser(user);
 		return returnpayload;
 	}
@@ -133,7 +134,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		Query query = new Query();
 		query.with(pageable);		
 		
-		Page<User> pageuserlist=(Page<User>) userrepository.findByRole(userType,pageable);
+		Page<User> pageuserlist=(Page<User>) userrepository.findByRoleAndStatus(userType,pageable,1L);
 		
 		List<User>userlist=pageuserlist.getContent();
 		System.out.println("userlist"+userlist.toString());
@@ -167,10 +168,9 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		int pagenumber=Integer.parseInt(pageno.orElse("0"));
 		final Pageable pageable = PageRequest.of(pagenumber, 5,Sort.by("userId").ascending());
 		Query query = new Query();
-		query.with(pageable);;
-		//parameter rqueired to construct pageable
-		System.out.println("userrepository.findAll(pageable);"+userrepository.findAll(pageable));
-		Page<User> result=(Page<User>) userrepository.findByRole(userType,pageable);;
+		query.with(pageable);
+		//parameter rqueired to construct pageable		
+		Page<User> result=(Page<User>) userrepository.findByRoleAndStatus(userType,pageable,1L);
 		return result;
 		
 	}
@@ -197,6 +197,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	}	
 
 	private User buildAdminUser(UserRequestPayload payload) {
+		System.out.println("welcome add user");
 		Roles role = roleRepository.findByRoleName(payload.getRole());
 		List<Permissions> permissionlist = buildRolePermission(role.getRoleId());
 		System.out.println("List" + permissionlist.toString());
@@ -296,6 +297,24 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		existinguser.setLastLoggedIn(new Date());
 		return existinguser;
 
+	}
+
+	@Override
+	public Long countofAdmin(String role) {
+		// TODO Auto-generated method stub
+		return userrepository.countByRole(role);
+	}
+
+	@Override
+	public boolean userExist(String email) {
+		// TODO Auto-generated method stub
+		return userrepository.existsByuserEmail(email);
+	}
+
+	@Override
+	public Long countByRoleAndStatus(String role, Long status) {
+		// TODO Auto-generated method stub
+		return userrepository.countByRoleAndStatus(role, status);
 	}
 
 	

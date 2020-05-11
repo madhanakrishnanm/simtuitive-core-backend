@@ -138,4 +138,10 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 		return organisationrepository.findAll(pageable);
 	}
 
+	@Override
+	public boolean getExistsOrganisation(String name) {
+		// TODO Auto-generated method stub
+		return organisationrepository.existsByOrganizationName(name);
+	}
+
 }

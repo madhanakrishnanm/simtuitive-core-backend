@@ -163,4 +163,23 @@ public class PermissionsServiceImpl implements IPermissionService {
 		return permissionrepository.findAll(pageable);
 	}
 
+	@Override
+	public Long countofPermission() {
+		// TODO Auto-generated method stub
+		Long count=permissionrepository.count();
+		return count;
+	}
+
+	@Override
+	public boolean permissionExistsByName(String name) {
+		// TODO Auto-generated method stub
+		return permissionrepository.existsByName(name);
+	}
+
+	@Override
+	public boolean permissionExistsByType(String type) {
+		// TODO Auto-generated method stub
+		return permissionrepository.existsByType(type);
+	}
+
 }

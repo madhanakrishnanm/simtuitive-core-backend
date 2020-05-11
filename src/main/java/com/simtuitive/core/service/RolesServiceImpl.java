@@ -109,4 +109,17 @@ public class RolesServiceImpl extends BaseService implements IRolesService {
 		return rolesrepository.findByRoleName(role);
 	}
 
+	@Override
+	public Long countofRole() {
+		// TODO Auto-generated method stub
+		Long count=rolesrepository.count();
+		return count ;
+	}
+
+	@Override
+	public boolean roleExists(String rolename) {
+		// TODO Auto-generated method stub
+		return rolesrepository.existsByRoleName(rolename);
+	}
+
 }
