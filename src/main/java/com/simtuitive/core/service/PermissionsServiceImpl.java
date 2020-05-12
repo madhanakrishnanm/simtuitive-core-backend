@@ -160,7 +160,7 @@ public class PermissionsServiceImpl implements IPermissionService {
 		final Pageable pageable = PageRequest.of(pagenumber, 5,Sort.by("permissionId").ascending());
 		Query query = new Query();
 		query.with(pageable);		
-		return permissionrepository.findAll(pageable);
+		return permissionrepository.findAllByStatus(1L, pageable);
 	}
 
 	@Override

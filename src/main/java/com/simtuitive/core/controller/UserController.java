@@ -119,11 +119,12 @@ public class UserController extends BaseController {
 
 	}
 
-	private void checkExistingUser(String email, String url) {
+	public void checkExistingUser(String email, String url) {
 		if (email.isEmpty()) {
 			throw new BadArgumentException("204", "Create User", url, "User email not entered");
 		} else {
 			boolean userResponse = userservice.userExist(email);
+			System.out.println("Existing check::"+userResponse);
 			if (userResponse) {
 				throw new BadArgumentException("409", "Create User", url, "User Already exist");
 			}

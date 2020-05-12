@@ -87,18 +87,15 @@ public class RolesServiceImpl extends BaseService implements IRolesService {
 		final Pageable pageable = PageRequest.of(pagenumber, 5,Sort.by("roleId").ascending());
 		Query query = new Query();
 		query.with(pageable);
-		Page<Roles> pagerole=rolesrepository.findAll(pageable);
-		
+		Page<Roles> pagerole=rolesrepository.findAllByStatus(1L,pageable);		
 		return pagerole;
 		
 	}
 	
 	public List<RolesResponsePayload>getPayload(List<Roles> roles){
 		List<RolesResponsePayload> result = new ArrayList<RolesResponsePayload>();
-		for (Roles role : roles) {
-			if (role.getStatus() == 1L) {
-				result.add(buildpayload(role));
-			}
+		for (Roles role : roles) {			
+				result.add(buildpayload(role));			
 		}
 		return result;
 	}
