@@ -106,8 +106,7 @@ public class UserController extends BaseController {
 
 	@RequestMapping(value = "/add-user", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<UserResponsePayload> createUser(@ApiIgnore UriComponentsBuilder builder,
-			@RequestBody UserRequestPayload userpayload, HttpServletRequest request, HttpServletResponse response) {
-		System.out.println("welcome add user controller");
+			@RequestBody UserRequestPayload userpayload, HttpServletRequest request, HttpServletResponse response) {		
 		String tmp = builder.path(Constants.PATH_CREATE_ADMIN).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_CREATE_ADMIN_DETAIL);
 		checkArguments(userpayload);
@@ -121,12 +120,12 @@ public class UserController extends BaseController {
 
 	public void checkExistingUser(String email, String url) {
 		if (email.isEmpty()) {
-			throw new BadArgumentException("204", "Create User", url, "User email not entered");
+			throw new BadArgumentException("User email not entered");
 		} else {
 			boolean userResponse = userservice.userExist(email);
 			System.out.println("Existing check::"+userResponse);
 			if (userResponse) {
-				throw new BadArgumentException("409", "Create User", url, "User Already exist");
+				throw new BadArgumentException("User Already exist");
 			}
 		}
 	}
@@ -343,6 +342,8 @@ public class UserController extends BaseController {
 		Link l1 = new Link(tmp, " User Detail getAll");
 		Long totallong=userservice.countByRoleAndStatus(userType, 1L);
 		int totalint=totallong.intValue();
+		System.out.println("user count"+userresponse.getTotalElements());
+		
 		PaginationResponse page = new PaginationResponse(totalint,
 				userresponse.getTotalPages(), userresponse.getSize(), userresponse.getPageable().getPageNumber());
 		return new JsonApiWrapper<>(result, getSelfLink(request), Arrays.asList(l1), page);

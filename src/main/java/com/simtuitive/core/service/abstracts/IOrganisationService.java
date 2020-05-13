@@ -21,7 +21,7 @@ public interface IOrganisationService {
 
 	public List<OrganisationResponsePayload> findAll(List<Organisation> organisations);
 	
-	public Page<Organisation>getAll(Optional<String>pageno);
+	public Page<Organisation>getAll(Optional<String>pageno, Optional<String> org, Optional<String> location, Optional<String> industry);
 	
 	public Map<String,String>findAllOrganisationName();
 	

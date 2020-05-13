@@ -160,11 +160,10 @@ public class OrganisationController extends BaseController {
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/getall-org", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<List<OrganisationResponsePayload>> findAllOrganisation(
-			@ApiIgnore UriComponentsBuilder builder, @RequestParam("pageno") Optional<String> pageno,
+			@ApiIgnore UriComponentsBuilder builder, @RequestParam("pageno") Optional<String> pageno,@RequestParam("org") Optional<String> org,@RequestParam("location") Optional<String> location,@RequestParam("industry") Optional<String> industry,
 			HttpServletRequest request, HttpServletResponse response) {
-		Page<Organisation> userResponse = organisationservice.getAll(pageno);
+		Page<Organisation> userResponse = organisationservice.getAll(pageno,org,location,industry);
 		List<OrganisationResponsePayload> resultresponse = organisationservice.findAll(userResponse.getContent());
-		;
 		String tmp = builder.path(Constants.PATH_GET_ALL_ORG).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_GET_ALL_ORGANISATION_DETAIL);
 		PaginationResponse page = new PaginationResponse(userResponse.getNumberOfElements(),

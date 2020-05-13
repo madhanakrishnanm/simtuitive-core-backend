@@ -9,15 +9,19 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.simtuitive.core.controller.requestpayload.OrganisationRequestPayload;
 import com.simtuitive.core.controller.responsepayload.OrganisationResponsePayload;
 import com.simtuitive.core.model.Organisation;
+import com.simtuitive.core.model.User;
 import com.simtuitive.core.repository.OrganisationRepository;
 import com.simtuitive.core.repository.UserRepository;
 import com.simtuitive.core.service.abstracts.IOrganisationService;
@@ -29,6 +33,9 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 
 	@Autowired
 	private OrganisationRepository organisationrepository;
+	
+	@Autowired 
+	private MongoOperations mongoOps;
 
 	@Override
 	public OrganisationResponsePayload addOrganisation(OrganisationRequestPayload payload) {
@@ -128,14 +135,33 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 	}
 
 	@Override
-	public Page<Organisation> getAll(Optional<String> pageno) {
+	public Page<Organisation> getAll(Optional<String>pageno, Optional<String> org, Optional<String> location, Optional<String> industry) {
 		// TODO Auto-generated method stub
 		int pagenumber=Integer.parseInt(pageno.orElse("0"));
 		final Pageable pageable = PageRequest.of(pagenumber, 5,Sort.by("organizationId").ascending());
-		
+		Criteria org1 = null,location1 = null,industry1 = null;		
 		Query query = new Query();
-		query.with(pageable);	
-		return organisationrepository.findAll(pageable);
+		if(org!=null) {			
+			new Criteria();
+			org1= Criteria.where("organizationName").regex(org.orElse(""),"i");
+			query.addCriteria(org1);
+		}
+		if(location!=null) {			
+			new Criteria();
+			location1= Criteria.where("location").regex(location.orElse(""),"i");
+			query.addCriteria(location1);
+		}
+		if(industry!=null) {			
+			 new Criteria();
+			industry1= Criteria.where("industry").regex(industry.orElse(""),"i");
+			query.addCriteria(industry1);
+		}		
+		query.with(pageable);
+		System.out.println("Organisation query"+query.toString());
+		List<Organisation>orgresult=mongoOps.find(query, Organisation.class);
+		long count = mongoOps.count(query, Organisation.class);	
+		Page<Organisation> result=new PageImpl<Organisation>(orgresult , pageable, count);
+		return result;
 	}
 
 	@Override

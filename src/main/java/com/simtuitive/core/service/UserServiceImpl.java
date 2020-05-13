@@ -9,14 +9,18 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.jaxb.SortAdapter;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
+import org.springframework.data.mongodb.core.query.MongoRegexCreator;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.repository.query.parser.Part;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +44,9 @@ public class UserServiceImpl extends BaseService implements IUserService {
 
 	@Autowired
 	private UserRepository userrepository;
+	
+	@Autowired 
+	private MongoOperations mongoOps;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -166,11 +173,14 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	@Override
 	public Page<User> getAllUserByPaginationApplied(String userType,Optional<String> pageno) {
 		int pagenumber=Integer.parseInt(pageno.orElse("0"));
-		final Pageable pageable = PageRequest.of(pagenumber, 5,Sort.by("userId").ascending());
+		final Pageable pageable = PageRequest.of(pagenumber, 5,Sort.by("userId").ascending());		
 		Query query = new Query();
 		query.with(pageable);
-		//parameter rqueired to construct pageable		
-		Page<User> result=(Page<User>) userrepository.findByRoleAndStatus(userType,pageable,1L);
+		query.addCriteria(new Criteria().orOperator(Criteria.where("userName").regex("test").andOperator(Criteria.where("role").is(userType).andOperator(Criteria.where("status").is(1L)))));		
+		//parameter rqueired to construct pageable			
+		List<User>result1=mongoOps.find(query, User.class);
+		long count = mongoOps.count(query, User.class);		
+		Page<User> result=new PageImpl<User>(result1 , pageable, count);		
 		return result;
 		
 	}

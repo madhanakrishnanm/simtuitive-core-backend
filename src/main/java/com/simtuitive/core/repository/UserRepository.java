@@ -1,5 +1,7 @@
 package com.simtuitive.core.repository;
 
+import javax.management.Query;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -23,4 +25,6 @@ public interface UserRepository extends MongoRepository<User, String> {
 	public boolean existsByuserEmail(String email);
 	
 	public Long countByRoleAndStatus(String role,Long status);
+	
+	public Page<User> findByStatus(org.springframework.data.mongodb.core.query.Query query,String role, Pageable pageable);
 }

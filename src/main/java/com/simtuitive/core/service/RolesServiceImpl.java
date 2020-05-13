@@ -7,9 +7,12 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,9 @@ public class RolesServiceImpl extends BaseService implements IRolesService {
 
 	@Autowired
 	private RolesRepository rolesrepository;
+	
+	@Autowired 
+	private MongoOperations mongoOps;
 
 	@Override
 	public RolesResponsePayload addRole(RolesRequestPayload payload) {
@@ -81,13 +87,23 @@ public class RolesServiceImpl extends BaseService implements IRolesService {
 	}
 
 	@Override
-	public Page<Roles> getall(Optional<String> pageno) {
+	public Page<Roles> getall(Optional<String> pageno,Optional<String> role) {
 		// TODO Auto-generated method stub		
 		int pagenumber=Integer.parseInt(pageno.orElse("0"));
 		final Pageable pageable = PageRequest.of(pagenumber, 5,Sort.by("roleId").ascending());
+		Criteria rolename = null;
 		Query query = new Query();
+		if(role!=null) {
+			new Criteria();
+			rolename= Criteria.where("roleName").regex(role.orElse(""),"i");
+			query.addCriteria(rolename);
+		}
+		query.addCriteria(Criteria.where("status").is(1L));
 		query.with(pageable);
-		Page<Roles> pagerole=rolesrepository.findAllByStatus(1L,pageable);		
+		System.out.println("Role query"+query.toString());
+		List<Roles>roleresult=mongoOps.find(query, Roles.class);
+		long count =mongoOps.count(query,Roles.class);
+		Page<Roles> pagerole=new PageImpl<Roles>(roleresult,pageable,count);		
 		return pagerole;
 		
 	}

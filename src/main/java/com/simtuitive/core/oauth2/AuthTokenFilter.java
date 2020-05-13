@@ -54,14 +54,16 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 	public TokenStore redisTokenStore() {
 		return new RedisTokenStore(redisConnectionFactory);
 	}
-
+	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
+		
 		String initrole=null;
 		String username=null;
 		try {
-
+			
+			
 			String clientToken = parseJwt(request);//
 			System.out.println("clientToken::" + clientToken);
 
@@ -84,7 +86,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 				System.out.println("welcome sessionexpiretime"+sessionexpiretime);		
 				Date sessioncreatedtime = new java.util.Date(sessiontime);
 				System.out.println("welcome sessioncreatedtime"+sessioncreatedtime);
-				Date now = new Date();				
+				Date now = new Date();
+				System.out.println("now"+now);
 				if (truetoken.matches(clientTrueToken)) {
 					if (now.after(expirationTime)) {
 						System.out.println("cominghere");
@@ -112,14 +115,14 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 				}
 
 			} else {
-				//Boolean isSameUserRoleInLoggedIn = validateSameUser(request);
-				//if (isSameUserRoleInLoggedIn) {
-				//	System.out.println("sameuser logged in");//DuplicateSessionException
-				//	
-				//} else {
-					//need to check time out//proceed further
-				//	System.out.println("veryfirst login");
-				//}
+//				Boolean isSameUserRoleInLoggedIn = validateSameUser(request);
+//				if (isSameUserRoleInLoggedIn) {
+//					System.out.println("sameuser logged in");//DuplicateSessionException
+//					
+//				} else {
+//					//need to check time out//proceed further
+//					System.out.println("veryfirst login");
+//				}
 			}
 		} catch (BadArgumentException e) {
 			throw new BadArgumentException(e.getMessage());
@@ -133,18 +136,19 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
 	private void updateinRedis(String username) {
 		// TODO Auto-generated method stub
-		System.out.println("updated in redis method");
-		String initrole = customuserdetail.getUserDetails(username);			
-		String key = username + initrole;
-		Map<?, ?> sessioninfo = (Map<?, ?>) redis.redisTemplate().opsForHash().get(key, key);
-		System.out.println("sessioninfo"+sessioninfo.toString());
-		Date d=new Date();
-//		SessionInfo session=(SessionInfo) sessioninfo;
-//		session.setSessionCreatedTime(d);		
-//		Map<?, ?> ruleHash = new ObjectMapper().convertValue(session, Map.class);		
-		redis.redisTemplate().opsForHash().put(key,sessioninfo.get("sessionCreatedTime"), d);
-		Map<?, ?> sessioninfoUpdated = (Map<?, ?>) redis.redisTemplate().opsForHash().get(key, key);
-		System.out.println("redisUpdated"+sessioninfoUpdated.toString());
+				System.out.println("updated in redis method");
+				String initrole = customuserdetail.getUserDetails(username);			
+				String key = username + initrole;
+				Map<?, ?> sessioninfo = (Map<?, ?>) redis.redisTemplate().opsForHash().get(key, key);
+				String sessionid=(String)sessioninfo.get("sessionId");
+				Date createdTime=new Date();
+				Date SessionExpire=new Date((System.currentTimeMillis()+3600000L));
+				SessionInfo sessioninfoupdate=new SessionInfo(username, initrole, sessionid, createdTime, createdTime,SessionExpire);
+				Map<?, ?> ruleHash1 = new ObjectMapper().convertValue(sessioninfoupdate, Map.class);
+				redis.redisTemplate().opsForValue().getOperations().delete(key);//deleting		
+				redis.redisTemplate().opsForHash().put(key,key,ruleHash1);//adding				
+				Map<?, ?> sessioninfoafterupdate = (Map<?, ?>) redis.redisTemplate().opsForHash().get(key, key);
+				System.out.println("sessioninfoafterupdate"+sessioninfoafterupdate);
 	}
 
 	private Boolean validateSameUser(HttpServletRequest request) {

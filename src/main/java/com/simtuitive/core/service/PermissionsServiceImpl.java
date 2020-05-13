@@ -13,9 +13,12 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -46,6 +49,9 @@ public class PermissionsServiceImpl implements IPermissionService {
 
 	@Autowired
 	private RolesRepository rolerepository;
+	
+	@Autowired 
+	private MongoOperations mongoOps;
 
 	// Create Role
 	@Override
@@ -111,10 +117,9 @@ public class PermissionsServiceImpl implements IPermissionService {
 	public List<PermissionsResponsePayload> findAll(List<Permissions> permlist) {		
 		List<PermissionsResponsePayload> result = new ArrayList<PermissionsResponsePayload>();
 		for (Permissions perm : permlist) {
-			if (perm.getStatus() == 1L) {
+			
 				PermissionsResponsePayload payload = buildPermissionsResponsePayload(perm);
 				result.add(payload);
-			}
 		}
 		return result;
 	}
@@ -154,13 +159,28 @@ public class PermissionsServiceImpl implements IPermissionService {
 	}
 
 	@Override
-	public Page<Permissions> getall(Optional<String> pageno) {
+	public Page<Permissions> getall(Optional<String> pageno,Optional<String> name,Optional<String> type) {
 		// TODO Auto-generated method stub
 		int pagenumber=Integer.parseInt(pageno.orElse("0"));
 		final Pageable pageable = PageRequest.of(pagenumber, 5,Sort.by("permissionId").ascending());
+		Criteria type1,name1 = null;
 		Query query = new Query();
-		query.with(pageable);		
-		return permissionrepository.findAllByStatus(1L, pageable);
+		if(name!=null) {
+			new Criteria();
+			name1= Criteria.where("name").regex(name.orElse(""),"i");
+			query.addCriteria(name1);
+		}
+		if(type!=null) {
+			new Criteria();
+			type1= Criteria.where("type").regex(type.orElse(""),"i");
+			query.addCriteria(type1);
+		}
+		query.addCriteria(Criteria.where("status").is(1L));
+		query.with(pageable);	
+		System.out.println("Permission query::"+query.toString());
+		List<Permissions>roleresult=mongoOps.find(query, Permissions.class);
+		long count =mongoOps.count(query, Permissions.class);
+		return new PageImpl<Permissions>(roleresult,pageable,count);
 	}
 
 	@Override

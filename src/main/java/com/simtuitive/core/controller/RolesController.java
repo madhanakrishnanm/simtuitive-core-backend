@@ -163,9 +163,9 @@ public class RolesController extends BaseController {
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/get-all-role", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<List<RolesResponsePayload>> getAllRole(@ApiIgnore UriComponentsBuilder builder,
-			@RequestParam("pageno") Optional<String> pageno, HttpServletRequest request, HttpServletResponse response)
+			@RequestParam("pageno") Optional<String> pageno,@RequestParam("role") Optional<String> role, HttpServletRequest request, HttpServletResponse response)
 			throws UserRoleServiceException, ResourceNotFoundException {
-		Page<Roles> roleresponse = roleservice.getall(pageno);
+		Page<Roles> roleresponse = roleservice.getall(pageno,role);
 		List<RolesResponsePayload> result = impl.getPayload(roleresponse.getContent());
 		String tmp = builder.path("/get-all-role").build().toString();
 		Link l1 = new Link(tmp, " Role Details");
