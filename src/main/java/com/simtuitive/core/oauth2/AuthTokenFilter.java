@@ -61,12 +61,23 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 		
 		String initrole=null;
 		String username=null;
-		try {
-			
-			
+		try {			
 			String clientToken = parseJwt(request);//
 			System.out.println("clientToken::" + clientToken);
-
+			System.out.println("Changes for checking");
+			System.out.println("Changes for query string"+request.getQueryString().toString());
+			System.out.println("Changes for query string"+request.getTrailerFields().toString());
+			System.out.println("Changes for query string"+request.getHeader("username"));
+			System.out.println("Changes for query string"+request.getServletContext().getRequestCharacterEncoding());
+			System.out.println("Changes for query string"+request.getHeaderNames().toString());
+			System.out.println("Changes for query string"+request.getRequestURI().toString());
+			if(!request.getParameter("username").isEmpty()&&clientToken==null) {
+			Boolean isSameUserRoleInLoggedIn = validateSameUser(request);
+			if (isSameUserRoleInLoggedIn) {
+				System.out.println("sameuser logged in");//DuplicateSessionException
+			}			
+			}
+			
 			if (clientToken != null && TokenUtil.validate(clientToken, secret)) {				
 				String clientTrueToken = TokenUtil.getToken(clientToken);//				
 				Map<?, ?> newtoken = (Map<?, ?>) redis.redisTemplate().opsForHash().get(clientTrueToken,
@@ -132,6 +143,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 		}
 		
 		filterChain.doFilter(request, response);
+		System.out.println("");
 	}
 
 	private void updateinRedis(String username) {
@@ -142,7 +154,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 				Map<?, ?> sessioninfo = (Map<?, ?>) redis.redisTemplate().opsForHash().get(key, key);
 				String sessionid=(String)sessioninfo.get("sessionId");
 				Date createdTime=new Date();
-				Date SessionExpire=new Date((System.currentTimeMillis()+3600000L));
+				Date SessionExpire=new Date((System.currentTimeMillis()+300000L));
 				SessionInfo sessioninfoupdate=new SessionInfo(username, initrole, sessionid, createdTime, createdTime,SessionExpire);
 				Map<?, ?> ruleHash1 = new ObjectMapper().convertValue(sessioninfoupdate, Map.class);
 				redis.redisTemplate().opsForValue().getOperations().delete(key);//deleting		
