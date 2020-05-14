@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,8 +70,10 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 //			super.doFilter(request, response, filterChain);
 //		}
 		HttpServletRequest req = (HttpServletRequest)request;
+		request=new HttpServletRequestWrapper((HttpServletRequest)request);
 		System.out.println("request after casting"+req.getContentType().toString());
 		System.out.println("request after casting"+req.getParameter("username"));
+		System.out.println("request after casting wrapper"+request.getParameter("username"));
 		try {			
 			String clientToken = parseJwt(req);//
 			System.out.println("clientToken::" + clientToken);
