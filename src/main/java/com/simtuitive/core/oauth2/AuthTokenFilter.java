@@ -67,12 +67,12 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 			System.out.println("Changes for checking");			
 			System.out.println("Changes for query string"+request.getTrailerFields().toString());
 			System.out.println("Changes for query string"+request.getHeader("username"));
-			System.out.println("Changes for query string"+request.getParameter("username"));
-			
+			System.out.println("Changes for query string"+request.getParameter("username"));		
+			System.out.println("Changes for query string"+request.getContentType().toString());
 			System.out.println("Changes for query string"+request.getServletContext().getRequestCharacterEncoding());
 			System.out.println("Changes for query string"+request.getHeaderNames().toString());
 			System.out.println("Changes for query string"+request.getRequestURI().toString());
-			if(!request.getParameter("username").isEmpty()&&clientToken==null) {
+			if(request.getParameter("username")!=null&&clientToken==null) {
 			Boolean isSameUserRoleInLoggedIn = validateSameUser(request);
 			if (isSameUserRoleInLoggedIn) {
 				System.out.println("sameuser logged in");//DuplicateSessionException
