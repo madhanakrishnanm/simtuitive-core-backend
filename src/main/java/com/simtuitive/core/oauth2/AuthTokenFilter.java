@@ -6,12 +6,15 @@ import java.util.Map;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -61,19 +64,26 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 		
 		String initrole=null;
 		String username=null;
+//		if ("POST".equals(request.getMethod())
+//				&& request.getContentType().equals(MediaType.APPLICATION_FORM_URLENCODED_VALUE)) {
+//			super.doFilter(request, response, filterChain);
+//		}
+		HttpServletRequest req = (HttpServletRequest)request;
+		System.out.println("request after casting"+req.getContentType().toString());
+		System.out.println("request after casting"+req.getParameter("username"));
 		try {			
-			String clientToken = parseJwt(request);//
+			String clientToken = parseJwt(req);//
 			System.out.println("clientToken::" + clientToken);
 			System.out.println("Changes for checking");			
-			System.out.println("Changes for query string"+request.getTrailerFields().toString());
-			System.out.println("Changes for query string"+request.getHeader("username"));
-			System.out.println("Changes for query string"+request.getParameter("username"));		
-			System.out.println("Changes for query string"+request.getContentType().toString());
-			System.out.println("Changes for query string"+request.getServletContext().getRequestCharacterEncoding());
-			System.out.println("Changes for query string"+request.getHeaderNames().toString());
-			System.out.println("Changes for query string"+request.getRequestURI().toString());
-			if(request.getParameter("username")!=null&&clientToken==null) {
-			Boolean isSameUserRoleInLoggedIn = validateSameUser(request);
+			System.out.println("Changes for query string"+req.getTrailerFields().toString());
+			System.out.println("Changes for query string"+req.getHeader("username"));
+			System.out.println("Changes for query string"+req.getParameter("username"));		
+			//System.out.println("Changes for query string"+request.getContentType().toString());
+			System.out.println("Changes for query string"+req.getServletContext().getRequestCharacterEncoding());
+			System.out.println("Changes for query string"+req.getHeaderNames().toString());
+			System.out.println("Changes for query string"+req.getRequestURI().toString());
+			if(req.getParameter("username")!=null&&clientToken==null) {
+			Boolean isSameUserRoleInLoggedIn = validateSameUser(req);
 			if (isSameUserRoleInLoggedIn) {
 				System.out.println("sameuser logged in");//DuplicateSessionException
 			}			
@@ -111,7 +121,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 							System.out.println("userDetails"+userDetails.getUsername());
 							UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
 									userDetails, null, userDetails.getAuthorities());
-							authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+							authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
 							SecurityContextHolder.getContext().setAuthentication(authentication);
 							updateinRedis(username);
 						}else {
@@ -143,8 +153,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 			throw new InvalidTokenException(e.getMessage());
 		}
 		
-		filterChain.doFilter(request, response);
-		System.out.println("Changes for after filter string"+request.getParameter("username"));
+		filterChain.doFilter(req, response);
+		System.out.println("Changes for after filter string"+req.getParameter("username"));
 	}
 
 	private void updateinRedis(String username) {
