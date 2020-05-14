@@ -71,7 +71,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 //		}
 		HttpServletRequest req = (HttpServletRequest)request;
 		request=new HttpServletRequestWrapper((HttpServletRequest)request);
-		System.out.println("request after casting"+req.getContentType().toString());
+		
 		System.out.println("request after casting"+req.getParameter("username"));
 		System.out.println("request after casting wrapper"+request.getParameter("username"));
 		try {			
