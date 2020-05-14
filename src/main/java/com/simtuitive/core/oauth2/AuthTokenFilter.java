@@ -64,10 +64,11 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 		try {			
 			String clientToken = parseJwt(request);//
 			System.out.println("clientToken::" + clientToken);
-			System.out.println("Changes for checking");
-			System.out.println("Changes for query string"+request.getQueryString().toString());
+			System.out.println("Changes for checking");			
 			System.out.println("Changes for query string"+request.getTrailerFields().toString());
 			System.out.println("Changes for query string"+request.getHeader("username"));
+			System.out.println("Changes for query string"+request.getParameter("username"));
+			
 			System.out.println("Changes for query string"+request.getServletContext().getRequestCharacterEncoding());
 			System.out.println("Changes for query string"+request.getHeaderNames().toString());
 			System.out.println("Changes for query string"+request.getRequestURI().toString());
@@ -143,7 +144,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 		}
 		
 		filterChain.doFilter(request, response);
-		System.out.println("");
+		System.out.println("Changes for after filter string"+request.getParameter("username"));
 	}
 
 	private void updateinRedis(String username) {
@@ -168,7 +169,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 		String initrole = customuserdetail.getUserDetails(initusername);			
 		String key = initusername + initrole;
 		Map<?, ?> sessioninfo = (Map<?, ?>) redis.redisTemplate().opsForHash().get(key, key);
-		if(sessioninfo!=null&&!sessioninfo.isEmpty()) {
+		if(sessioninfo!=null&&!sessioninfo.isEmpty()&&(initrole.equalsIgnoreCase("Client")||initrole.equalsIgnoreCase("Learner"))) {
 		String sessionuser=(String) sessioninfo.get("emailId");		
 		Long time=(Long) sessioninfo.get("sessionCreatedTime");
 		Long time1=(Long) sessioninfo.get("sessionExpiryTime");//shortway adding 30 min created
