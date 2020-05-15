@@ -70,21 +70,15 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 //			super.doFilter(request, response, filterChain);
 //		}
 		HttpServletRequest req = (HttpServletRequest)request;
+		HttpServletResponse res = (HttpServletResponse)response;
 		request=new HttpServletRequestWrapper((HttpServletRequest)request);
 		
 		System.out.println("request after casting"+req.getParameter("username"));
 		System.out.println("request after casting wrapper"+request.getParameter("username"));
 		try {			
 			String clientToken = parseJwt(req);//
-			System.out.println("clientToken::" + clientToken);
-			System.out.println("Changes for checking");			
-			System.out.println("Changes for query string"+req.getTrailerFields().toString());
-			System.out.println("Changes for query string"+req.getHeader("username"));
-			System.out.println("Changes for query string"+req.getParameter("username"));		
-			//System.out.println("Changes for query string"+request.getContentType().toString());
-			System.out.println("Changes for query string"+req.getServletContext().getRequestCharacterEncoding());
-			System.out.println("Changes for query string"+req.getHeaderNames().toString());
-			System.out.println("Changes for query string"+req.getRequestURI().toString());
+			System.out.println("clientToken::" + clientToken);			
+			
 			if(req.getParameter("username")!=null&&clientToken==null) {
 			Boolean isSameUserRoleInLoggedIn = validateSameUser(req);
 			if (isSameUserRoleInLoggedIn) {
@@ -150,13 +144,14 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 //				}
 			}
 		} catch (BadArgumentException e) {
-			throw new BadArgumentException(e.getMessage());
+			//throw new BadArgumentException(e.getMessage());
+			res.sendError(401, e.getMessage());
 		}
 		catch (InvalidTokenException e) {
 			throw new InvalidTokenException(e.getMessage());
 		}
 		
-		filterChain.doFilter(req, response);
+		filterChain.doFilter(req, res);
 		System.out.println("Changes for after filter string"+req.getParameter("username"));
 	}
 
