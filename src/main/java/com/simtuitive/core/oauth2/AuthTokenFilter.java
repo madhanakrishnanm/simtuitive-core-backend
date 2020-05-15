@@ -6,8 +6,6 @@ import java.util.Map;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
@@ -15,17 +13,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.oauth2.common.exceptions.InvalidRequestException;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.security.web.authentication.session.SessionAuthenticationException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -67,22 +62,18 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 		
 		String initrole=null;
 		String username=null;
+		System.out.println("request before casting wrapper"+request.getParameter("username"));
 //		if ("POST".equals(request.getMethod())
 //				&& request.getContentType().equals(MediaType.APPLICATION_FORM_URLENCODED_VALUE)) {
 //			super.doFilter(request, response, filterChain);
 //		}
 		HttpServletRequest req = (HttpServletRequest)request;
 		HttpServletResponse res = (HttpServletResponse)response;
-		res.setHeader("Access-Control-Allow-Origin", "*");
-		res.setHeader("Access-Control-Allow-Credentials", "true");
-		res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-		res.setHeader("Access-Control-Max-Age", "3600");
-		res.setHeader("Access-Control-Allow-Headers", "Authorization,Content-Type, Accept, X-Requested-With, remember-me");
-
-		request=new HttpServletRequestWrapper((HttpServletRequest)request);
+		
+		HttpServletRequestWrapper request1=new HttpServletRequestWrapper((HttpServletRequest)request);
 		System.out.println("request wrapper new one"+request.getParameter("username"));
 		System.out.println("request after casting"+req.getParameter("username"));
-		System.out.println("request after casting wrapper"+request.getParameter("username"));
+		System.out.println("request after casting wrapper"+request1.getParameter("username"));
 		try {			
 			String clientToken = parseJwt(req);//
 			System.out.println("clientToken::" + clientToken);			
@@ -152,7 +143,12 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 //				}
 			}
 		} catch (BadArgumentException e) {
-			//throw new BadArgumentException(e.getMessage());
+			//throw new BadArgumentException(e.getMessage());			
+//			res.setHeader("Access-Control-Allow-Origin", "*");
+//			res.setHeader("Access-Control-Allow-Credentials", "true");
+//			res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+//			res.setHeader("Access-Control-Max-Age", "3600");
+//			res.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, remember-me");
 			res.sendError(401, e.getMessage());
 		}
 		catch (InvalidTokenException e) {

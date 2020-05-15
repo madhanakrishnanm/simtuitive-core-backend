@@ -135,31 +135,32 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 	}
 
 	@Override
-	public Page<Organisation> getAll(Optional<String>pageno, Optional<String> org, Optional<String> location, Optional<String> industry) {
+	public Page<Organisation> getAll(Optional<String>pageno, Optional<String> query, Optional<String> location, Optional<String> industry) {
 		// TODO Auto-generated method stub
 		int pagenumber=Integer.parseInt(pageno.orElse("0"));
 		final Pageable pageable = PageRequest.of(pagenumber, 5,Sort.by("organizationId").ascending());
 		Criteria org1 = null,location1 = null,industry1 = null;		
-		Query query = new Query();
-		if(org!=null) {			
+		Query query1 = new Query();
+		if(query!=null) {			
 			new Criteria();
-			org1= Criteria.where("organizationName").regex(org.orElse(""),"i");
-			query.addCriteria(org1);
+			org1= Criteria.where("organizationName").regex(query.orElse(""),"i");
+			
 		}
 		if(location!=null) {			
 			new Criteria();
-			location1= Criteria.where("location").regex(location.orElse(""),"i");
-			query.addCriteria(location1);
+			location1= Criteria.where("location").regex(query.orElse(""),"i");
+			
 		}
 		if(industry!=null) {			
 			 new Criteria();
-			industry1= Criteria.where("industry").regex(industry.orElse(""),"i");
-			query.addCriteria(industry1);
-		}		
-		query.with(pageable);
-		System.out.println("Organisation query"+query.toString());
-		List<Organisation>orgresult=mongoOps.find(query, Organisation.class);
-		long count = mongoOps.count(query, Organisation.class);	
+			industry1= Criteria.where("industry").regex(query.orElse(""),"i");
+			
+		}	
+		query1.addCriteria(new Criteria().orOperator(org1,location1,industry1));
+		query1.with(pageable);
+		System.out.println("Organisation query"+query1.toString());
+		List<Organisation>orgresult=mongoOps.find(query1, Organisation.class);
+		long count = mongoOps.count(query1, Organisation.class);	
 		Page<Organisation> result=new PageImpl<Organisation>(orgresult , pageable, count);
 		return result;
 	}
