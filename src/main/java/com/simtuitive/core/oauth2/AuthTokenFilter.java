@@ -80,7 +80,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 		res.setHeader("Access-Control-Allow-Headers", "Authorization,Content-Type, Accept, X-Requested-With, remember-me");
 
 		request=new HttpServletRequestWrapper((HttpServletRequest)request);
-		
+		System.out.println("request wrapper new one"+request.getParameter("username"));
 		System.out.println("request after casting"+req.getParameter("username"));
 		System.out.println("request after casting wrapper"+request.getParameter("username"));
 		try {			
