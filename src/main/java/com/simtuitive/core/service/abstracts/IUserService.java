@@ -23,7 +23,7 @@ public interface IUserService {
 
 	public List<UserResponsePayload> getAllUser(String userType,int pageno);
 	 
-	public Page<User> getAllUserByPaginationApplied(String userType,Optional<String> pageno);
+	public Page<User> getAllUserByPaginationApplied(String userType,Optional<String> pageno,Optional<String> query);
 	
 	public UserResponsePayload deleteUser(String email);
 

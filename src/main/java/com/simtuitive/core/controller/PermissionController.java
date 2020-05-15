@@ -159,9 +159,9 @@ public class PermissionController extends BaseController {
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/get-permissions", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<List<PermissionsResponsePayload>> getAllRoles(@ApiIgnore UriComponentsBuilder builder,@RequestParam("pageno") Optional<String> pageno
-			,@RequestParam("name") Optional<String> name,@RequestParam("type") Optional<String> type,HttpServletRequest request, HttpServletResponse response)
+			,@RequestParam("query") Optional<String> query,@RequestParam("type") Optional<String> type,HttpServletRequest request, HttpServletResponse response)
 			throws UserRoleServiceException, ResourceNotFoundException {
-		Page<Permissions> roleresponse = permissionservice.getall(pageno,name,type);
+		Page<Permissions> roleresponse = permissionservice.getall(pageno,query,type);
 		List<PermissionsResponsePayload> result = permissionservice.findAll(roleresponse.getContent());
 		String tmp = builder.path("/get-permissions").build().toString();
 		Link l1 = new Link(tmp, " All Permission Detail");

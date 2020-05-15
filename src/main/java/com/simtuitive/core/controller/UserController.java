@@ -334,17 +334,14 @@ public class UserController extends BaseController {
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/get-users-by-role", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<List<UserResponsePayload>> getAllUser(@ApiIgnore UriComponentsBuilder builder,
-			@RequestParam("role") String userType, @RequestParam("pageno") Optional<String> pageno,
-			HttpServletRequest request, HttpServletResponse response) {
-		Page<User> userresponse = userservice.getAllUserByPaginationApplied(userType, pageno);		
+			@RequestParam("role") String userType, @RequestParam("pageNo") Optional<String> pageno,
+			 @RequestParam("query") Optional<String> query,HttpServletRequest request, HttpServletResponse response) {
+		Page<User> userresponse = userservice.getAllUserByPaginationApplied(userType, pageno,query);		
 		List<UserResponsePayload> result = createResponse(userresponse.getContent(), userType);
 		String tmp = builder.path("/getAll").build().toString();
-		Link l1 = new Link(tmp, " User Detail getAll");
-		Long totallong=userservice.countByRoleAndStatus(userType, 1L);
-		int totalint=totallong.intValue();
-		System.out.println("user count"+userresponse.getTotalElements());
-		
-		PaginationResponse page = new PaginationResponse(totalint,
+		Link l1 = new Link(tmp, " User Detail getAll");		
+		System.out.println("user count"+userresponse.getTotalElements());		
+		PaginationResponse page = new PaginationResponse(userresponse.getNumberOfElements(),
 				userresponse.getTotalPages(), userresponse.getSize(), userresponse.getPageable().getPageNumber());
 		return new JsonApiWrapper<>(result, getSelfLink(request), Arrays.asList(l1), page);
 

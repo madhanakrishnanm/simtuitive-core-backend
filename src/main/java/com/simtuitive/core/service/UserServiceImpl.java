@@ -79,12 +79,12 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		}
 		if (user.getRole().equalsIgnoreCase("CLIENT")) {
 			System.out.println("welcome issue"+user.getOrgId());
-			Organisation org=orgrepository.findByOrganizationId(user.getOrgId());
-			System.out.println("welcome issue");
-			System.out.println("organisaton"+org.getOrganizationId());
+//			Organisation org=orgrepository.findByOrganizationId(user.getOrgId());
+//			System.out.println("welcome issue");
+//			System.out.println("organisaton"+org.getOrganizationId());
 			payload=new UserResponsePayload(user.getUserId(),user.getUserName(), user.getUserEmail(), user.getOrgId(),
 					null, user.getStatus(), user.getCreatedDate(),
-					user.getClientGst(), user.getClientPan(),user.getPermissions(), user.getRole(),org.getOrganizationName(),user.getLastLoggedIn());
+					user.getClientGst(), user.getClientPan(),user.getPermissions(), user.getRole(),user.getOrgName(),user.getLastLoggedIn());
 		}		
 		return payload;
 	}
@@ -171,15 +171,38 @@ public class UserServiceImpl extends BaseService implements IUserService {
 
 	
 	@Override
-	public Page<User> getAllUserByPaginationApplied(String userType,Optional<String> pageno) {
+	public Page<User> getAllUserByPaginationApplied(String userType,Optional<String> pageno,Optional<String> query) {
 		int pagenumber=Integer.parseInt(pageno.orElse("0"));
 		final Pageable pageable = PageRequest.of(pagenumber, 5,Sort.by("userId").ascending());		
-		Query query = new Query();
-		query.with(pageable);
-		query.addCriteria(new Criteria().orOperator(Criteria.where("userName").regex("test").andOperator(Criteria.where("role").is(userType).andOperator(Criteria.where("status").is(1L)))));		
-		//parameter rqueired to construct pageable			
-		List<User>result1=mongoOps.find(query, User.class);
-		long count = mongoOps.count(query, User.class);		
+		Query query1 = new Query();
+		Criteria rolename = null;
+		Criteria clientname,orgname = null;
+		if(userType.equalsIgnoreCase("Admin")) {
+			if(query!=null) {
+				new Criteria();
+				rolename= Criteria.where("userName").regex(query.orElse(""),"i");				
+				query1.addCriteria(new Criteria().orOperator(rolename));				
+				
+			}
+		}
+		if(userType.equalsIgnoreCase("Client")) {
+			if(query!=null) {
+				new Criteria();
+				clientname= Criteria.where("userName").regex(query.orElse(""),"i");
+				orgname= Criteria.where("orgName").regex(query.orElse(""),"i");
+				query1.addCriteria(new Criteria().orOperator(clientname,orgname));				
+			}
+		}
+		
+		
+		//query1.addCriteria(new Criteria().orOperator(Criteria.where("userName").regex("test").andOperator(Criteria.where("role").is(userType).andOperator(Criteria.where("status").is(1L)))));		
+		query1.addCriteria(Criteria.where("status").is(1L));
+		query1.addCriteria(Criteria.where("role").is(userType));
+		query1.with(pageable);
+		//parameter rqueired to construct pageable	
+		System.out.println("Query user"+query1.toString());
+		List<User>result1=mongoOps.find(query1, User.class);
+		long count = mongoOps.count(query1, User.class);		
 		Page<User> result=new PageImpl<User>(result1 , pageable, count);		
 		return result;
 		
@@ -229,7 +252,8 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		System.out.println("role"+role.toString());
 		List<Permissions> permissionlist = buildRolePermission(role.getRoleId());
 		System.out.println("role"+permissionlist.toString());
-		User user = new User(payload.getName(), payload.getEmail(), payload.getOrganisationId(),
+		Organisation org=orgrepository.findByOrganizationId(payload.getOrganisationId());
+		User user = new User(payload.getName(), payload.getEmail(), payload.getOrganisationId(),org.getOrganizationName(),
 				passwordEncoder.encode(payload.getPassword()), 1L, new Date(),
 				payload.getGst(), payload.getPan(), permissionlist, payload.getRole(),new Date());
 		return user;

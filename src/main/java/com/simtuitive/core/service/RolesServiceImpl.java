@@ -87,22 +87,22 @@ public class RolesServiceImpl extends BaseService implements IRolesService {
 	}
 
 	@Override
-	public Page<Roles> getall(Optional<String> pageno,Optional<String> role) {
+	public Page<Roles> getall(Optional<String> pageno,Optional<String> query) {
 		// TODO Auto-generated method stub		
 		int pagenumber=Integer.parseInt(pageno.orElse("0"));
 		final Pageable pageable = PageRequest.of(pagenumber, 5,Sort.by("roleId").ascending());
 		Criteria rolename = null;
-		Query query = new Query();
-		if(role!=null) {
+		Query query1 = new Query();
+		if(query!=null) {
 			new Criteria();
-			rolename= Criteria.where("roleName").regex(role.orElse(""),"i");
-			query.addCriteria(rolename);
+			rolename= Criteria.where("roleName").regex(query.orElse(""),"i");
+			query1.addCriteria(rolename);
 		}
-		query.addCriteria(Criteria.where("status").is(1L));
-		query.with(pageable);
-		System.out.println("Role query"+query.toString());
-		List<Roles>roleresult=mongoOps.find(query, Roles.class);
-		long count =mongoOps.count(query,Roles.class);
+		query1.addCriteria(Criteria.where("status").is(1L));
+		query1.with(pageable);
+		System.out.println("Role query"+query1.toString());
+		List<Roles>roleresult=mongoOps.find(query1, Roles.class);
+		long count =mongoOps.count(query1,Roles.class);
 		Page<Roles> pagerole=new PageImpl<Roles>(roleresult,pageable,count);		
 		return pagerole;
 		

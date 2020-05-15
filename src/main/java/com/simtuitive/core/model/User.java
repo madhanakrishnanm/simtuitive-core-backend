@@ -34,6 +34,7 @@ public class User implements GrantedAuthority,Serializable {
 	@Email
 	private String userEmail;
 	private String orgId;
+	private String orgName;
 	private String password;
 	private Long status;//1-active,2-inactive,3-suspend
 	private String clientDealOwner;
@@ -335,15 +336,31 @@ public class User implements GrantedAuthority,Serializable {
 	public void setRole(String role) {
 		this.role = role;
 	}
+	
+
+	/**
+	 * @return the orgName
+	 */
+	public String getOrgName() {
+		return orgName;
+	}
+
+	/**
+	 * @param orgName the orgName to set
+	 */
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
 
 	// client specific
-	public User(String userName, String userEmail, String orgId, String password, Long status,
+	public User(String userName, String userEmail, String orgId,String orgName, String password, Long status,
 			 Date createdDate, String clientGst, String clientPan,
 			 List<Permissions> permissions,String role,Date lastLoggedIn) {
 		super();
 		this.userName = userName;
 		this.userEmail = userEmail;
 		this.orgId = orgId;
+		this.orgName = orgName;
 		this.password = password;
 		this.status = status;		
 		this.createdDate = createdDate;		

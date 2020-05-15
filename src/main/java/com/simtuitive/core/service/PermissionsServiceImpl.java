@@ -159,27 +159,26 @@ public class PermissionsServiceImpl implements IPermissionService {
 	}
 
 	@Override
-	public Page<Permissions> getall(Optional<String> pageno,Optional<String> name,Optional<String> type) {
+	public Page<Permissions> getall(Optional<String> pageno,Optional<String> query,Optional<String> type) {
 		// TODO Auto-generated method stub
 		int pagenumber=Integer.parseInt(pageno.orElse("0"));
 		final Pageable pageable = PageRequest.of(pagenumber, 5,Sort.by("permissionId").ascending());
-		Criteria type1,name1 = null;
-		Query query = new Query();
-		if(name!=null) {
+		Criteria type1 = null,name1 = null;
+		Query query1 = new Query();
+		if(query!=null) {
 			new Criteria();
-			name1= Criteria.where("name").regex(name.orElse(""),"i");
-			query.addCriteria(name1);
+			name1= Criteria.where("name").regex(query.orElse(""),"i");			
 		}
 		if(type!=null) {
 			new Criteria();
-			type1= Criteria.where("type").regex(type.orElse(""),"i");
-			query.addCriteria(type1);
+			type1= Criteria.where("type").regex(query.orElse(""),"i");			
 		}
-		query.addCriteria(Criteria.where("status").is(1L));
-		query.with(pageable);	
-		System.out.println("Permission query::"+query.toString());
-		List<Permissions>roleresult=mongoOps.find(query, Permissions.class);
-		long count =mongoOps.count(query, Permissions.class);
+		query1.addCriteria(new Criteria().orOperator(name1,type1));
+		query1.addCriteria(Criteria.where("status").is(1L));
+		query1.with(pageable);	
+		System.out.println("Permission query::"+query1.toString());
+		List<Permissions>roleresult=mongoOps.find(query1, Permissions.class);
+		long count =mongoOps.count(query1, Permissions.class);
 		return new PageImpl<Permissions>(roleresult,pageable,count);
 	}
 
