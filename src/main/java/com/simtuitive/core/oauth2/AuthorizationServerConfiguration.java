@@ -137,6 +137,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 		String stronger_salt = BCrypt.gensalt(12);
 		String value, TokenEnc, refreshTokenEnc, truerefreshtoken = null;
 		final Map<String, Object> additionalInfo = new HashMap<>();
+		final Map<String, Object> additionalInfoClient = new HashMap<>();
 		PasswordResetToken redistoken = null;
 		SessionInfo sessioninfo=null;
 
@@ -145,9 +146,9 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 			User user = (User) authentication.getPrincipal();
 			if(validateSameUser(user.getUsername())) {
 				OAuth2AccessToken accessTokenGen = new DefaultOAuth2AccessToken("error");
-				additionalInfo.put("error", "error");
-				additionalInfo.put("message", "User already in logged in");
-				((DefaultOAuth2AccessToken) accessTokenGen).setAdditionalInformation(additionalInfo);
+				additionalInfoClient.put("error", "error");
+				additionalInfoClient.put("message", "User already in logged in");
+				((DefaultOAuth2AccessToken) accessTokenGen).setAdditionalInformation(additionalInfoClient);
 				return accessTokenGen;
 			}
 			else {

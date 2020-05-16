@@ -183,9 +183,9 @@ public class OrganisationController extends BaseController {
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/getall-orgname", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<Map<String, String>> findAllOrganisationName(@ApiIgnore UriComponentsBuilder builder,
+	public JsonApiWrapper<List<String>> findAllOrganisationName(@ApiIgnore UriComponentsBuilder builder,
 			HttpServletRequest request, HttpServletResponse response) {
-		Map<String, String> userResponse = organisationservice.findAllOrganisationIndustry();
+		List<String> userResponse = organisationservice.findAllOrganisationName();
 		String tmp = builder.path(Constants.PATH_GET_ALL_ORG).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_GET_ALL_ORGANISATION_DETAIL);
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
@@ -203,9 +203,9 @@ public class OrganisationController extends BaseController {
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/getall-org-location", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<Map<String, String>> findAllOrganisationLocation(@ApiIgnore UriComponentsBuilder builder,
+	public JsonApiWrapper<List<String>> findAllOrganisationLocation(@ApiIgnore UriComponentsBuilder builder,
 			HttpServletRequest request, HttpServletResponse response) {
-		Map<String, String> userResponse = organisationservice.findAllOrganisationLocation();
+		List<String> userResponse = organisationservice.findAllOrganisationLocation();
 		String tmp = builder.path(Constants.PATH_GET_ALL_ORG).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_GET_ALL_ORGANISATION_DETAIL);
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
@@ -222,9 +222,9 @@ public class OrganisationController extends BaseController {
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/getall-org-industry", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<Map<String, String>> findAllOrganisationIndustry(@ApiIgnore UriComponentsBuilder builder,
+	public JsonApiWrapper<List<String>> findAllOrganisationIndustry(@ApiIgnore UriComponentsBuilder builder,
 			HttpServletRequest request, HttpServletResponse response) {
-		Map<String, String> userResponse = organisationservice.findAllOrganisationIndustry();
+		List<String> userResponse = organisationservice.findAllOrganisationIndustry();
 		String tmp = builder.path(Constants.PATH_GET_ALL_ORG).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_GET_ALL_ORGANISATION_DETAIL);
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));

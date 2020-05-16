@@ -115,14 +115,10 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 	}
 
 	@Override
-	public Map<String, String> findAllOrganisationName() {
+	public List<String> findAllOrganisationName() {
 		// TODO Auto-generated method stub	
-		Map<String, String> listorgname = new HashMap<>();
-		List<Organisation>organisations=organisationrepository.findAll();
-		for (Organisation org : organisations) {
-			listorgname.put(org.getOrganizationId(), org.getOrganizationName());
-		}
-		return listorgname;
+		List<String> organizationName=mongoOps.findDistinct("organizationName", Organisation.class, String.class);
+		return organizationName;
 	}
 
 	@Override
@@ -139,22 +135,26 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 		// TODO Auto-generated method stub
 		int pagenumber=Integer.parseInt(pageno.orElse("0"));
 		final Pageable pageable = PageRequest.of(pagenumber, 5,Sort.by("organizationId").ascending());
-		Criteria org1 = null,location1 = null,industry1 = null;		
+		Criteria org1 = null,location1 = null,industry1 = null,locationcr=null,industrycr =null;		
 		Query query1 = new Query();
 		if(query!=null) {			
 			new Criteria();
 			org1= Criteria.where("organizationName").regex(query.orElse(""),"i");
-			
-		}
-		if(location!=null) {			
 			new Criteria();
 			location1= Criteria.where("location").regex(query.orElse(""),"i");
-			
-		}
-		if(industry!=null) {			
 			 new Criteria();
-			industry1= Criteria.where("industry").regex(query.orElse(""),"i");
-			
+				industry1= Criteria.where("industry").regex(query.orElse(""),"i");
+		}
+		if(location.isPresent()) {			
+			String field=location.orElse("i");
+			 new Criteria();
+			 locationcr= Criteria.where("location").is(field);
+			 query1.addCriteria(locationcr);
+		}
+		if(industry.isPresent()) {			
+			new Criteria();
+			industrycr= Criteria.where("industry").is(industry);
+			 query1.addCriteria(industrycr);
 		}	
 		query1.addCriteria(new Criteria().orOperator(org1,location1,industry1));
 		query1.with(pageable);
@@ -172,25 +172,17 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 	}
 
 	@Override
-	public Map<String, String> findAllOrganisationLocation() {
+	public List<String> findAllOrganisationLocation() {
 		// TODO Auto-generated method stub
-		Map<String, String> listorgname = new HashMap<>();
-		List<Organisation>organisations=organisationrepository.findAll();
-		for (Organisation org : organisations) {
-			listorgname.put(org.getOrganizationId(), org.getLocation());
-		}
-		return listorgname;
+	List<String> orglocation=mongoOps.findDistinct("location", Organisation.class, String.class);
+		return orglocation;
 	}
 
 	@Override
-	public Map<String, String> findAllOrganisationIndustry() {
+	public List<String> findAllOrganisationIndustry() {
 		// TODO Auto-generated method stub
-		Map<String, String> listorgname = new HashMap<>();
-		List<Organisation>organisations=organisationrepository.findAll();
-		for (Organisation org : organisations) {
-			listorgname.put(org.getOrganizationId(), org.getIndustry());
-		}
-		return listorgname;
+		List<String> industry=mongoOps.findDistinct("industry", Organisation.class, String.class);
+		return industry;
 	}
 
 }
