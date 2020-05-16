@@ -185,10 +185,48 @@ public class OrganisationController extends BaseController {
 	@RequestMapping(value = "/getall-orgname", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<Map<String, String>> findAllOrganisationName(@ApiIgnore UriComponentsBuilder builder,
 			HttpServletRequest request, HttpServletResponse response) {
-		Map<String, String> userResponse = organisationservice.findAllOrganisationName();
+		Map<String, String> userResponse = organisationservice.findAllOrganisationIndustry();
 		String tmp = builder.path(Constants.PATH_GET_ALL_ORG).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_GET_ALL_ORGANISATION_DETAIL);
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
 
+	}
+	
+	@PreAuthorize("hasAuthority('Admin')")
+	@ResponseStatus(HttpStatus.IM_USED)
+	@ApiOperation(value = " getall Organisations ", response = Organisation.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Successful Creation of User Data.", response = JsonApiWrapper.class),
+			@ApiResponse(code = 401, message = "Not authorized!"),
+			@ApiResponse(code = 403, message = "Not authorized to perform this action."),
+			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
+			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
+			@ApiResponse(code = 500, message = "Internal server error") })
+	@RequestMapping(value = "/getall-org-location", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public JsonApiWrapper<Map<String, String>> findAllOrganisationLocation(@ApiIgnore UriComponentsBuilder builder,
+			HttpServletRequest request, HttpServletResponse response) {
+		Map<String, String> userResponse = organisationservice.findAllOrganisationLocation();
+		String tmp = builder.path(Constants.PATH_GET_ALL_ORG).build().toString();
+		Link l1 = new Link(tmp, Constants.LINK_GET_ALL_ORGANISATION_DETAIL);
+		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
+
+	}
+	@PreAuthorize("hasAuthority('Admin')")
+	@ResponseStatus(HttpStatus.IM_USED)
+	@ApiOperation(value = " getall Organisations ", response = Organisation.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Successful Creation of User Data.", response = JsonApiWrapper.class),
+			@ApiResponse(code = 401, message = "Not authorized!"),
+			@ApiResponse(code = 403, message = "Not authorized to perform this action."),
+			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
+			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
+			@ApiResponse(code = 500, message = "Internal server error") })
+	@RequestMapping(value = "/getall-org-industry", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public JsonApiWrapper<Map<String, String>> findAllOrganisationIndustry(@ApiIgnore UriComponentsBuilder builder,
+			HttpServletRequest request, HttpServletResponse response) {
+		Map<String, String> userResponse = organisationservice.findAllOrganisationIndustry();
+		String tmp = builder.path(Constants.PATH_GET_ALL_ORG).build().toString();
+		Link l1 = new Link(tmp, Constants.LINK_GET_ALL_ORGANISATION_DETAIL);
+		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
 	}
 }

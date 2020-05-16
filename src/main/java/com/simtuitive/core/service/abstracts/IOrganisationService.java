@@ -25,6 +25,10 @@ public interface IOrganisationService {
 	
 	public Map<String,String>findAllOrganisationName();
 	
+	public Map<String,String>findAllOrganisationLocation();
+	
+	public Map<String,String>findAllOrganisationIndustry();
+	
 	public OrganisationResponsePayload deleteOrganisation(String Id);
 	
 	public boolean getExistsOrganisation(String name);

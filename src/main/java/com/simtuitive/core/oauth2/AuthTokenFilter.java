@@ -77,12 +77,12 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 			String clientToken = parseJwt(req);//
 			System.out.println("clientToken::" + clientToken);			
 			
-			if(req.getParameter("username")!=null&&clientToken==null) {
-			Boolean isSameUserRoleInLoggedIn = validateSameUser(req,res);
-			if (isSameUserRoleInLoggedIn) {
-				System.out.println("sameuser logged in");//DuplicateSessionException
-			}			
-			}
+//			if(req.getParameter("username")!=null&&clientToken==null) {
+//			Boolean isSameUserRoleInLoggedIn = validateSameUser(req,res);
+//			if (isSameUserRoleInLoggedIn) {
+//				System.out.println("sameuser logged in");//DuplicateSessionException
+//			}			
+//			}
 			
 			if (clientToken != null && TokenUtil.validate(clientToken, secret)) {				
 				String clientTrueToken = TokenUtil.getToken(clientToken);//				

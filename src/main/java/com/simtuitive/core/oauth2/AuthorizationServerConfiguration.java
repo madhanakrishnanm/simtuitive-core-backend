@@ -6,6 +6,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -21,6 +25,7 @@ import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.DefaultOAuth2RefreshToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2RefreshToken;
+import org.springframework.security.oauth2.common.exceptions.UnauthorizedUserException;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -137,6 +142,14 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 		@Override
 		public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
 			User user = (User) authentication.getPrincipal();
+			if(validateSameUser(user.getUsername())) {
+				OAuth2AccessToken accessTokenGen = new DefaultOAuth2AccessToken(accessToken.getValue());
+				additionalInfo.put("error", "error");
+				additionalInfo.put("message", user.getUsername()+ "is already in logged in");
+				((DefaultOAuth2AccessToken) accessTokenGen).setAdditionalInformation(additionalInfo);
+				return accessTokenGen;
+			}
+			else {
 			value = accessToken.getValue();
 			StringBuilder sb = new StringBuilder();
 			sb.append(value);
@@ -178,6 +191,37 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 //		 System.out.println("Value retrive"+accessTokenOutput.getRefreshToken());
 			return accessTokenGen;
 		}
+		}
 	}
-
+	private Boolean validateSameUser(String initusername) {		 
+		String initrole = userDetailsService.getUserDetails(initusername);			
+		String key = initusername + initrole;
+		Map<?, ?> sessioninfo = (Map<?, ?>) redis.redisTemplate().opsForHash().get(key, key);
+		if(sessioninfo!=null&&!sessioninfo.isEmpty()&&(initrole.equalsIgnoreCase("Client")||initrole.equalsIgnoreCase("Learner"))) {
+		String sessionuser=(String) sessioninfo.get("emailId");		
+		Long time=(Long) sessioninfo.get("sessionCreatedTime");
+		Long time1=(Long) sessioninfo.get("sessionExpiryTime");//shortway adding 30 min created
+		Date sessionexpiretime= new java.util.Date(time1);
+		System.out.println("welcome sessionexpiretime"+sessionexpiretime);		
+		Date sessioncreatedtime = new java.util.Date(time);
+		System.out.println("welcome sessioncreatedtime"+sessioncreatedtime);
+		Date now = new Date();
+		if (sessionuser.equalsIgnoreCase(initusername)) {
+			System.out.println("sessioncreatedtime"+sessioncreatedtime);
+			System.out.println("true in same name"+sessionuser+"inituser"+initusername);
+			if(now.after(sessioncreatedtime)&&now.before(sessionexpiretime)) {
+				//throw new BadArgumentException(initrole+" User "+initusername+"is already in logged in");
+				return true;
+								
+			}else {	//previous session expired trying for re-login			
+				return false;	
+			}
+		}
+		else {
+			return false;	
+		}
+		}else {
+			return false;	
+		}	
+	}
 }

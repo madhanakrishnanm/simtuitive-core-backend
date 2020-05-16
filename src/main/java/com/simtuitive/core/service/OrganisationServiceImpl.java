@@ -171,4 +171,26 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 		return organisationrepository.existsByOrganizationName(name);
 	}
 
+	@Override
+	public Map<String, String> findAllOrganisationLocation() {
+		// TODO Auto-generated method stub
+		Map<String, String> listorgname = new HashMap<>();
+		List<Organisation>organisations=organisationrepository.findAll();
+		for (Organisation org : organisations) {
+			listorgname.put(org.getOrganizationId(), org.getLocation());
+		}
+		return listorgname;
+	}
+
+	@Override
+	public Map<String, String> findAllOrganisationIndustry() {
+		// TODO Auto-generated method stub
+		Map<String, String> listorgname = new HashMap<>();
+		List<Organisation>organisations=organisationrepository.findAll();
+		for (Organisation org : organisations) {
+			listorgname.put(org.getOrganizationId(), org.getIndustry());
+		}
+		return listorgname;
+	}
+
 }
