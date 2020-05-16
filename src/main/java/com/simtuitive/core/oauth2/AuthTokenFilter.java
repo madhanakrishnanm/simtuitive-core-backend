@@ -13,11 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
+import org.springframework.security.oauth2.common.exceptions.UnauthorizedUserException;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -29,11 +31,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.simtuitive.core.common.Constants;
 import com.simtuitive.core.config.RedisConfiguration;
 import com.simtuitive.core.globalexception.BadArgumentException;
+import com.simtuitive.core.globalexception.DuplicateSessionException;
 import com.simtuitive.core.model.SessionInfo;
 import com.simtuitive.core.service.CustomUserDetailsServiceImpl;
 import com.simtuitive.core.util.TokenUtil;
 
-@CrossOrigin
+
 public class AuthTokenFilter extends OncePerRequestFilter {
 
 	@Autowired
@@ -63,23 +66,19 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 		String initrole=null;
 		String username=null;
 		System.out.println("request before casting wrapper"+request.getParameter("username"));
-//		if ("POST".equals(request.getMethod())
-//				&& request.getContentType().equals(MediaType.APPLICATION_FORM_URLENCODED_VALUE)) {
-//			super.doFilter(request, response, filterChain);
-//		}
+
 		HttpServletRequest req = (HttpServletRequest)request;
-		HttpServletResponse res = (HttpServletResponse)response;
+		HttpServletResponse res = (HttpServletResponse)response;		
 		
-		HttpServletRequestWrapper request1=new HttpServletRequestWrapper((HttpServletRequest)request);
 		System.out.println("request wrapper new one"+request.getParameter("username"));
 		System.out.println("request after casting"+req.getParameter("username"));
-		System.out.println("request after casting wrapper"+request1.getParameter("username"));
+		
 		try {			
 			String clientToken = parseJwt(req);//
 			System.out.println("clientToken::" + clientToken);			
 			
 			if(req.getParameter("username")!=null&&clientToken==null) {
-			Boolean isSameUserRoleInLoggedIn = validateSameUser(req);
+			Boolean isSameUserRoleInLoggedIn = validateSameUser(req,res);
 			if (isSameUserRoleInLoggedIn) {
 				System.out.println("sameuser logged in");//DuplicateSessionException
 			}			
@@ -109,7 +108,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 				if (truetoken.matches(clientTrueToken)) {
 					if (now.after(expirationTime)) {
 						System.out.println("cominghere");
-						throw new InvalidTokenException("Token expired");
+						throw new InvalidTokenException("Token expired");//
 					} else {
 						if(now.after(sessioncreatedtime)&&now.before(sessionexpiretime)) {
 							System.out.println("coming session here");
@@ -149,10 +148,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 //			res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
 //			res.setHeader("Access-Control-Max-Age", "3600");
 //			res.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, remember-me");
-			res.setHeader("Access-Control-Allow-Origin", "*");
-			res.sendError(401, e.getMessage());
-			
-			
+			//res.setHeader("Access-Control-Allow-Origin", "*");
+			//res.sendError(401, e.getMessage());			
 		}
 		catch (InvalidTokenException e) {
 			throw new InvalidTokenException(e.getMessage());
@@ -179,7 +176,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 				System.out.println("sessioninfoafterupdate"+sessioninfoafterupdate);
 	}
 
-	private Boolean validateSameUser(HttpServletRequest request) {
+	private Boolean validateSameUser(HttpServletRequest request,HttpServletResponse response) {
 		String initusername = request.getParameter("username");
 		String initrole = customuserdetail.getUserDetails(initusername);			
 		String key = initusername + initrole;
@@ -197,7 +194,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 			System.out.println("sessioncreatedtime"+sessioncreatedtime);
 			System.out.println("true in same name"+sessionuser+"inituser"+initusername);
 			if(now.after(sessioncreatedtime)&&now.before(sessionexpiretime)) {
-				throw new BadArgumentException(initrole+" User "+initusername+"is already in logged in");
+				//throw new BadArgumentException(initrole+" User "+initusername+"is already in logged in");
+				response.setStatus(HttpStatus.UNAUTHORIZED.value());
+				throw new UnauthorizedUserException(initrole+" User "+initusername+"is already in logged in");				
 			}else {	//previous session expired trying for re-login			
 				return false;	
 			}
