@@ -163,9 +163,9 @@ public class RolesController extends BaseController {
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/get-all-role", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<List<RolesResponsePayload>> getAllRole(@ApiIgnore UriComponentsBuilder builder,
-			@RequestParam("pageno") Optional<String> pageno,@RequestParam("query") Optional<String> query, HttpServletRequest request, HttpServletResponse response)
+			@RequestParam("pageNo") Optional<String> pageno,@RequestParam("name") Optional<String> name,@RequestParam("query") Optional<String> query, HttpServletRequest request, HttpServletResponse response)
 			throws UserRoleServiceException, ResourceNotFoundException {
-		Page<Roles> roleresponse = roleservice.getall(pageno,query);
+		Page<Roles> roleresponse = roleservice.getall(pageno,query,name);
 		List<RolesResponsePayload> result = impl.getPayload(roleresponse.getContent());
 		String tmp = builder.path("/get-all-role").build().toString();
 		Link l1 = new Link(tmp, " Role Details");
@@ -173,6 +173,27 @@ public class RolesController extends BaseController {
 		PaginationResponse page = new PaginationResponse(roleresponse.getNumberOfElements(),
 				roleresponse.getTotalPages(), roleresponse.getSize(), roleresponse.getPageable().getPageNumber());
 		return new JsonApiWrapper<>(result, request.getRequestURL().toString(), Arrays.asList(l1), page);
+
+	}
+	
+	@ResponseStatus(HttpStatus.CREATED)
+	@PreAuthorize("hasAuthority('Super Admin')")
+	@ApiOperation(value = " Creates a role ", response = Roles.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Successful Creation of User Data.", response = JsonApiWrapper.class),
+			@ApiResponse(code = 401, message = "Not authorized!"),
+			@ApiResponse(code = 403, message = "Not authorized to perform this action."),
+			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
+			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
+			@ApiResponse(code = 500, message = "Internal server error") })
+	@RequestMapping(value = "/find-role", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public JsonApiWrapper<List<String>> findrole(@ApiIgnore UriComponentsBuilder builder,
+			 HttpServletRequest request, HttpServletResponse response)
+			throws UserRoleServiceException, ResourceNotFoundException {
+		List<String> roleresponse = roleservice.findRole();
+		String tmp = builder.path("/find-role").build().toString();
+		Link l1 = new Link(tmp, " Role Detail");
+		return new JsonApiWrapper<>(roleresponse, request.getRequestURL().toString(), Arrays.asList(l1));
 
 	}
 }

@@ -413,10 +413,11 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "/logout", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<UserResponsePayload> logoutPage(@ApiIgnore UriComponentsBuilder builder,
 			HttpServletRequest request, HttpServletResponse response) {
+		HttpServletRequest req = (HttpServletRequest)request;		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String username = null;
 		if (auth != null) {
-			String clientToken = parseJwt(request);
+			String clientToken = parseJwt(req);
 			if (TokenUtil.validate(clientToken, secret)) {
 				String clientTrueToken = TokenUtil.getToken(clientToken);
 				Map<?, ?> newtoken = (Map<?, ?>) redis.redisTemplate().opsForHash().get(clientTrueToken,

@@ -33,8 +33,8 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 
 	@Autowired
 	private OrganisationRepository organisationrepository;
-	
-	@Autowired 
+
+	@Autowired
 	private MongoOperations mongoOps;
 
 	@Override
@@ -95,73 +95,79 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 	@Override
 	public OrganisationResponsePayload getOrganisation(String Id) {
 		// TODO Auto-generated method stub
-		Organisation client=organisationrepository.findByOrganizationId(Id);
+		Organisation client = organisationrepository.findByOrganizationId(Id);
 		return buildOrganisationResponsePayload(client);
 	}
 
 	@Override
 	public List<OrganisationResponsePayload> findAll(List<Organisation> organisations) {
 		// TODO Auto-generated method stub
-		List<OrganisationResponsePayload> result=new ArrayList<OrganisationResponsePayload>();
-		
-		for(Organisation org:organisations) {
-			
-				OrganisationResponsePayload value=buildOrganisationResponsePayload(org);
-				result.add(value);	
-			
-			
+		List<OrganisationResponsePayload> result = new ArrayList<OrganisationResponsePayload>();
+
+		for (Organisation org : organisations) {
+
+			OrganisationResponsePayload value = buildOrganisationResponsePayload(org);
+			result.add(value);
+
 		}
 		return result;
 	}
 
 	@Override
 	public List<String> findAllOrganisationName() {
-		// TODO Auto-generated method stub	
-		List<String> organizationName=mongoOps.findDistinct("organizationName", Organisation.class, String.class);
+		// TODO Auto-generated method stub
+		List<String> organizationName = mongoOps.findDistinct("organizationName", Organisation.class, String.class);
 		return organizationName;
 	}
 
 	@Override
 	public OrganisationResponsePayload deleteOrganisation(String Id) {
 		// TODO Auto-generated method stub
-		Organisation client=organisationrepository.findByOrganizationId(Id);
+		Organisation client = organisationrepository.findByOrganizationId(Id);
 		client.setStatus("inactive");
-		Organisation deleted=organisationrepository.save(client);
+		Organisation deleted = organisationrepository.save(client);
 		return buildOrganisationResponsePayload(deleted);
 	}
 
 	@Override
-	public Page<Organisation> getAll(Optional<String>pageno, Optional<String> query, Optional<String> location, Optional<String> industry) {
+	public Page<Organisation> getAll(Optional<String> pageno, Optional<String> query, Optional<String> location,
+			Optional<String> industry,Optional<String>name) {
 		// TODO Auto-generated method stub
-		int pagenumber=Integer.parseInt(pageno.orElse("0"));
-		final Pageable pageable = PageRequest.of(pagenumber, 5,Sort.by("organizationId").ascending());
-		Criteria org1 = null,location1 = null,industry1 = null,locationcr=null,industrycr =null;		
+		int pagenumber = Integer.parseInt(pageno.orElse("0"));
+		final Pageable pageable = PageRequest.of(pagenumber, 5, Sort.by("organizationId").ascending());
+		Criteria org1 = null, location1 = null, industry1 = null, namecr = null, industrycr = null,
+				locationcr1 = null;
 		Query query1 = new Query();
-		if(query!=null) {			
+		if (query != null) {
 			new Criteria();
-			org1= Criteria.where("organizationName").regex(query.orElse(""),"i");
+			org1 = Criteria.where("organizationName").regex(query.orElse(""), "i");
 			new Criteria();
-			location1= Criteria.where("location").regex(query.orElse(""),"i");
-			 new Criteria();
-				industry1= Criteria.where("industry").regex(query.orElse(""),"i");
+			location1 = Criteria.where("location").regex(query.orElse(""), "i");
+			new Criteria();
+			industry1 = Criteria.where("industry").regex(query.orElse(""), "i");
 		}
-		if(location.isPresent()) {			
-			String field=location.orElse("i");
-			 new Criteria();
-			 locationcr= Criteria.where("location").is(field);
-			 query1.addCriteria(locationcr);
+		query1.addCriteria(new Criteria().orOperator(org1, location1, industry1));
+		System.out.println("querybeforFilter" + query1.toString());
+		if (location.isPresent()) {
+			new Criteria();			
+			locationcr1 = Criteria.where("location").is(location.get());
+			query1.addCriteria(locationcr1);
 		}
-		if(industry.isPresent()) {			
+		if (industry.isPresent()) {
 			new Criteria();
-			industrycr= Criteria.where("industry").is(industry);
-			 query1.addCriteria(industrycr);
-		}	
-		query1.addCriteria(new Criteria().orOperator(org1,location1,industry1));
+			industrycr = Criteria.where("industry").is(industry.get());
+			query1.addCriteria(industrycr);
+		}
+		if (name.isPresent()) {
+			new Criteria();
+			namecr = Criteria.where("organizationName").is(name.get());
+			query1.addCriteria(namecr);
+		}
 		query1.with(pageable);
-		System.out.println("Organisation query"+query1.toString());
-		List<Organisation>orgresult=mongoOps.find(query1, Organisation.class);
-		long count = mongoOps.count(query1, Organisation.class);	
-		Page<Organisation> result=new PageImpl<Organisation>(orgresult , pageable, count);
+		System.out.println("Organisation query" + query1.toString());
+		List<Organisation> orgresult = mongoOps.find(query1, Organisation.class);
+		long count = mongoOps.count(query1, Organisation.class);
+		Page<Organisation> result = new PageImpl<Organisation>(orgresult, pageable, count);
 		return result;
 	}
 
@@ -174,14 +180,14 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 	@Override
 	public List<String> findAllOrganisationLocation() {
 		// TODO Auto-generated method stub
-	List<String> orglocation=mongoOps.findDistinct("location", Organisation.class, String.class);
+		List<String> orglocation = mongoOps.findDistinct("location", Organisation.class, String.class);
 		return orglocation;
 	}
 
 	@Override
 	public List<String> findAllOrganisationIndustry() {
 		// TODO Auto-generated method stub
-		List<String> industry=mongoOps.findDistinct("industry", Organisation.class, String.class);
+		List<String> industry = mongoOps.findDistinct("industry", Organisation.class, String.class);
 		return industry;
 	}
 

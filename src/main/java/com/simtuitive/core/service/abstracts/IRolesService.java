@@ -21,9 +21,11 @@ public interface IRolesService {
 
 	public RolesResponsePayload deleteRole(String roleid);
 
-	public Page<Roles> getall(Optional<String> pageno,Optional<String> query);
+	public Page<Roles> getall(Optional<String> pageno,Optional<String> query,Optional<String>name);
 	
 	public Long countofRole();
 	
 	public boolean roleExists(String rolename);
+	
+	public List<String> findRole();
 }

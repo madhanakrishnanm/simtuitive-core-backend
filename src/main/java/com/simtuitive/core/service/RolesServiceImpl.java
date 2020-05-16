@@ -87,16 +87,21 @@ public class RolesServiceImpl extends BaseService implements IRolesService {
 	}
 
 	@Override
-	public Page<Roles> getall(Optional<String> pageno,Optional<String> query) {
+	public Page<Roles> getall(Optional<String> pageno,Optional<String> query,Optional<String> name) {
 		// TODO Auto-generated method stub		
 		int pagenumber=Integer.parseInt(pageno.orElse("0"));
 		final Pageable pageable = PageRequest.of(pagenumber, 5,Sort.by("roleId").ascending());
-		Criteria rolename = null;
+		Criteria rolename = null,rolenamecr=null;
 		Query query1 = new Query();
 		if(query!=null) {
 			new Criteria();
 			rolename= Criteria.where("roleName").regex(query.orElse(""),"i");
 			query1.addCriteria(rolename);
+		}
+		if(name.isPresent()) {
+			new Criteria();
+			rolenamecr= Criteria.where("roleName").is(name.get());
+			query1.addCriteria(rolenamecr);
 		}
 		query1.addCriteria(Criteria.where("status").is(1L));
 		query1.with(pageable);
@@ -133,6 +138,13 @@ public class RolesServiceImpl extends BaseService implements IRolesService {
 	public boolean roleExists(String rolename) {
 		// TODO Auto-generated method stub
 		return rolesrepository.existsByRoleName(rolename);
+	}
+
+	@Override
+	public List<String> findRole() {
+		// TODO Auto-generated method stub		
+		List<String>roleNamedis  = mongoOps.findDistinct("roleName", Roles.class, String.class);
+		return roleNamedis;
 	}
 
 }

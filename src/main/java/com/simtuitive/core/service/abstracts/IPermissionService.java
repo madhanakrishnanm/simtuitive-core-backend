@@ -18,7 +18,7 @@ public interface IPermissionService {
 	// GetAll Roles
 	public List<PermissionsResponsePayload> findAll(List<Permissions> permlist);
 	
-	public Page<Permissions> getall(Optional<String> pageno,Optional<String> query,Optional<String> type);
+	public Page<Permissions> getall(Optional<String> pageno,Optional<String> query,Optional<String> type,Optional<String> name);
 	
 	public PermissionsResponsePayload get(String permissionId);
 	
@@ -29,4 +29,8 @@ public interface IPermissionService {
 	public boolean permissionExistsByName(String name);
 	
 	public boolean permissionExistsByType(String type);
+	
+	public List<String> getPermissionTypeAll();
+	
+	public List<String> getPermissionNameAll();
 }

@@ -161,8 +161,8 @@ public class OrganisationController extends BaseController {
 	@RequestMapping(value = "/getall-org", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<List<OrganisationResponsePayload>> findAllOrganisation(
 			@ApiIgnore UriComponentsBuilder builder, @RequestParam("pageNo") Optional<String> pageno,@RequestParam("query") Optional<String> query,@RequestParam("location") Optional<String> location,@RequestParam("industry") Optional<String> industry,
-			HttpServletRequest request, HttpServletResponse response) {
-		Page<Organisation> userResponse = organisationservice.getAll(pageno,query,location,industry);
+			@RequestParam("name") Optional<String> name,HttpServletRequest request, HttpServletResponse response) {
+		Page<Organisation> userResponse = organisationservice.getAll(pageno,query,location,industry,name);
 		List<OrganisationResponsePayload> resultresponse = organisationservice.findAll(userResponse.getContent());
 		String tmp = builder.path(Constants.PATH_GET_ALL_ORG).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_GET_ALL_ORGANISATION_DETAIL);

@@ -159,21 +159,30 @@ public class PermissionsServiceImpl implements IPermissionService {
 	}
 
 	@Override
-	public Page<Permissions> getall(Optional<String> pageno,Optional<String> query,Optional<String> type) {
+	public Page<Permissions> getall(Optional<String> pageno,Optional<String> query,Optional<String> type,Optional<String> name) {
 		// TODO Auto-generated method stub
 		int pagenumber=Integer.parseInt(pageno.orElse("0"));
 		final Pageable pageable = PageRequest.of(pagenumber, 5,Sort.by("permissionId").ascending());
-		Criteria type1 = null,name1 = null;
+		Criteria type1 = null,name1 = null,typecr=null,namecr=null;
 		Query query1 = new Query();
 		if(query!=null) {
 			new Criteria();
-			name1= Criteria.where("name").regex(query.orElse(""),"i");			
-		}
-		if(type!=null) {
+			name1= Criteria.where("name").regex(query.orElse(""),"i");
 			new Criteria();
-			type1= Criteria.where("type").regex(query.orElse(""),"i");			
+			type1= Criteria.where("type").regex(query.orElse(""),"i");	
 		}
 		query1.addCriteria(new Criteria().orOperator(name1,type1));
+		if(type.isPresent()) {
+			new Criteria();			
+			typecr = Criteria.where("type").is(type.get());
+			query1.addCriteria(typecr);	
+		}
+		if(name.isPresent()) {
+			new Criteria();			
+			namecr = Criteria.where("name").is(type.get());
+			query1.addCriteria(namecr);
+		}
+		
 		query1.addCriteria(Criteria.where("status").is(1L));
 		query1.with(pageable);	
 		System.out.println("Permission query::"+query1.toString());
@@ -199,6 +208,20 @@ public class PermissionsServiceImpl implements IPermissionService {
 	public boolean permissionExistsByType(String type) {
 		// TODO Auto-generated method stub
 		return permissionrepository.existsByType(type);
+	}
+
+	@Override
+	public List<String> getPermissionTypeAll() {
+		// TODO Auto-generated method stub
+		List<String> typeall = mongoOps.findDistinct("type", Permissions.class, String.class);
+		return typeall;
+	}
+
+	@Override
+	public List<String> getPermissionNameAll() {
+		// TODO Auto-generated method stub
+		List<String> nameall = mongoOps.findDistinct("name", Permissions.class, String.class);
+		return nameall;
 	}
 
 }
