@@ -44,8 +44,8 @@ public class UserServiceImpl extends BaseService implements IUserService {
 
 	@Autowired
 	private UserRepository userrepository;
-	
-	@Autowired 
+
+	@Autowired
 	private MongoOperations mongoOps;
 
 	@Autowired
@@ -65,7 +65,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	public UserResponsePayload getUser(String email) {
 		UserResponsePayload returnpayload = null;
 		User user = userrepository.findByuserEmail(email);
-		System.out.println("user"+user.getUserId());
+		System.out.println("user" + user.getUserId());
 		returnpayload = buildPayloadbyUser(user);
 		return returnpayload;
 	}
@@ -74,22 +74,21 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		// TODO Auto-generated method stub
 		UserResponsePayload payload = null;
 		if (user.getRole().equalsIgnoreCase("ADMIN") || user.getRole().equalsIgnoreCase("Super Admin")) {
-			payload = new UserResponsePayload(user.getUserId(), user.getUserName(), user.getUserEmail(),
-					null, user.getStatus(), user.getPermissions(), user.getRole(),user.getLastLoggedIn());
+			payload = new UserResponsePayload(user.getUserId(), user.getUserName(), user.getUserEmail(), null,
+					user.getStatus(), user.getPermissions(), user.getRole(), user.getLastLoggedIn());
 		}
 		if (user.getRole().equalsIgnoreCase("CLIENT")) {
-			System.out.println("welcome issue"+user.getOrgId());
+			System.out.println("welcome issue" + user.getOrgId());
 //			Organisation org=orgrepository.findByOrganizationId(user.getOrgId());
 //			System.out.println("welcome issue");
 //			System.out.println("organisaton"+org.getOrganizationId());
-			payload=new UserResponsePayload(user.getUserId(),user.getUserName(), user.getUserEmail(), user.getOrgId(),
-					null, user.getStatus(), user.getCreatedDate(),
-					user.getClientGst(), user.getClientPan(),user.getPermissions(), user.getRole(),user.getOrgName(),user.getLastLoggedIn());
-		}		
+			payload = new UserResponsePayload(user.getUserId(), user.getUserName(), user.getUserEmail(),
+					user.getOrgId(), null, user.getStatus(), user.getCreatedDate(), user.getClientGst(),
+					user.getClientPan(), user.getPermissions(), user.getRole(), user.getOrgName(),
+					user.getLastLoggedIn());
+		}
 		return payload;
 	}
-	
-	
 
 	@Override
 	public UserResponsePayload addUser(UserRequestPayload UserRequestPayload) {
@@ -107,7 +106,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 			buildUserNeedsToBeCreated = buildLearnerUser(UserRequestPayload);
 		}
 		User savedUser = userrepository.save(buildUserNeedsToBeCreated);
-		UserResponsePayload newuser= buildPayloadbyUser(savedUser);
+		UserResponsePayload newuser = buildPayloadbyUser(savedUser);
 		return newuser;
 	}
 
@@ -122,8 +121,8 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		if (UserRequestPayload.getRole().equalsIgnoreCase("CLIENT")) {
 			updateuser = modifyClientUser(UserRequestPayload);
 		}
-		User savedUser =userrepository.save(updateuser);
-		UserResponsePayload updateUser= buildPayloadbyUser(savedUser);
+		User savedUser = userrepository.save(updateuser);
+		UserResponsePayload updateUser = buildPayloadbyUser(savedUser);
 		return updateUser;
 	}
 
@@ -134,34 +133,33 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	}
 
 	@Override
-	public List<UserResponsePayload> getAllUser(String userType,int pageno) {
-		List<UserResponsePayload>result=new ArrayList<UserResponsePayload>();
-		final Pageable pageable = PageRequest.of(pageno, 5,Sort.by("userId").ascending());
-	
+	public List<UserResponsePayload> getAllUser(String userType, int pageno) {
+		List<UserResponsePayload> result = new ArrayList<UserResponsePayload>();
+		final Pageable pageable = PageRequest.of(pageno, 5, Sort.by("userId").ascending());
+
 		Query query = new Query();
-		query.with(pageable);		
-		
-		Page<User> pageuserlist=(Page<User>) userrepository.findByRoleAndStatus(userType,pageable,1L);
-		
-		List<User>userlist=pageuserlist.getContent();
-		System.out.println("userlist"+userlist.toString());
-		if (userType.equalsIgnoreCase("ADMIN")
-				|| userType.equalsIgnoreCase("Super Admin")) {
-			for(User user:userlist) {
-				
-				if(user.getStatus()==1L) {
-					UserResponsePayload payload=buildPayloadbyUser(user);
+		query.with(pageable);
+
+		Page<User> pageuserlist = (Page<User>) userrepository.findByRoleAndStatus(userType, pageable, 1L);
+
+		List<User> userlist = pageuserlist.getContent();
+		System.out.println("userlist" + userlist.toString());
+		if (userType.equalsIgnoreCase("ADMIN") || userType.equalsIgnoreCase("Super Admin")) {
+			for (User user : userlist) {
+
+				if (user.getStatus() == 1L) {
+					UserResponsePayload payload = buildPayloadbyUser(user);
 					result.add(payload);
 				}
-				
+
 			}
 		}
 		if (userType.equalsIgnoreCase("CLIENT")) {
 			System.out.println("checking coming");
-			for(User user:userlist) {				
-				if(user.getStatus()==1L) {
-					System.out.println("checking"+user.getUserId());
-					UserResponsePayload payload=buildPayloadbyUser(user);
+			for (User user : userlist) {
+				if (user.getStatus() == 1L) {
+					System.out.println("checking" + user.getUserId());
+					UserResponsePayload payload = buildPayloadbyUser(user);
 					result.add(payload);
 				}
 			}
@@ -169,57 +167,73 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		return result;
 	}
 
-	
 	@Override
-	public Page<User> getAllUserByPaginationApplied(String userType,Optional<String> pageno,Optional<String> query) {
-		int pagenumber=Integer.parseInt(pageno.orElse("0"));
-		final Pageable pageable = PageRequest.of(pagenumber, 5,Sort.by("userId").ascending());		
+	public Page<User> getAllUserByPaginationApplied(String userType, Optional<String> pageno, Optional<String> query,
+			Optional<String> name, Optional<String> orgname) {
+		int pagenumber = Integer.parseInt(pageno.orElse("0"));
+		final Pageable pageable = PageRequest.of(pagenumber, 5, Sort.by("userId").ascending());
 		Query query1 = new Query();
 		Criteria rolename = null;
-		Criteria clientname,orgname = null;
-		if(userType.equalsIgnoreCase("Admin")) {
-			if(query!=null) {
+		Criteria clientname, orgnameCr, nameAdmin, orgNameClient = null;
+		if (userType.equalsIgnoreCase("Admin")) {
+			if (query != null) {
 				new Criteria();
-				rolename= Criteria.where("userName").regex(query.orElse(""),"i");				
-				query1.addCriteria(new Criteria().orOperator(rolename));				
-				
+				rolename = Criteria.where("userName").regex(query.orElse(""), "i");
+				query1.addCriteria(new Criteria().orOperator(rolename));
+
+			}
+			if (name.isPresent()) {
+				new Criteria();
+				nameAdmin = Criteria.where("userName").is(name.get());
+				query1.addCriteria(nameAdmin);
 			}
 		}
-		if(userType.equalsIgnoreCase("Client")) {
-			if(query!=null) {
+		if (userType.equalsIgnoreCase("Client")) {
+			if (query != null) {
 				new Criteria();
-				clientname= Criteria.where("userName").regex(query.orElse(""),"i");
-				orgname= Criteria.where("orgName").regex(query.orElse(""),"i");
-				query1.addCriteria(new Criteria().orOperator(clientname,orgname));				
+				clientname = Criteria.where("userName").regex(query.orElse(""), "i");
+				orgnameCr = Criteria.where("orgName").regex(query.orElse(""), "i");
+				query1.addCriteria(new Criteria().orOperator(clientname, orgnameCr));
+			}
+			if (name.isPresent()) {
+				new Criteria();
+				nameAdmin = Criteria.where("userName").is(name.get());
+				query1.addCriteria(nameAdmin);
+			}
+			if (orgname.isPresent()) {
+				new Criteria();
+				orgNameClient = Criteria.where("orgName").is(orgname.get());
+				query1.addCriteria(orgNameClient);
 			}
 		}
-		
-		
-		//query1.addCriteria(new Criteria().orOperator(Criteria.where("userName").regex("test").andOperator(Criteria.where("role").is(userType).andOperator(Criteria.where("status").is(1L)))));		
+
+		// query1.addCriteria(new
+		// Criteria().orOperator(Criteria.where("userName").regex("test").andOperator(Criteria.where("role").is(userType).andOperator(Criteria.where("status").is(1L)))));
 		query1.addCriteria(Criteria.where("status").is(1L));
 		query1.addCriteria(Criteria.where("role").is(userType));
 		query1.with(pageable);
-		//parameter rqueired to construct pageable	
-		System.out.println("Query user"+query1.toString());
-		List<User>result1=mongoOps.find(query1, User.class);
-		long count = mongoOps.count(query1, User.class);		
-		Page<User> result=new PageImpl<User>(result1 , pageable, count);		
+		// parameter rqueired to construct pageable
+		System.out.println("Query user" + query1.toString());
+		List<User> result1 = mongoOps.find(query1, User.class);
+		long count = mongoOps.count(query1, User.class);
+		Page<User> result = new PageImpl<User>(result1, pageable, count);
 		return result;
-		
+
 	}
+
 	@Override
-	public UserResponsePayload deleteUser (String userId) {
+	public UserResponsePayload deleteUser(String userId) {
 		// TODO Auto-generated method stub
-		User savedUser =userrepository.findByUserId(userId);
+		User savedUser = userrepository.findByUserId(userId);
 		savedUser.setStatus(2L);
-		User updated=userrepository.save(savedUser);
+		User updated = userrepository.save(savedUser);
 		return buildPayloadbyUser(updated);
 	}
 
 	@Override
 	public UserResponsePayload getUserDetails(UserRequestPayload UserRequestPayload) {
 		// TODO Auto-generated method stub
-		User user=userrepository.findByUserId(UserRequestPayload.getUserId());
+		User user = userrepository.findByUserId(UserRequestPayload.getUserId());
 		return buildPayloadbyUser(user);
 	}
 
@@ -227,7 +241,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	public boolean samePasswordOrNOr(UserRequestPayload UserRequestPayload) {
 		// TODO Auto-generated method stub
 		return false;
-	}	
+	}
 
 	private User buildAdminUser(UserRequestPayload payload) {
 		System.out.println("welcome add user");
@@ -235,7 +249,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		List<Permissions> permissionlist = buildRolePermission(role.getRoleId());
 		System.out.println("List" + permissionlist.toString());
 		User user = new User(payload.getName(), payload.getEmail(), passwordEncoder.encode(payload.getPassword()), 1L,
-				permissionlist, payload.getRole(),new Date());
+				permissionlist, payload.getRole(), new Date());
 		return user;
 	}
 
@@ -249,13 +263,13 @@ public class UserServiceImpl extends BaseService implements IUserService {
 
 	private User buildClientUser(UserRequestPayload payload) {
 		Roles role = roleRepository.findByRoleName(payload.getRole());
-		System.out.println("role"+role.toString());
+		System.out.println("role" + role.toString());
 		List<Permissions> permissionlist = buildRolePermission(role.getRoleId());
-		System.out.println("role"+permissionlist.toString());
-		Organisation org=orgrepository.findByOrganizationId(payload.getOrganisationId());
-		User user = new User(payload.getName(), payload.getEmail(), payload.getOrganisationId(),org.getOrganizationName(),
-				passwordEncoder.encode(payload.getPassword()), 1L, new Date(),
-				payload.getGst(), payload.getPan(), permissionlist, payload.getRole(),new Date());
+		System.out.println("role" + permissionlist.toString());
+		Organisation org = orgrepository.findByOrganizationId(payload.getOrganisationId());
+		User user = new User(payload.getName(), payload.getEmail(), payload.getOrganisationId(),
+				org.getOrganizationName(), passwordEncoder.encode(payload.getPassword()), 1L, new Date(),
+				payload.getGst(), payload.getPan(), permissionlist, payload.getRole(), new Date());
 		return user;
 
 	}
@@ -264,7 +278,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		User existinguser = userrepository.findByUserId(payload.getUserId());
 		existinguser.setUserName(payload.getName());
 		existinguser.setUserEmail(payload.getEmail());
-		existinguser.setOrgId(payload.getOrganisationId());		
+		existinguser.setOrgId(payload.getOrganisationId());
 		existinguser.setClientGst(payload.getGst());
 		existinguser.setClientPan(payload.getPan());
 		return existinguser;
@@ -305,12 +319,12 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	public List<Permissions> buildRolePermission(String roleid) {
 		// TODO Auto-generated method stub
 		List<Permissions> permissionlist = new ArrayList<Permissions>();
-		Roles role = roleRepository.findByRoleId((roleid));		
+		Roles role = roleRepository.findByRoleId((roleid));
 		List<RoleHasPermission> haspermission = roleHasPermissionRepository.findByRoleid(role.getRoleId());
-		for (RoleHasPermission permission : haspermission) {		
+		for (RoleHasPermission permission : haspermission) {
 			Permissions per = permissionsRepository.findBypermissionId(permission.getPermissionid());
-			if(per.getStatus()==1L) {
-				permissionlist.add(per);	
+			if (per.getStatus() == 1L) {
+				permissionlist.add(per);
 			}
 			permissionlist.sort(new SortbyRank());
 		}
@@ -321,11 +335,11 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	public UserResponsePayload updateLastLoginUser(UserRequestPayload UserRequestPayload) {
 		// TODO Auto-generated method stub
 		User updateuser = null;
-		updateuser=updateLogoutUser(UserRequestPayload);
-		UserResponsePayload payload= buildPayloadbyUser(updateuser);
+		updateuser = updateLogoutUser(UserRequestPayload);
+		UserResponsePayload payload = buildPayloadbyUser(updateuser);
 		return payload;
 	}
-	
+
 	private User updateLogoutUser(UserRequestPayload payload) {
 		User existinguser = userrepository.findByUserId(payload.getUserId());
 		existinguser.setLastLoggedIn(new Date());
@@ -350,9 +364,5 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		// TODO Auto-generated method stub
 		return userrepository.countByRoleAndStatus(role, status);
 	}
-
-	
-
-	
 
 }

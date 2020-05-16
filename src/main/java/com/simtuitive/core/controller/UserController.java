@@ -335,8 +335,8 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "/get-users-by-role", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<List<UserResponsePayload>> getAllUser(@ApiIgnore UriComponentsBuilder builder,
 			@RequestParam("role") String userType, @RequestParam("pageNo") Optional<String> pageno,
-			 @RequestParam("query") Optional<String> query,HttpServletRequest request, HttpServletResponse response) {
-		Page<User> userresponse = userservice.getAllUserByPaginationApplied(userType, pageno,query);		
+			 @RequestParam("query") Optional<String> query,@RequestParam("name") Optional<String> name,@RequestParam("orgname") Optional<String> orgname,HttpServletRequest request, HttpServletResponse response) {
+		Page<User> userresponse = userservice.getAllUserByPaginationApplied(userType, pageno,query,name,orgname);		
 		List<UserResponsePayload> result = createResponse(userresponse.getContent(), userType);
 		String tmp = builder.path("/getAll").build().toString();
 		Link l1 = new Link(tmp, " User Detail getAll");		
