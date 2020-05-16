@@ -42,6 +42,7 @@ import org.springframework.web.cors.CorsConfiguration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.simtuitive.core.config.RedisConfiguration;
+import com.simtuitive.core.globalexception.BadArgumentException;
 import com.simtuitive.core.model.PasswordResetToken;
 import com.simtuitive.core.model.SessionInfo;
 import com.simtuitive.core.service.CustomUserDetailsServiceImpl;
@@ -145,7 +146,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 			if(validateSameUser(user.getUsername())) {
 				OAuth2AccessToken accessTokenGen = new DefaultOAuth2AccessToken("error");
 				additionalInfo.put("error", "error");
-				additionalInfo.put("message", user.getUsername()+ "is already in logged in");
+				additionalInfo.put("message", "User already in logged in");
 				((DefaultOAuth2AccessToken) accessTokenGen).setAdditionalInformation(additionalInfo);
 				return accessTokenGen;
 			}

@@ -31,7 +31,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.simtuitive.core.common.Constants;
 import com.simtuitive.core.config.RedisConfiguration;
 import com.simtuitive.core.globalexception.BadArgumentException;
-import com.simtuitive.core.globalexception.DuplicateSessionException;
 import com.simtuitive.core.model.SessionInfo;
 import com.simtuitive.core.service.CustomUserDetailsServiceImpl;
 import com.simtuitive.core.util.TokenUtil;
