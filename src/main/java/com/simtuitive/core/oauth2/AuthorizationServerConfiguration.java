@@ -143,7 +143,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 		public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
 			User user = (User) authentication.getPrincipal();
 			if(validateSameUser(user.getUsername())) {
-				OAuth2AccessToken accessTokenGen = new DefaultOAuth2AccessToken(accessToken.getValue());
+				OAuth2AccessToken accessTokenGen = new DefaultOAuth2AccessToken("error");
 				additionalInfo.put("error", "error");
 				additionalInfo.put("message", user.getUsername()+ "is already in logged in");
 				((DefaultOAuth2AccessToken) accessTokenGen).setAdditionalInformation(additionalInfo);
