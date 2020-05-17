@@ -23,11 +23,11 @@ public interface IOrganisationService {
 	
 	public Page<Organisation>getAll(Optional<String>pageno, Optional<String> query, Optional<String> location, Optional<String> industry,Optional<String> name);
 	
-	public List<String>findAllOrganisationName();
+	public List<String>findAllOrganisationName(Optional<String> query);
 	
-	public List<String>findAllOrganisationLocation();
+	public List<String>findAllOrganisationLocation(Optional<String> query);
 	
-	public List<String>findAllOrganisationIndustry();
+	public List<String>findAllOrganisationIndustry(Optional<String> query);
 	
 	public OrganisationResponsePayload deleteOrganisation(String Id);
 	

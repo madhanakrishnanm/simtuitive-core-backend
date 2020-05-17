@@ -5,10 +5,7 @@ package com.simtuitive.core.service;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +18,9 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.simtuitive.core.controller.requestpayload.PermissionsRequestPayload;
 import com.simtuitive.core.controller.responsepayload.PermissionsResponsePayload;
-import com.simtuitive.core.controller.responsepayload.RolesResponsePayload;
 import com.simtuitive.core.model.Permissions;
 import com.simtuitive.core.model.RoleHasPermission;
 import com.simtuitive.core.model.Roles;
@@ -49,8 +44,8 @@ public class PermissionsServiceImpl implements IPermissionService {
 
 	@Autowired
 	private RolesRepository rolerepository;
-	
-	@Autowired 
+
+	@Autowired
 	private MongoOperations mongoOps;
 
 	// Create Role
@@ -114,12 +109,12 @@ public class PermissionsServiceImpl implements IPermissionService {
 
 	// GetAll Roles
 	@Override
-	public List<PermissionsResponsePayload> findAll(List<Permissions> permlist) {		
+	public List<PermissionsResponsePayload> findAll(List<Permissions> permlist) {
 		List<PermissionsResponsePayload> result = new ArrayList<PermissionsResponsePayload>();
 		for (Permissions perm : permlist) {
-			
-				PermissionsResponsePayload payload = buildPermissionsResponsePayload(perm);
-				result.add(payload);
+
+			PermissionsResponsePayload payload = buildPermissionsResponsePayload(perm);
+			result.add(payload);
 		}
 		return result;
 	}
@@ -159,42 +154,46 @@ public class PermissionsServiceImpl implements IPermissionService {
 	}
 
 	@Override
-	public Page<Permissions> getall(Optional<String> pageno,Optional<String> query,Optional<String> type,Optional<String> name) {
+	public Page<Permissions> getall(Optional<String> pageno, Optional<String> query, Optional<String> type,
+			Optional<String> name) {
 		// TODO Auto-generated method stub
-		int pagenumber=Integer.parseInt(pageno.orElse("0"));
-		final Pageable pageable = PageRequest.of(pagenumber, 5,Sort.by("permissionId").ascending());
-		Criteria type1 = null,name1 = null,typecr=null,namecr=null;
+		int pagenumber = Integer.parseInt(pageno.orElse("0"));
+		final Pageable pageable = PageRequest.of(pagenumber, 5, Sort.by("permissionId").ascending());
+		Criteria type1 = null, name1 = null, typecr = null, namecr = null;
 		Query query1 = new Query();
-		if(query!=null) {
+		if (query != null && query.isPresent()) {
 			new Criteria();
-			name1= Criteria.where("name").regex(query.orElse(""),"i");
+			name1 = Criteria.where("name").regex(query.orElse(""), "i");
 			new Criteria();
-			type1= Criteria.where("type").regex(query.orElse(""),"i");	
+			type1 = Criteria.where("type").regex(query.orElse(""), "i");
+			query1.addCriteria(new Criteria().orOperator(name1, type1));
 		}
-		query1.addCriteria(new Criteria().orOperator(name1,type1));
-		if(type.isPresent()) {
-			new Criteria();			
+		if (type.isPresent()) {
+			new Criteria();
 			typecr = Criteria.where("type").is(type.get());
-			query1.addCriteria(typecr);	
+			query1.addCriteria(typecr);
 		}
-		if(name.isPresent()) {
-			new Criteria();			
+		if (name.isPresent()) {
+			new Criteria();
 			namecr = Criteria.where("name").is(type.get());
 			query1.addCriteria(namecr);
 		}
-		
+
 		query1.addCriteria(Criteria.where("status").is(1L));
-		query1.with(pageable);	
-		System.out.println("Permission query::"+query1.toString());
-		List<Permissions>roleresult=mongoOps.find(query1, Permissions.class);
-		long count =mongoOps.count(query1, Permissions.class);
-		return new PageImpl<Permissions>(roleresult,pageable,count);
+		long count1 = mongoOps.count(query1, Permissions.class);
+		System.out.println("totatlCount" + count1);
+		query1.with(pageable);
+		System.out.println("Permission query::" + query1.toString());
+		List<Permissions> roleresult = mongoOps.find(query1, Permissions.class);
+		System.out.println("Size" + roleresult.size());
+		Page<Permissions> results = new PageImpl<Permissions>(roleresult, pageable, count1);
+		return results;
 	}
 
 	@Override
 	public Long countofPermission() {
 		// TODO Auto-generated method stub
-		Long count=permissionrepository.count();
+		Long count = permissionrepository.count();
 		return count;
 	}
 
@@ -211,16 +210,40 @@ public class PermissionsServiceImpl implements IPermissionService {
 	}
 
 	@Override
-	public List<String> getPermissionTypeAll() {
+	public List<String> getPermissionTypeAll(Optional<String> query) {
 		// TODO Auto-generated method stub
-		List<String> typeall = mongoOps.findDistinct("type", Permissions.class, String.class);
+		List<String> typeall = new ArrayList<String>();
+		if (query.isPresent()) {
+			Query query1 = new Query();
+			new Criteria();
+			query1.addCriteria(Criteria.where("type").regex(query.orElse(""), "i"));
+			System.out.println("query" + query1.toString());
+			System.out.println(
+					"MongoQuery new " + mongoOps.findDistinct(query1, "type", Permissions.class, String.class));
+			typeall = mongoOps.findDistinct(query1, "type", Permissions.class, String.class);
+
+		} else {
+			typeall = mongoOps.findDistinct("type", Permissions.class, String.class);
+		}
 		return typeall;
 	}
 
 	@Override
-	public List<String> getPermissionNameAll() {
+	public List<String> getPermissionNameAll(Optional<String> query) {
 		// TODO Auto-generated method stub
-		List<String> nameall = mongoOps.findDistinct("name", Permissions.class, String.class);
+		List<String> nameall = new ArrayList<String>();
+		if (query.isPresent()) {
+			Query query1 = new Query();
+			new Criteria();
+			query1.addCriteria(Criteria.where("name").regex(query.orElse(""), "i"));
+			System.out.println("query" + query1.toString());
+			System.out.println(
+					"MongoQuery new " + mongoOps.findDistinct(query1, "name", Permissions.class, String.class));
+			nameall = mongoOps.findDistinct(query1, "name", Permissions.class, String.class);
+		} else {
+			nameall = mongoOps.findDistinct("name", Permissions.class, String.class);
+		}
+
 		return nameall;
 	}
 

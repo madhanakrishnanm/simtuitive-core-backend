@@ -168,9 +168,8 @@ public class RolesController extends BaseController {
 		Page<Roles> roleresponse = roleservice.getall(pageno,query,name);
 		List<RolesResponsePayload> result = impl.getPayload(roleresponse.getContent());
 		String tmp = builder.path("/get-all-role").build().toString();
-		Link l1 = new Link(tmp, " Role Details");
-		
-		PaginationResponse page = new PaginationResponse(roleresponse.getNumberOfElements(),
+		Link l1 = new Link(tmp, " Role Details");		
+		PaginationResponse page = new PaginationResponse((int)((Long)roleresponse.getTotalElements()).intValue(),
 				roleresponse.getTotalPages(), roleresponse.getSize(), roleresponse.getPageable().getPageNumber());
 		return new JsonApiWrapper<>(result, request.getRequestURL().toString(), Arrays.asList(l1), page);
 
@@ -188,9 +187,9 @@ public class RolesController extends BaseController {
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/find-role", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<List<String>> findrole(@ApiIgnore UriComponentsBuilder builder,
-			 HttpServletRequest request, HttpServletResponse response)
+			@RequestParam("query") Optional<String> query,HttpServletRequest request, HttpServletResponse response)
 			throws UserRoleServiceException, ResourceNotFoundException {
-		List<String> roleresponse = roleservice.findRole();
+		List<String> roleresponse = roleservice.findRole(query);
 		String tmp = builder.path("/find-role").build().toString();
 		Link l1 = new Link(tmp, " Role Detail");
 		return new JsonApiWrapper<>(roleresponse, request.getRequestURL().toString(), Arrays.asList(l1));

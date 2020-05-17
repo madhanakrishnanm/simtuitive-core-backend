@@ -2,9 +2,7 @@ package com.simtuitive.core.service;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +19,6 @@ import org.springframework.stereotype.Service;
 import com.simtuitive.core.controller.requestpayload.OrganisationRequestPayload;
 import com.simtuitive.core.controller.responsepayload.OrganisationResponsePayload;
 import com.simtuitive.core.model.Organisation;
-import com.simtuitive.core.model.User;
 import com.simtuitive.core.repository.OrganisationRepository;
 import com.simtuitive.core.repository.UserRepository;
 import com.simtuitive.core.service.abstracts.IOrganisationService;
@@ -114,9 +111,21 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 	}
 
 	@Override
-	public List<String> findAllOrganisationName() {
+	public List<String> findAllOrganisationName(Optional<String> query) {
 		// TODO Auto-generated method stub
-		List<String> organizationName = mongoOps.findDistinct("organizationName", Organisation.class, String.class);
+		List<String> organizationName = new ArrayList<String>();
+		if (query.isPresent()) {
+			Query query1 = new Query();
+			new Criteria();
+			query1.addCriteria(Criteria.where("organizationName").regex(query.orElse(""), "i"));
+			System.out.println("query" + query1.toString());
+			System.out.println(
+					"MongoQuery new " + mongoOps.findDistinct(query1, "organizationName", Organisation.class, String.class));
+			organizationName = mongoOps.findDistinct(query1, "organizationName", Organisation.class, String.class);
+
+		} else {
+			organizationName = mongoOps.findDistinct("organizationName", Organisation.class, String.class);
+		}
 		return organizationName;
 	}
 
@@ -131,12 +140,11 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 
 	@Override
 	public Page<Organisation> getAll(Optional<String> pageno, Optional<String> query, Optional<String> location,
-			Optional<String> industry,Optional<String>name) {
+			Optional<String> industry, Optional<String> name) {
 		// TODO Auto-generated method stub
 		int pagenumber = Integer.parseInt(pageno.orElse("0"));
 		final Pageable pageable = PageRequest.of(pagenumber, 5, Sort.by("organizationId").ascending());
-		Criteria org1 = null, location1 = null, industry1 = null, namecr = null, industrycr = null,
-				locationcr1 = null;
+		Criteria org1 = null, location1 = null, industry1 = null, namecr = null, industrycr = null, locationcr1 = null;
 		Query query1 = new Query();
 		if (query != null) {
 			new Criteria();
@@ -149,7 +157,7 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 		query1.addCriteria(new Criteria().orOperator(org1, location1, industry1));
 		System.out.println("querybeforFilter" + query1.toString());
 		if (location.isPresent()) {
-			new Criteria();			
+			new Criteria();
 			locationcr1 = Criteria.where("location").is(location.get());
 			query1.addCriteria(locationcr1);
 		}
@@ -163,10 +171,10 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 			namecr = Criteria.where("organizationName").is(name.get());
 			query1.addCriteria(namecr);
 		}
+		long count = mongoOps.count(query1, Organisation.class);
 		query1.with(pageable);
 		System.out.println("Organisation query" + query1.toString());
-		List<Organisation> orgresult = mongoOps.find(query1, Organisation.class);
-		long count = mongoOps.count(query1, Organisation.class);
+		List<Organisation> orgresult = mongoOps.find(query1, Organisation.class);		
 		Page<Organisation> result = new PageImpl<Organisation>(orgresult, pageable, count);
 		return result;
 	}
@@ -178,16 +186,38 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 	}
 
 	@Override
-	public List<String> findAllOrganisationLocation() {
+	public List<String> findAllOrganisationLocation(Optional<String> query) {
 		// TODO Auto-generated method stub
-		List<String> orglocation = mongoOps.findDistinct("location", Organisation.class, String.class);
+		List<String> orglocation = new ArrayList<String>();
+		if (query.isPresent()) {
+			Query query1 = new Query();
+			new Criteria();
+			query1.addCriteria(Criteria.where("location").regex(query.orElse(""), "i"));
+			System.out.println("query" + query1.toString());
+			System.out.println(
+					"MongoQuery new " + mongoOps.findDistinct(query1, "location", Organisation.class, String.class));
+			orglocation = mongoOps.findDistinct(query1, "location", Organisation.class, String.class);
+		} else {
+			orglocation = mongoOps.findDistinct("location", Organisation.class, String.class);
+		}
 		return orglocation;
 	}
 
 	@Override
-	public List<String> findAllOrganisationIndustry() {
+	public List<String> findAllOrganisationIndustry(Optional<String> query) {
 		// TODO Auto-generated method stub
-		List<String> industry = mongoOps.findDistinct("industry", Organisation.class, String.class);
+		List<String> industry = new ArrayList<String>();
+		if (query.isPresent()) {
+			Query query1 = new Query();
+			new Criteria();
+			query1.addCriteria(Criteria.where("industry").regex(query.orElse(""), "i"));
+			System.out.println("query" + query1.toString());
+			System.out.println(
+					"MongoQuery new " + mongoOps.findDistinct(query1, "industry", Organisation.class, String.class));
+			industry = mongoOps.findDistinct(query1, "industry", Organisation.class, String.class);
+		} else {
+			industry = mongoOps.findDistinct("industry", Organisation.class, String.class);
+		}
 		return industry;
 	}
 

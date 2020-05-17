@@ -27,5 +27,5 @@ public interface IRolesService {
 	
 	public boolean roleExists(String rolename);
 	
-	public List<String> findRole();
+	public List<String> findRole(Optional<String> query);
 }

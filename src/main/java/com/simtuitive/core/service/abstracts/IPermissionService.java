@@ -30,7 +30,7 @@ public interface IPermissionService {
 	
 	public boolean permissionExistsByType(String type);
 	
-	public List<String> getPermissionTypeAll();
+	public List<String> getPermissionTypeAll(Optional<String> query);
 	
-	public List<String> getPermissionNameAll();
+	public List<String> getPermissionNameAll(Optional<String> query);
 }

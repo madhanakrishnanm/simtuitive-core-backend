@@ -104,10 +104,10 @@ public class RolesServiceImpl extends BaseService implements IRolesService {
 			query1.addCriteria(rolenamecr);
 		}
 		query1.addCriteria(Criteria.where("status").is(1L));
+		long count =mongoOps.count(query1,Roles.class);
 		query1.with(pageable);
 		System.out.println("Role query"+query1.toString());
-		List<Roles>roleresult=mongoOps.find(query1, Roles.class);
-		long count =mongoOps.count(query1,Roles.class);
+		List<Roles>roleresult=mongoOps.find(query1, Roles.class);		
 		Page<Roles> pagerole=new PageImpl<Roles>(roleresult,pageable,count);		
 		return pagerole;
 		
@@ -141,9 +141,20 @@ public class RolesServiceImpl extends BaseService implements IRolesService {
 	}
 
 	@Override
-	public List<String> findRole() {
-		// TODO Auto-generated method stub		
-		List<String>roleNamedis  = mongoOps.findDistinct("roleName", Roles.class, String.class);
+	public List<String> findRole(Optional<String> query) {
+		// TODO Auto-generated method stub	
+		List<String>roleNamedis=new ArrayList<String>();
+		if(query.isPresent()) {
+			Query query1 = new Query();
+			new Criteria();
+			query1.addCriteria(Criteria.where("roleName").regex(query.orElse(""), "i"));
+			System.out.println("query"+query1.toString());
+			System.out.println("MongoQuery new "+mongoOps.findDistinct(query1, "roleName", Roles.class, String.class));
+			roleNamedis= mongoOps.findDistinct(query1, "roleName", Roles.class, String.class);
+		}else {
+			roleNamedis= mongoOps.findDistinct("roleName", Roles.class, String.class);
+		}
+		
 		return roleNamedis;
 	}
 

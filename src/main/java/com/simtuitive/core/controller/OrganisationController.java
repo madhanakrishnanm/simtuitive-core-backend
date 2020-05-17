@@ -166,7 +166,7 @@ public class OrganisationController extends BaseController {
 		List<OrganisationResponsePayload> resultresponse = organisationservice.findAll(userResponse.getContent());
 		String tmp = builder.path(Constants.PATH_GET_ALL_ORG).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_GET_ALL_ORGANISATION_DETAIL);
-		PaginationResponse page = new PaginationResponse(userResponse.getNumberOfElements(),
+		PaginationResponse page = new PaginationResponse((int)((Long)userResponse.getTotalElements()).intValue(),
 				userResponse.getTotalPages(), userResponse.getSize(), userResponse.getPageable().getPageNumber());
 		return new JsonApiWrapper<>(resultresponse, getSelfLink(request), Arrays.asList(l1), page);
 
@@ -184,8 +184,8 @@ public class OrganisationController extends BaseController {
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/getall-orgname", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<List<String>> findAllOrganisationName(@ApiIgnore UriComponentsBuilder builder,
-			HttpServletRequest request, HttpServletResponse response) {
-		List<String> userResponse = organisationservice.findAllOrganisationName();
+			@RequestParam("query") Optional<String> query,HttpServletRequest request, HttpServletResponse response) {
+		List<String> userResponse = organisationservice.findAllOrganisationName(query);
 		String tmp = builder.path(Constants.PATH_GET_ALL_ORG).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_GET_ALL_ORGANISATION_DETAIL);
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
@@ -204,8 +204,8 @@ public class OrganisationController extends BaseController {
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/getall-org-location", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<List<String>> findAllOrganisationLocation(@ApiIgnore UriComponentsBuilder builder,
-			HttpServletRequest request, HttpServletResponse response) {
-		List<String> userResponse = organisationservice.findAllOrganisationLocation();
+			@RequestParam("query") Optional<String> query,HttpServletRequest request, HttpServletResponse response) {
+		List<String> userResponse = organisationservice.findAllOrganisationLocation(query);
 		String tmp = builder.path(Constants.PATH_GET_ALL_ORG).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_GET_ALL_ORGANISATION_DETAIL);
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
@@ -223,8 +223,8 @@ public class OrganisationController extends BaseController {
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/getall-org-industry", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<List<String>> findAllOrganisationIndustry(@ApiIgnore UriComponentsBuilder builder,
-			HttpServletRequest request, HttpServletResponse response) {
-		List<String> userResponse = organisationservice.findAllOrganisationIndustry();
+			@RequestParam("query") Optional<String> query,HttpServletRequest request, HttpServletResponse response) {
+		List<String> userResponse = organisationservice.findAllOrganisationIndustry(query);
 		String tmp = builder.path(Constants.PATH_GET_ALL_ORG).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_GET_ALL_ORGANISATION_DETAIL);
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));

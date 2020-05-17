@@ -136,7 +136,8 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	public List<UserResponsePayload> getAllUser(String userType, int pageno) {
 		List<UserResponsePayload> result = new ArrayList<UserResponsePayload>();
 		final Pageable pageable = PageRequest.of(pageno, 5, Sort.by("userId").ascending());
-
+		
+		
 		Query query = new Query();
 		query.with(pageable);
 
@@ -211,11 +212,11 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		// Criteria().orOperator(Criteria.where("userName").regex("test").andOperator(Criteria.where("role").is(userType).andOperator(Criteria.where("status").is(1L)))));
 		query1.addCriteria(Criteria.where("status").is(1L));
 		query1.addCriteria(Criteria.where("role").is(userType));
+		long count = mongoOps.count(query1, User.class);
 		query1.with(pageable);
 		// parameter rqueired to construct pageable
 		System.out.println("Query user" + query1.toString());
-		List<User> result1 = mongoOps.find(query1, User.class);
-		long count = mongoOps.count(query1, User.class);
+		List<User> result1 = mongoOps.find(query1, User.class);		
 		Page<User> result = new PageImpl<User>(result1, pageable, count);
 		return result;
 

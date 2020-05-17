@@ -335,13 +335,13 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "/get-users-by-role", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<List<UserResponsePayload>> getAllUser(@ApiIgnore UriComponentsBuilder builder,
 			@RequestParam("role") String userType, @RequestParam("pageNo") Optional<String> pageno,
-			 @RequestParam("query") Optional<String> query,@RequestParam("name") Optional<String> name,@RequestParam("orgname") Optional<String> orgname,HttpServletRequest request, HttpServletResponse response) {
+			 @RequestParam("query") Optional<String> query,@RequestParam("name") Optional<String> name,@RequestParam("orgName") Optional<String> orgname,HttpServletRequest request, HttpServletResponse response) {
 		Page<User> userresponse = userservice.getAllUserByPaginationApplied(userType, pageno,query,name,orgname);		
 		List<UserResponsePayload> result = createResponse(userresponse.getContent(), userType);
 		String tmp = builder.path("/getAll").build().toString();
 		Link l1 = new Link(tmp, " User Detail getAll");		
 		System.out.println("user count"+userresponse.getTotalElements());		
-		PaginationResponse page = new PaginationResponse(userresponse.getNumberOfElements(),
+		PaginationResponse page = new PaginationResponse((int)((Long)userresponse.getTotalElements()).intValue(),
 				userresponse.getTotalPages(), userresponse.getSize(), userresponse.getPageable().getPageNumber());
 		return new JsonApiWrapper<>(result, getSelfLink(request), Arrays.asList(l1), page);
 
