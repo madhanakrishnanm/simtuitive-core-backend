@@ -146,7 +146,7 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 		final Pageable pageable = PageRequest.of(pagenumber, 5, Sort.by("organizationId").ascending());
 		Criteria org1 = null, location1 = null, industry1 = null, namecr = null, industrycr = null, locationcr1 = null;
 		Query query1 = new Query();
-		if (query != null) {
+		if (query != null&&query.isPresent()) {
 			new Criteria();
 			org1 = Criteria.where("organizationName").regex(query.orElse(""), "i");
 			new Criteria();
@@ -156,17 +156,17 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 		}
 		query1.addCriteria(new Criteria().orOperator(org1, location1, industry1));
 		System.out.println("querybeforFilter" + query1.toString());
-		if (location.isPresent()) {
+		if (location.isPresent()&&location!=null) {
 			new Criteria();
 			locationcr1 = Criteria.where("location").is(location.get());
 			query1.addCriteria(locationcr1);
 		}
-		if (industry.isPresent()) {
+		if (industry.isPresent()&&industry!=null) {
 			new Criteria();
 			industrycr = Criteria.where("industry").is(industry.get());
 			query1.addCriteria(industrycr);
 		}
-		if (name.isPresent()) {
+		if (name.isPresent()&&name!=null) {
 			new Criteria();
 			namecr = Criteria.where("organizationName").is(name.get());
 			query1.addCriteria(namecr);
@@ -189,7 +189,7 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 	public List<String> findAllOrganisationLocation(Optional<String> query) {
 		// TODO Auto-generated method stub
 		List<String> orglocation = new ArrayList<String>();
-		if (query.isPresent()) {
+		if (query.isPresent()&&query!=null) {
 			Query query1 = new Query();
 			new Criteria();
 			query1.addCriteria(Criteria.where("location").regex(query.orElse(""), "i"));
@@ -207,7 +207,7 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 	public List<String> findAllOrganisationIndustry(Optional<String> query) {
 		// TODO Auto-generated method stub
 		List<String> industry = new ArrayList<String>();
-		if (query.isPresent()) {
+		if (query.isPresent()&&query!=null) {
 			Query query1 = new Query();
 			new Criteria();
 			query1.addCriteria(Criteria.where("industry").regex(query.orElse(""), "i"));
