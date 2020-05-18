@@ -157,11 +157,12 @@ public class PermissionsServiceImpl implements IPermissionService {
 	public Page<Permissions> getall(Optional<String> pageno, Optional<String> query, Optional<String> type,
 			Optional<String> name,Optional<String> rolename) {
 		// TODO Auto-generated method stub
+		int countofquery=0;
 		int pagenumber = Integer.parseInt(pageno.orElse("0"));
 		final Pageable pageable = PageRequest.of(pagenumber, 5, Sort.by("rank").ascending());
 		Criteria type1 = null, name1 = null, typecr = null, namecr = null,rolecr =null,rolecr1 =null,rolecr2 =null;
 		Query query1 = new Query();
-		if (query != null && query.isPresent()) {
+		if (query != null && query.isPresent()&&!query.get().equalsIgnoreCase("null")) {
 			new Criteria();
 			name1 = Criteria.where("name").regex(query.orElse(""), "i");
 			new Criteria();
@@ -189,19 +190,21 @@ public class PermissionsServiceImpl implements IPermissionService {
 			new Criteria();
 			Criteria rolecrsearch2 = Criteria.where("permissionId").in(permissinidssearch);			
 			query1.addCriteria(new Criteria().orOperator(name1, type1,rolecrsearch2));
-			
+			countofquery++;
 		}
-		if (type.isPresent()&&type!=null) {
+		if (type.isPresent()&&type!=null&&!type.get().equalsIgnoreCase("null")) {
 			new Criteria();
 			typecr = Criteria.where("type").is(type.get());
 			query1.addCriteria(typecr);
+			countofquery++;
 		}
-		if (name.isPresent()&&name!=null) {
+		if (name.isPresent()&&name!=null&&!name.get().equalsIgnoreCase("null")) {
 			new Criteria();
 			namecr = Criteria.where("name").is(name.get());
 			query1.addCriteria(namecr);
+			countofquery++;
 		}
-		if(rolename.isPresent()&&rolename!=null) {
+		if(rolename.isPresent()&&rolename!=null&&!rolename.get().equalsIgnoreCase("null")) {
 			Query query2 = new Query();
 			new Criteria();
 			rolecr=Criteria.where("roleName").is(rolename.get());
@@ -225,6 +228,7 @@ public class PermissionsServiceImpl implements IPermissionService {
 			new Criteria();
 			rolecr2=Criteria.where("permissionId").in(permissinids);
 			query1.addCriteria(rolecr2);
+			countofquery++;
 		}
 System.out.println("query"+query1.toString());
 		query1.addCriteria(Criteria.where("status").is(1L));

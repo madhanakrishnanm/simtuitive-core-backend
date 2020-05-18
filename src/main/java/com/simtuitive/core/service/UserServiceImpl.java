@@ -170,39 +170,39 @@ public class UserServiceImpl extends BaseService implements IUserService {
 
 	@Override
 	public Page<User> getAllUserByPaginationApplied(String userType, Optional<String> pageno, Optional<String> query,
-			Optional<String> name, Optional<String> orgname) {
+			Optional<String> name, Optional<String> orgname) {		
 		int pagenumber = Integer.parseInt(pageno.orElse("0"));
 		final Pageable pageable = PageRequest.of(pagenumber, 5, Sort.by("userId").ascending());
 		Query query1 = new Query();
 		Criteria rolename = null;
 		Criteria clientname, orgnameCr, nameAdmin, orgNameClient ,orgnameCr1 = null;
 		if (userType.equalsIgnoreCase("Admin")) {
-			if (query != null&&query.isPresent()) {
+			if (query != null&&query.isPresent()&&!query.get().equalsIgnoreCase("null")) {
 				new Criteria();
 				rolename = Criteria.where("userName").regex(query.orElse(""), "i");
 				query1.addCriteria(new Criteria().orOperator(rolename));
 
 			}
-			if (name.isPresent()&&name!=null) {
+			if (name.isPresent()&&name!=null&&!name.get().equalsIgnoreCase("null")) {
 				new Criteria();
 				nameAdmin = Criteria.where("userName").is(name.get());
 				query1.addCriteria(nameAdmin);
 			}
 		}
 		if (userType.equalsIgnoreCase("Client")) {
-			if (query != null&&query.isPresent()) {
+			if (query != null&&query.isPresent()&&!query.get().equalsIgnoreCase("null")) {
 				new Criteria();
 				clientname = Criteria.where("userName").regex(query.orElse(""), "i");
 				orgnameCr = Criteria.where("orgName").regex(query.orElse(""), "i");
 				orgnameCr1 = Criteria.where("userEmail").regex(query.orElse(""), "i");
 				query1.addCriteria(new Criteria().orOperator(clientname, orgnameCr,orgnameCr1));
 			}
-			if (name.isPresent()&&name!=null) {
+			if (name.isPresent()&&name!=null&&!name.get().equalsIgnoreCase("null")) {
 				new Criteria();
 				nameAdmin = Criteria.where("userName").is(name.get());
 				query1.addCriteria(nameAdmin);
 			}
-			if (orgname.isPresent()&&orgname!=null) {
+			if (orgname.isPresent()&&orgname!=null&&!orgname.get().equalsIgnoreCase("null")) {
 				new Criteria();
 				orgNameClient = Criteria.where("orgName").is(orgname.get());
 				query1.addCriteria(orgNameClient);
