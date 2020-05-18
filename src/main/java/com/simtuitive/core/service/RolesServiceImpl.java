@@ -93,12 +93,12 @@ public class RolesServiceImpl extends BaseService implements IRolesService {
 		final Pageable pageable = PageRequest.of(pagenumber, 5,Sort.by("roleId").ascending());
 		Criteria rolename = null,rolenamecr=null;
 		Query query1 = new Query();
-		if(query!=null) {
+		if(query!=null&&query.isPresent()) {
 			new Criteria();
 			rolename= Criteria.where("roleName").regex(query.orElse(""),"i");
 			query1.addCriteria(rolename);
 		}
-		if(name.isPresent()) {
+		if(name.isPresent()&&name!=null) {
 			new Criteria();
 			rolenamecr= Criteria.where("roleName").is(name.get());
 			query1.addCriteria(rolenamecr);

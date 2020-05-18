@@ -191,17 +191,17 @@ public class PermissionsServiceImpl implements IPermissionService {
 			query1.addCriteria(new Criteria().orOperator(name1, type1,rolecrsearch2));
 			
 		}
-		if (type.isPresent()) {
+		if (type.isPresent()&&type!=null) {
 			new Criteria();
 			typecr = Criteria.where("type").is(type.get());
 			query1.addCriteria(typecr);
 		}
-		if (name.isPresent()) {
+		if (name.isPresent()&&name!=null) {
 			new Criteria();
 			namecr = Criteria.where("name").is(name.get());
 			query1.addCriteria(namecr);
 		}
-		if(rolename.isPresent()) {
+		if(rolename.isPresent()&&rolename!=null) {
 			Query query2 = new Query();
 			new Criteria();
 			rolecr=Criteria.where("roleName").is(rolename.get());
@@ -261,7 +261,7 @@ System.out.println("query"+query1.toString());
 	public List<String> getPermissionTypeAll(Optional<String> query) {
 		// TODO Auto-generated method stub
 		List<String> typeall = new ArrayList<String>();
-		if (query.isPresent()) {
+		if (query.isPresent()&&query!=null) {
 			Query query1 = new Query();
 			new Criteria();
 			query1.addCriteria(Criteria.where("type").regex(query.orElse(""), "i"));
@@ -280,7 +280,7 @@ System.out.println("query"+query1.toString());
 	public List<String> getPermissionNameAll(Optional<String> query) {
 		// TODO Auto-generated method stub
 		List<String> nameall = new ArrayList<String>();
-		if (query.isPresent()) {
+		if (query.isPresent()&&query!=null) {
 			Query query1 = new Query();
 			new Criteria();
 			query1.addCriteria(Criteria.where("name").regex(query.orElse(""), "i"));

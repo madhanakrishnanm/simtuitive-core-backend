@@ -175,33 +175,34 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		final Pageable pageable = PageRequest.of(pagenumber, 5, Sort.by("userId").ascending());
 		Query query1 = new Query();
 		Criteria rolename = null;
-		Criteria clientname, orgnameCr, nameAdmin, orgNameClient = null;
+		Criteria clientname, orgnameCr, nameAdmin, orgNameClient ,orgnameCr1 = null;
 		if (userType.equalsIgnoreCase("Admin")) {
-			if (query != null) {
+			if (query != null&&query.isPresent()) {
 				new Criteria();
 				rolename = Criteria.where("userName").regex(query.orElse(""), "i");
 				query1.addCriteria(new Criteria().orOperator(rolename));
 
 			}
-			if (name.isPresent()) {
+			if (name.isPresent()&&name!=null) {
 				new Criteria();
 				nameAdmin = Criteria.where("userName").is(name.get());
 				query1.addCriteria(nameAdmin);
 			}
 		}
 		if (userType.equalsIgnoreCase("Client")) {
-			if (query != null) {
+			if (query != null&&query.isPresent()) {
 				new Criteria();
 				clientname = Criteria.where("userName").regex(query.orElse(""), "i");
 				orgnameCr = Criteria.where("orgName").regex(query.orElse(""), "i");
-				query1.addCriteria(new Criteria().orOperator(clientname, orgnameCr));
+				orgnameCr1 = Criteria.where("userEmail").regex(query.orElse(""), "i");
+				query1.addCriteria(new Criteria().orOperator(clientname, orgnameCr,orgnameCr1));
 			}
-			if (name.isPresent()) {
+			if (name.isPresent()&&name!=null) {
 				new Criteria();
 				nameAdmin = Criteria.where("userName").is(name.get());
 				query1.addCriteria(nameAdmin);
 			}
-			if (orgname.isPresent()) {
+			if (orgname.isPresent()&&orgname!=null) {
 				new Criteria();
 				orgNameClient = Criteria.where("orgName").is(orgname.get());
 				query1.addCriteria(orgNameClient);
