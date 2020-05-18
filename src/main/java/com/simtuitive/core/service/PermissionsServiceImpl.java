@@ -155,18 +155,41 @@ public class PermissionsServiceImpl implements IPermissionService {
 
 	@Override
 	public Page<Permissions> getall(Optional<String> pageno, Optional<String> query, Optional<String> type,
-			Optional<String> name) {
+			Optional<String> name,Optional<String> rolename) {
 		// TODO Auto-generated method stub
 		int pagenumber = Integer.parseInt(pageno.orElse("0"));
-		final Pageable pageable = PageRequest.of(pagenumber, 5, Sort.by("permissionId").ascending());
-		Criteria type1 = null, name1 = null, typecr = null, namecr = null;
+		final Pageable pageable = PageRequest.of(pagenumber, 5, Sort.by("rank").ascending());
+		Criteria type1 = null, name1 = null, typecr = null, namecr = null,rolecr =null,rolecr1 =null,rolecr2 =null;
 		Query query1 = new Query();
 		if (query != null && query.isPresent()) {
 			new Criteria();
 			name1 = Criteria.where("name").regex(query.orElse(""), "i");
 			new Criteria();
-			type1 = Criteria.where("type").regex(query.orElse(""), "i");
-			query1.addCriteria(new Criteria().orOperator(name1, type1));
+			type1 = Criteria.where("type").regex(query.orElse(""), "i");			
+			Query query2search = new Query();
+			new Criteria();
+			Criteria rolecrsearch = Criteria.where("roleName").regex(query.orElse(""),"i");
+			query2search.addCriteria(rolecrsearch);
+			System.out.println("query"+query2search.toString());
+			List<Roles>roleuisearch=mongoOps.find(query2search, Roles.class);
+			List<String>roleidssearch=new ArrayList<String>();
+			for(Roles role:roleuisearch) {
+				roleidssearch.add(role.getRoleId());
+			}
+			//List<String>roleids=mongoOps.findDistinct(query2search, "roleId", Roles.class, String.class);
+			System.out.println("query under rolename::"+query2search.toString());
+			System.out.println("query under rolename List::"+roleidssearch);
+			Query query3search = new Query();
+			new Criteria();
+			Criteria rolecrsearch1 = Criteria.where("roleid").in(roleidssearch);
+			query3search.addCriteria(rolecrsearch1);			
+			List<String>permissinidssearch=mongoOps.findDistinct(query3search, "permissionid", RoleHasPermission.class, String.class);
+			System.out.println("query under rolename::"+query3search.toString());
+			System.out.println("query under rolename List::"+permissinidssearch);			
+			new Criteria();
+			Criteria rolecrsearch2 = Criteria.where("permissionId").in(permissinidssearch);			
+			query1.addCriteria(new Criteria().orOperator(name1, type1,rolecrsearch2));
+			
 		}
 		if (type.isPresent()) {
 			new Criteria();
@@ -175,10 +198,35 @@ public class PermissionsServiceImpl implements IPermissionService {
 		}
 		if (name.isPresent()) {
 			new Criteria();
-			namecr = Criteria.where("name").is(type.get());
+			namecr = Criteria.where("name").is(name.get());
 			query1.addCriteria(namecr);
 		}
-
+		if(rolename.isPresent()) {
+			Query query2 = new Query();
+			new Criteria();
+			rolecr=Criteria.where("roleName").is(rolename.get());
+			query2.addCriteria(rolecr);
+			System.out.println("query"+query2.toString());
+			List<Roles>roleui=mongoOps.find(query2, Roles.class);
+			List<String>roleids=new ArrayList<String>();
+			for(Roles role:roleui) {
+				roleids.add(role.getRoleId());
+			}
+			//List<String>roleids=mongoOps.findDistinct(query2, "roleId", Roles.class, String.class);
+			System.out.println("query under rolename::"+query2.toString());
+			System.out.println("query under rolename List::"+roleids);
+			Query query3 = new Query();
+			new Criteria();
+			rolecr1=Criteria.where("roleid").in(roleids);
+			query3.addCriteria(rolecr1);			
+			List<String>permissinids=mongoOps.findDistinct(query3, "permissionid", RoleHasPermission.class, String.class);
+			System.out.println("query under rolename::"+query3.toString());
+			System.out.println("query under rolename List::"+permissinids);			
+			new Criteria();
+			rolecr2=Criteria.where("permissionId").in(permissinids);
+			query1.addCriteria(rolecr2);
+		}
+System.out.println("query"+query1.toString());
 		query1.addCriteria(Criteria.where("status").is(1L));
 		long count1 = mongoOps.count(query1, Permissions.class);
 		System.out.println("totatlCount" + count1);
