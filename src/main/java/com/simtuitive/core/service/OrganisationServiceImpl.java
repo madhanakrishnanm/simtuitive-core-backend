@@ -141,42 +141,59 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 	@Override
 	public Page<Organisation> getAll(Optional<String> pageno, Optional<String> query, Optional<String> location,
 			Optional<String> industry, Optional<String> name) {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub		
+		int countofquery=0;
 		int pagenumber = Integer.parseInt(pageno.orElse("0"));
 		final Pageable pageable = PageRequest.of(pagenumber, 5, Sort.by("organizationId").ascending());
 		Criteria org1 = null, location1 = null, industry1 = null, namecr = null, industrycr = null, locationcr1 = null;
 		Query query1 = new Query();
-		if (query != null&&query.isPresent()) {
+		System.out.println("Check for query");
+		System.out.println("query101"+query1.toString());
+		if (query != null&&query.isPresent()&&!query.get().equalsIgnoreCase("null")) {
 			new Criteria();
 			org1 = Criteria.where("organizationName").regex(query.orElse(""), "i");
 			new Criteria();
 			location1 = Criteria.where("location").regex(query.orElse(""), "i");
 			new Criteria();
 			industry1 = Criteria.where("industry").regex(query.orElse(""), "i");
+			countofquery++;
+			query1.addCriteria(new Criteria().orOperator(org1, location1, industry1));
 		}
-		query1.addCriteria(new Criteria().orOperator(org1, location1, industry1));
+		
 		System.out.println("querybeforFilter" + query1.toString());
-		if (location.isPresent()&&location!=null) {
+		if (location.isPresent()&&location!=null&&!location.get().equalsIgnoreCase("null")) {
 			new Criteria();
 			locationcr1 = Criteria.where("location").is(location.get());
 			query1.addCriteria(locationcr1);
+			countofquery++;
 		}
-		if (industry.isPresent()&&industry!=null) {
+		if (industry.isPresent()&&industry!=null&&!industry.get().equalsIgnoreCase("null")) {
 			new Criteria();
 			industrycr = Criteria.where("industry").is(industry.get());
 			query1.addCriteria(industrycr);
+			countofquery++;
 		}
-		if (name.isPresent()&&name!=null) {
+		if (name.isPresent()&&name!=null&&!name.get().equalsIgnoreCase("null")) {
 			new Criteria();
 			namecr = Criteria.where("organizationName").is(name.get());
 			query1.addCriteria(namecr);
+			countofquery++;
 		}
-		long count = mongoOps.count(query1, Organisation.class);
-		query1.with(pageable);
-		System.out.println("Organisation query" + query1.toString());
-		List<Organisation> orgresult = mongoOps.find(query1, Organisation.class);		
-		Page<Organisation> result = new PageImpl<Organisation>(orgresult, pageable, count);
-		return result;
+		if(countofquery!=0) {
+			long count = mongoOps.count(query1, Organisation.class);
+			query1.with(pageable);
+			System.out.println("Organisation query" + query1.toString());		
+			List<Organisation> orgresult = mongoOps.find(query1, Organisation.class);		
+			Page<Organisation> result = new PageImpl<Organisation>(orgresult, pageable, count);
+			return result;
+		}else {
+			query1.with(pageable);				
+			List<Organisation> orgresult = mongoOps.findAll(Organisation.class);
+			int total=orgresult.size();			
+			Page<Organisation> result = new PageImpl<Organisation>(orgresult, pageable, Long.valueOf(total));
+			return result;
+		}
+		
 	}
 
 	@Override
