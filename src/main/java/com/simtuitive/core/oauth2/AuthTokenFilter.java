@@ -64,6 +64,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 		
 		String initrole=null;
 		String username=null;
+		System.out.println("url"+request.getRequestURI());
 		System.out.println("request before casting wrapper"+request.getParameter("username"));
 
 		HttpServletRequest req = (HttpServletRequest)request;
@@ -152,6 +153,11 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 		}
 		catch (InvalidTokenException e) {
 			throw new InvalidTokenException(e.getMessage());
+		}
+		System.out.println("request.getContextPath()"+request.getContextPath());
+		if(request.getRequestURI().matches("/api/v1/users/logout")) {
+			req=request;
+			res=response;
 		}
 		
 		filterChain.doFilter(req, res);
