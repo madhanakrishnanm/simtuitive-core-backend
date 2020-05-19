@@ -63,6 +63,7 @@ public class Constants {
 	public final static String STR_AUTH_EMAIL = "email";
 	public final static String STR_AUTH_AUTHORIZATION = "Authorization";
 	public final static String STR_AUTH_BEARER = "Bearer ";
+	public final static String STR_AUTH_LOGOUT_BEARER = "bearer ";
 
 	public static final String BAD_ARGUMENT_MESSAGE = "Bad Rquest";
 
