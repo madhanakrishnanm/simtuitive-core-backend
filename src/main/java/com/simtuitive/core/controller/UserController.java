@@ -414,14 +414,13 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "/logout", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<UserResponsePayload> logoutPage(@ApiIgnore UriComponentsBuilder builder,
 			HttpServletRequest request, HttpServletResponse response) {
-		HttpServletRequest req = (HttpServletRequest)request;
-		HttpServletRequestWrapper req1 = (HttpServletRequestWrapper)request;
-		String clientToken1 = parseJwt(req);
-		System.out.println("Wrapper"+clientToken1);
+	
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		System.out.println("request controller logout"+auth.getName());
+		System.out.println("request controller logout"+request.getHeader(Constants.STR_AUTH_AUTHORIZATION));
 		String username = null;
 		if (auth != null) {
-			String clientToken = parseJwt(req);
+			String clientToken = parseJwt(request);
 			if (TokenUtil.validate(clientToken, secret)) {
 				String clientTrueToken = TokenUtil.getToken(clientToken);
 				Map<?, ?> newtoken = (Map<?, ?>) redis.redisTemplate().opsForHash().get(clientTrueToken,

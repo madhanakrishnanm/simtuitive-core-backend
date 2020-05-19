@@ -157,7 +157,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 		System.out.println("request.getContextPath()"+request.getContextPath());
 		if(request.getRequestURI().matches("/api/v1/users/logout")) {
 			req=request;
-			res=response;
+			System.out.println("logout token"+request.getHeader(Constants.STR_AUTH_AUTHORIZATION));			
 		}
 		
 		filterChain.doFilter(req, res);
