@@ -421,7 +421,7 @@ public class UserController extends BaseController {
 		String username = null;
 		if (auth != null) {
 			String clientToken = parseJwt(request);
-			if (TokenUtil.validate(clientToken, secret)) {
+			if (clientToken!=null) {
 				String clientTrueToken = TokenUtil.getToken(clientToken);
 				Map<?, ?> newtoken = (Map<?, ?>) redis.redisTemplate().opsForHash().get(clientTrueToken,
 						clientTrueToken);
