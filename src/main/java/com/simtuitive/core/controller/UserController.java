@@ -479,7 +479,7 @@ public class UserController extends BaseController {
 	private String parseJwt(HttpServletRequest request) {
 		String headerAuth = request.getHeader(Constants.STR_AUTH_AUTHORIZATION);
 
-		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith(Constants.STR_AUTH_BEARER)) {
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith(Constants.STR_AUTH_LOGOUT_BEARER)) {
 			return headerAuth.substring(7, headerAuth.length());
 		}
 
