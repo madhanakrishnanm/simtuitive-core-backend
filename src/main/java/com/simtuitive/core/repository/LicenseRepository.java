@@ -6,5 +6,5 @@ import com.simtuitive.core.model.License;
 
 public interface LicenseRepository extends MongoRepository<License, String>{
 
-	public License findByLicenseId(Long licenseId);
+	public License findByLicenseId(String licenseId);
 }

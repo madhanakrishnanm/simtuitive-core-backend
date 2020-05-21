@@ -18,7 +18,7 @@ import org.springframework.data.annotation.LastModifiedDate;
  *
  */
 public class LicenseRequestPayload {
-	private Long licenseId;
+	private String licenseId;
 	private String organization;
 	private String orgId;
 	private String productName;
@@ -37,13 +37,13 @@ public class LicenseRequestPayload {
 	/**
 	 * @return the licenseId
 	 */
-	public Long getLicenseId() {
+	public String getLicenseId() {
 		return licenseId;
 	}
 	/**
 	 * @param licenseId the licenseId to set
 	 */
-	public void setLicenseId(Long licenseId) {
+	public void setLicenseId(String licenseId) {
 		this.licenseId = licenseId;
 	}
 	/**
@@ -227,7 +227,7 @@ public class LicenseRequestPayload {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public LicenseRequestPayload(Long licenseId, String organization, String orgId, String productName,
+	public LicenseRequestPayload(String licenseId, String organization, String orgId, String productName,
 			String productId, String paymentStatus, int creditLimit, String narration, BigDecimal sellingPrice,
 			BigDecimal dealSize, Long numberOfLicense, Date createdAt, Date modifiedAt, String createdBy,
 			String modifiedBy,String status) {

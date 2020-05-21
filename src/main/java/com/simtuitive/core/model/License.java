@@ -19,7 +19,7 @@ public class License implements Serializable{
 	
 	@Id
 	private String id;
-	private Long licenseId;
+	private String licenseId;
 	private String orgName;
 	private String orgId;
 	private String productName;
@@ -38,13 +38,13 @@ public class License implements Serializable{
 	/**
 	 * @return the licenseId
 	 */
-	public Long getLicenseId() {
+	public String getLicenseId() {
 		return licenseId;
 	}
 	/**
 	 * @param licenseId the licenseId to set
 	 */
-	public void setLicenseId(Long licenseId) {
+	public void setLicenseId(String licenseId) {
 		this.licenseId = licenseId;
 	}
 	/**
