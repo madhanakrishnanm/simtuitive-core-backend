@@ -32,4 +32,6 @@ public interface IOrganisationService {
 	public OrganisationResponsePayload deleteOrganisation(String Id);
 	
 	public boolean getExistsOrganisation(String name);
+	
+	public Map<String,String> getAllOrgIdName();
 }

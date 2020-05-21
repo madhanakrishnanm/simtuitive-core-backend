@@ -2,7 +2,9 @@ package com.simtuitive.core.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -236,6 +238,17 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 			industry = mongoOps.findDistinct("industry", Organisation.class, String.class);
 		}
 		return industry;
+	}
+
+	@Override
+	public Map<String, String> getAllOrgIdName() {
+		// TODO Auto-generated method stub
+		Map<String,String> result =new HashMap<String, String>();
+		List<Organisation> orglist=organisationrepository.findAll();
+		for(Organisation org:orglist) {
+			result.put(org.getOrganizationId(), org.getOrganizationName());
+		}
+		return result;
 	}
 
 }

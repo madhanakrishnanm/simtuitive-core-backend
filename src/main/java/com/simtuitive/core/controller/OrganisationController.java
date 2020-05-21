@@ -160,13 +160,15 @@ public class OrganisationController extends BaseController {
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/getall-org", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<List<OrganisationResponsePayload>> findAllOrganisation(
-			@ApiIgnore UriComponentsBuilder builder, @RequestParam("pageNo") Optional<String> pageno,@RequestParam("query") Optional<String> query,@RequestParam("location") Optional<String> location,@RequestParam("industry") Optional<String> industry,
-			@RequestParam("name") Optional<String> name,HttpServletRequest request, HttpServletResponse response) {
-		Page<Organisation> userResponse = organisationservice.getAll(pageno,query,location,industry,name);
+			@ApiIgnore UriComponentsBuilder builder, @RequestParam("pageNo") Optional<String> pageno,
+			@RequestParam("query") Optional<String> query, @RequestParam("location") Optional<String> location,
+			@RequestParam("industry") Optional<String> industry, @RequestParam("name") Optional<String> name,
+			HttpServletRequest request, HttpServletResponse response) {
+		Page<Organisation> userResponse = organisationservice.getAll(pageno, query, location, industry, name);
 		List<OrganisationResponsePayload> resultresponse = organisationservice.findAll(userResponse.getContent());
 		String tmp = builder.path(Constants.PATH_GET_ALL_ORG).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_GET_ALL_ORGANISATION_DETAIL);
-		PaginationResponse page = new PaginationResponse((int)((Long)userResponse.getTotalElements()).intValue(),
+		PaginationResponse page = new PaginationResponse((int) ((Long) userResponse.getTotalElements()).intValue(),
 				userResponse.getTotalPages(), userResponse.getSize(), userResponse.getPageable().getPageNumber());
 		return new JsonApiWrapper<>(resultresponse, getSelfLink(request), Arrays.asList(l1), page);
 
@@ -184,14 +186,14 @@ public class OrganisationController extends BaseController {
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/getall-orgname", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<List<String>> findAllOrganisationName(@ApiIgnore UriComponentsBuilder builder,
-			@RequestParam("query") Optional<String> query,HttpServletRequest request, HttpServletResponse response) {
+			@RequestParam("query") Optional<String> query, HttpServletRequest request, HttpServletResponse response) {
 		List<String> userResponse = organisationservice.findAllOrganisationName(query);
 		String tmp = builder.path(Constants.PATH_GET_ALL_ORG).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_GET_ALL_ORGANISATION_DETAIL);
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
 
 	}
-	
+
 	@PreAuthorize("hasAuthority('Admin')")
 	@ResponseStatus(HttpStatus.IM_USED)
 	@ApiOperation(value = " getall Organisations ", response = Organisation.class)
@@ -204,13 +206,14 @@ public class OrganisationController extends BaseController {
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/getall-org-location", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<List<String>> findAllOrganisationLocation(@ApiIgnore UriComponentsBuilder builder,
-			@RequestParam("query") Optional<String> query,HttpServletRequest request, HttpServletResponse response) {
+			@RequestParam("query") Optional<String> query, HttpServletRequest request, HttpServletResponse response) {
 		List<String> userResponse = organisationservice.findAllOrganisationLocation(query);
 		String tmp = builder.path(Constants.PATH_GET_ALL_ORG).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_GET_ALL_ORGANISATION_DETAIL);
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
 
 	}
+
 	@PreAuthorize("hasAuthority('Admin')")
 	@ResponseStatus(HttpStatus.IM_USED)
 	@ApiOperation(value = " getall Organisations ", response = Organisation.class)
@@ -223,10 +226,30 @@ public class OrganisationController extends BaseController {
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/getall-org-industry", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<List<String>> findAllOrganisationIndustry(@ApiIgnore UriComponentsBuilder builder,
-			@RequestParam("query") Optional<String> query,HttpServletRequest request, HttpServletResponse response) {
+			@RequestParam("query") Optional<String> query, HttpServletRequest request, HttpServletResponse response) {
 		List<String> userResponse = organisationservice.findAllOrganisationIndustry(query);
 		String tmp = builder.path(Constants.PATH_GET_ALL_ORG).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_GET_ALL_ORGANISATION_DETAIL);
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
+	}
+
+	@PreAuthorize("hasAuthority('Admin')")
+	@ResponseStatus(HttpStatus.IM_USED)
+	@ApiOperation(value = " getall Organisations ", response = Organisation.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Successful Creation of User Data.", response = JsonApiWrapper.class),
+			@ApiResponse(code = 401, message = "Not authorized!"),
+			@ApiResponse(code = 403, message = "Not authorized to perform this action."),
+			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
+			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
+			@ApiResponse(code = 500, message = "Internal server error") })
+	@RequestMapping(value = "/get-org-id-name", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public JsonApiWrapper<Map<String, String>> findAllOrganisationsName(@ApiIgnore UriComponentsBuilder builder,
+			HttpServletRequest request, HttpServletResponse response) {
+		Map<String, String> userResponse = organisationservice.getAllOrgIdName();
+		String tmp = builder.path(Constants.PATH_GET_ALL_ORG).build().toString();
+		Link l1 = new Link(tmp, Constants.LINK_GET_ALL_ORGANISATION_DETAIL);
+		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
+
 	}
 }
