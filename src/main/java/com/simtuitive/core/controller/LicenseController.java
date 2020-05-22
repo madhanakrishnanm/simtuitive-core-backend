@@ -26,6 +26,7 @@ import com.simtuitive.core.controller.productmgmt.api.Link;
 import com.simtuitive.core.controller.productmgmt.api.PaginationResponse;
 import com.simtuitive.core.controller.requestpayload.LicenseRequestPayload;
 import com.simtuitive.core.controller.responsepayload.LicenseResponsePayload;
+import com.simtuitive.core.globalexception.BadArgumentException;
 import com.simtuitive.core.model.License;
 import com.simtuitive.core.service.abstracts.ILicenseService;
 
@@ -60,11 +61,31 @@ public class LicenseController extends BaseController {
 		String createdby = request.getUserPrincipal().getName();
 		payload.setModifiedBy(createdby);
 		payload.setCreatedBy(createdby);
+		cheeckConditions(payload);
 		String tmp = builder.path("/add-license").build().toString();
 		Link l1 = new Link(tmp, "license-managment");
 		userResponse = licenseservice.addLicense(payload);
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
 
+	}
+
+	private void cheeckConditions(LicenseRequestPayload payload) {
+		// TODO Auto-generated method stub
+		Long numberOfLicense=payload.getNumberOfLicense();
+		int limit=payload.getCreditLimit();
+		if(numberOfLicense==0L || numberOfLicense<0L ) {	
+			throw new BadArgumentException("license should not be 0 and lesser than 0");
+		}
+		if(limit<0) {
+			throw new BadArgumentException("limit should lesser than 0");
+		}
+		if(limit>120) {
+			throw new BadArgumentException("limit should greater than 120");
+		}
+		if(payload.getNarration().length()>100) {
+			throw new BadArgumentException("narration length should be 100");
+		}
+		
 	}
 
 	@PreAuthorize("hasAuthority('Admin')")
@@ -84,6 +105,7 @@ public class LicenseController extends BaseController {
 		LicenseResponsePayload userResponse = null;
 		String createdby = request.getUserPrincipal().getName();
 		payload.setModifiedBy(createdby);
+		cheeckConditions(payload);
 		String tmp = builder.path("/update-license").build().toString();
 		Link l1 = new Link(tmp, "license-managment");
 		userResponse = licenseservice.updateLicense(payload);
