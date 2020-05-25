@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -108,7 +109,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 				if (truetoken.matches(clientTrueToken)) {
 					if (now.after(expirationTime)) {
 						System.out.println("cominghere");
-						throw new InvalidTokenException("Token expired");//
+						throw new BadCredentialsException("Token expired");//
 					} else {
 						if(now.after(sessioncreatedtime)&&now.before(sessionexpiretime)) {
 							System.out.println("coming session here");
@@ -120,15 +121,15 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 							SecurityContextHolder.getContext().setAuthentication(authentication);
 							updateinRedis(username);
 						}else {
-							throw new InvalidTokenException("session Time out by token");
+							throw new BadCredentialsException("session Time out by token");
 						}						
 					}
 				} else {
-					throw new InvalidTokenException("Invalid Token "+clientToken);
+					throw new BadCredentialsException("Invalid Token "+clientToken);
 				}
 			}
 				else {
-					throw new InvalidTokenException("Invalid Token "+clientToken);
+					throw new BadCredentialsException("Invalid Token "+clientToken);
 				}
 
 			} else {

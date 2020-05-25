@@ -33,9 +33,12 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-		User dbUser;
-		dbUser = userservice.findByuserEmail(email);
+		 User dbUser= userservice.findByuserEmail(email);
 
+		if(dbUser == null) {
+			throw new UsernameNotFoundException("welcome");
+		}
+		
 		Collection<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 
 		GrantedAuthority authority = new SimpleGrantedAuthority(dbUser.getRole());

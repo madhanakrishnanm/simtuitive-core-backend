@@ -143,8 +143,8 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
 		@Override
 		public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
-			User user = (User) authentication.getPrincipal();
-			if(validateSameUser(user.getUsername())) {
+//			User user = (User) authentication.getPrincipal();
+			if(validateSameUser(authentication.getPrincipal().toString())) {
 				OAuth2AccessToken accessTokenGen = new DefaultOAuth2AccessToken("error");
 				additionalInfoClient.put("error", "error");
 				additionalInfoClient.put("message", "User already in logged in");
@@ -162,7 +162,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 			System.out.println("stronger_salt" + stronger_salt);
 			truerefreshtoken = accessToken.getRefreshToken().getValue() + BCrypt.gensalt(12);
 			refreshTokenEnc = TokenUtil.encrypt(truerefreshtoken, secret);
-			String role=userDetailsService.getUserDetails(user.getUsername());
+			String role=userDetailsService.getUserDetails(authentication.getPrincipal().toString());
 			additionalInfo.put("role", role);
 			Map<String, String> customvalues = (Map<String, String>) authentication.getDetails();
 			additionalInfo.put("key_super_key", customvalues.get("key_super_key"));
@@ -175,18 +175,18 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 			((DefaultOAuth2AccessToken) accessTokenGen).setExpiration(accessToken.getExpiration());
 			// create token info class have the token information manually by me
 			Date createdtime=new Date();			
-			redistoken = new PasswordResetToken(user.getUsername(), accessToken.toString(), stronger_salt,
+			redistoken = new PasswordResetToken(authentication.getPrincipal().toString(), accessToken.toString(), stronger_salt,
 					accessToken.getExpiration(),createdtime);
 			Map<?, ?> ruleHash = new ObjectMapper().convertValue(redistoken, Map.class);
 			System.out.println("Ruleshash:::" + ruleHash.toString());
 			// Publishing in redis
 			Date SessionExpire=new Date((System.currentTimeMillis()+300000L));
 			redis.redisTemplate().opsForHash().put(accessToken.toString(), accessToken.toString(), ruleHash);
-			sessioninfo=new SessionInfo(user.getUsername(), userDetailsService.getUserDetails(user.getUsername()), customvalues.get("key_super_key"), createdtime, createdtime,SessionExpire);
+			sessioninfo=new SessionInfo(authentication.getPrincipal().toString(), userDetailsService.getUserDetails(authentication.getPrincipal().toString()), customvalues.get("key_super_key"), createdtime, createdtime,SessionExpire);
 			Map<?, ?> ruleHash1 = new ObjectMapper().convertValue(sessioninfo, Map.class);
-			redis.redisTemplate().opsForHash().put(user.getUsername()+role,user.getUsername()+role,ruleHash1);
-			Map<?, ?> sessioninfo = (Map<?, ?>) redis.redisTemplate().opsForHash().get(user.getUsername()+role,
-					user.getUsername()+role);
+			redis.redisTemplate().opsForHash().put(authentication.getPrincipal().toString()+role,authentication.getPrincipal().toString()+role,ruleHash1);
+			Map<?, ?> sessioninfo = (Map<?, ?>) redis.redisTemplate().opsForHash().get(authentication.getPrincipal().toString()+role,
+					authentication.getPrincipal().toString()+role);
 			System.out.println("sessioninfo"+sessioninfo.toString());
 			
 //		 OAuth2AccessToken accessTokenOutput = redisTokenStore().readAccessToken(accessTokenGen.getValue());

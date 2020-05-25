@@ -1,10 +1,15 @@
 package com.simtuitive.core.oauth2;
 
+import java.security.AuthProvider;
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,6 +22,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.simtuitive.core.service.CustomAuthenticationProvider;
 import com.simtuitive.core.service.CustomUserDetailsServiceImpl;
 
 @Configuration
@@ -26,6 +32,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private CustomUserDetailsServiceImpl userDetailsService;
+	
+	
+	@Autowired
+	 private CustomAuthenticationProvider authProvider;
+	
+	
+	@Bean
+	public AuthenticationProvider authProvider() {
+		return new CustomAuthenticationProvider();
+	}
+   
 
 	@Bean
 	public AuthTokenFilter authenticationJwtTokenFilter() {
@@ -47,20 +64,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Bean
 	@Override
 	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return super.authenticationManagerBean();
+		return new ProviderManager(Arrays.asList((AuthenticationProvider) authProvider()));
 	}
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService).passwordEncoder(encoder());
+		auth.authenticationProvider(authProvider);
 	}
 
 	@Bean
 	public BCryptPasswordEncoder encoder() {
 		return new BCryptPasswordEncoder();
-	}
-	 @Bean
-	    public TokenStore tokenStore() {
-	        return new InMemoryTokenStore();
-	    }
+	}	 
 }

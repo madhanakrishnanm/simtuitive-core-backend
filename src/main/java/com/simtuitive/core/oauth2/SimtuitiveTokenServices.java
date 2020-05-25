@@ -16,9 +16,7 @@ public class SimtuitiveTokenServices extends DefaultTokenServices{
 
 //	    System.out.println("authentication values"+authentication.getDetails().toString());
 	    final Map<String, Object> tafInfo = new HashMap<>();
-	    tafInfo.put("key_super_key",UUID.randomUUID().toString() );
-	    User user = (User) authentication.getPrincipal();
-	    System.out.println("SimtuitiveTokenServices::createAccessToken::username::"+user.getUsername());	    
+	    tafInfo.put("key_super_key",UUID.randomUUID().toString());		    	    
 	    authentication.setDetails(tafInfo);
 	    System.out.println("SimtuitiveTokenServices::createAccessToken::key_super_key::"+authentication.getDetails().toString());
 	    return super.createAccessToken(authentication);
