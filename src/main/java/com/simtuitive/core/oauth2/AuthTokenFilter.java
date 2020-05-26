@@ -122,8 +122,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 							SecurityContextHolder.getContext().setAuthentication(authentication);
 							updateinRedis(username);
 						}else {
-//							throw new BadCredentialsException("session Time out by token");							
-							request.getRequestDispatcher("/oauth/validation").forward(req,res);
+							throw new BadCredentialsException("session Time out by token");							
+							//req.getRequestDispatcher("/oauth/validation").forward(request,response);
 						}						
 					}
 				} else {
