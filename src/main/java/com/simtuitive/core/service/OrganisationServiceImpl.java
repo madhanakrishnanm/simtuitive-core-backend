@@ -184,14 +184,16 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 		if(countofquery!=0) {
 			long count = mongoOps.count(query1, Organisation.class);
 			query1.with(pageable);
+			System.out.println("count"+count);
 			System.out.println("Organisation query" + query1.toString());		
 			List<Organisation> orgresult = mongoOps.find(query1, Organisation.class);		
 			Page<Organisation> result = new PageImpl<Organisation>(orgresult, pageable, count);
 			return result;
 		}else {
 			query1.with(pageable);				
-			List<Organisation> orgresult = mongoOps.findAll(Organisation.class);
-			int total=orgresult.size();			
+			List<Organisation> orgresult = mongoOps.find(query1, Organisation.class);
+			int total=orgresult.size();	
+			System.out.println("Count"+total);
 			Page<Organisation> result = new PageImpl<Organisation>(orgresult, pageable, Long.valueOf(total));
 			return result;
 		}
