@@ -166,11 +166,13 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 			additionalInfo.put("role", role);
 			Map<String, String> customvalues = (Map<String, String>) authentication.getDetails();
 			additionalInfo.put("key_super_key", customvalues.get("key_super_key"));
+			
+			
 			// Experienced to add extra salt and true token--but client can able to see
 			// that//fails our case
 			OAuth2AccessToken accessTokenGen = new DefaultOAuth2AccessToken(TokenEnc);
 			OAuth2RefreshToken refreshToken = new DefaultOAuth2RefreshToken(refreshTokenEnc);
-			((DefaultOAuth2AccessToken) accessTokenGen).setAdditionalInformation(additionalInfo);
+			
 			((DefaultOAuth2AccessToken) accessTokenGen).setRefreshToken(refreshToken);
 			((DefaultOAuth2AccessToken) accessTokenGen).setExpiration(accessToken.getExpiration());
 			// create token info class have the token information manually by me
@@ -188,7 +190,8 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 			Map<?, ?> sessioninfo = (Map<?, ?>) redis.redisTemplate().opsForHash().get(authentication.getPrincipal().toString()+role,
 					authentication.getPrincipal().toString()+role);
 			System.out.println("sessioninfo"+sessioninfo.toString());
-			
+			additionalInfo.put("sessionExpire", SessionExpire);
+			((DefaultOAuth2AccessToken) accessTokenGen).setAdditionalInformation(additionalInfo);
 //		 OAuth2AccessToken accessTokenOutput = redisTokenStore().readAccessToken(accessTokenGen.getValue());
 //		 System.out.println("Value retrive"+accessTokenOutput.getRefreshToken());
 			return accessTokenGen;
