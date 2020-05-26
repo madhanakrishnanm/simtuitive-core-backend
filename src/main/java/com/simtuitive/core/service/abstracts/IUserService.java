@@ -21,7 +21,7 @@ public interface IUserService {
 
 	public UserResponsePayload changePasswordUser(UserRequestPayload UserRequestPayload);
 
-	public List<UserResponsePayload> getAllUser(String userType,int pageno);
+	public List<UserResponsePayload> getAllAdminUser(String userType);
 	 
 	public Page<User> getAllUserByPaginationApplied(String userType,Optional<String> pageno,Optional<String> query,Optional<String> name,Optional<String> orgname);
 	

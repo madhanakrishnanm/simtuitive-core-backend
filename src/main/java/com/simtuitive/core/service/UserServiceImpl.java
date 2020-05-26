@@ -133,19 +133,16 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	}
 
 	@Override
-	public List<UserResponsePayload> getAllUser(String userType, int pageno) {
-		List<UserResponsePayload> result = new ArrayList<UserResponsePayload>();
-		final Pageable pageable = PageRequest.of(pageno, 5, Sort.by("userId").ascending());
+	public List<UserResponsePayload> getAllAdminUser(String userType) {
+		List<UserResponsePayload> result = new ArrayList<UserResponsePayload>();	
 		
 		
-		Query query = new Query();
-		query.with(pageable);
 
-		Page<User> pageuserlist = (Page<User>) userrepository.findByRoleAndStatus(userType, pageable, 1L);
+		List<User>userlist=userrepository.findByRoleAndStatus(userType,1L);
 
-		List<User> userlist = pageuserlist.getContent();
+		
 		System.out.println("userlist" + userlist.toString());
-		if (userType.equalsIgnoreCase("ADMIN") || userType.equalsIgnoreCase("Super Admin")) {
+		if (userType.equalsIgnoreCase("ADMIN")) {
 			for (User user : userlist) {
 
 				if (user.getStatus() == 1L) {
