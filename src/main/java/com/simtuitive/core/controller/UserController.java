@@ -6,6 +6,7 @@ package com.simtuitive.core.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -141,19 +143,63 @@ public class UserController extends BaseController {
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 
-	@RequestMapping(value = "/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/oauth/validation", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<UserResponsePayload> login(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody UserRequestPayload userpayload, HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 //		request.getRequestDispatcher("/oauth/token").forward(request, response);	
 		UserResponsePayload userResponse = null;
-		userResponse = userservice.addUser(userpayload);
+		CheckSession(request);
+		//userResponse = userservice.addUser(userpayload);
 		String tmp = builder.path(Constants.PATH_CREATE_ADMIN).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_CREATE_ADMIN_DETAIL);
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
 
 	}
 	// update
+
+	private void CheckSession(HttpServletRequest request) {
+		// TODO Auto-generated method stub
+		String clientToken = parseJwt(request);
+		Map<?, ?> newtoken = (Map<?, ?>) redis.redisTemplate().opsForHash().get(clientToken,
+				clientToken);
+		if(newtoken!=null) {
+			String truetoken = (String) newtoken.get(Constants.STR_AUTH_TOKEN);//
+			System.out.println("truetoken::" + truetoken);
+			String username = (String) newtoken.get(Constants.STR_AUTH_EMAIL);
+			String initrole = customuserdetail.getUserDetails(username);
+			String sessionkey=username+initrole;
+			Map<?, ?> sessioninfo = (Map<?, ?>) redis.redisTemplate().opsForHash().get(sessionkey, sessionkey);
+			Long time = (Long) newtoken.get("expirationTime");
+			Long sessiontime=(Long) sessioninfo.get("sessionCreatedTime");
+			Long sessiontime1=(Long) sessioninfo.get("sessionExpiryTime");
+			Date expirationTime = new java.util.Date(time);
+			Date sessionexpiretime= new java.util.Date(sessiontime1);
+			System.out.println("welcome sessionexpiretime"+sessionexpiretime);		
+			Date sessioncreatedtime = new java.util.Date(sessiontime);
+			System.out.println("welcome sessioncreatedtime"+sessioncreatedtime);
+			Date now = new Date();
+			System.out.println("now"+now);
+			if (truetoken.matches(clientToken)) {
+				if (now.after(expirationTime)) {
+					System.out.println("cominghere");
+					throw new BadCredentialsException("Token expired");//
+				} else {
+					if(now.after(sessioncreatedtime)&&now.before(sessionexpiretime)) {
+						System.out.println("coming session here");						
+					}else {
+						throw new BadCredentialsException("session Time out by token");						
+					}						
+				}
+			}
+			else {
+				throw new BadCredentialsException("Invalid Token "+clientToken);
+			}
+		}else {
+			throw new BadCredentialsException("Invalid Token "+clientToken);
+		}
+		
+	}
 
 	@ResponseStatus(HttpStatus.IM_USED)
 	@ApiOperation(value = " Updates a user ", response = User.class)

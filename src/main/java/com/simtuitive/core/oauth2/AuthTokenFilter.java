@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.security.SecurityProperties.Filter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -59,7 +60,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 		return new RedisTokenStore(redisConnectionFactory);
 	}
 	
-	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		
@@ -109,7 +109,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 				if (truetoken.matches(clientTrueToken)) {
 					if (now.after(expirationTime)) {
 						System.out.println("cominghere");
-						throw new BadCredentialsException("Token expired");//
+//						throw new BadCredentialsException("Token expired");//
+						request.getRequestDispatcher("/oauth/validation").forward(req,res);
 					} else {
 						if(now.after(sessioncreatedtime)&&now.before(sessionexpiretime)) {
 							System.out.println("coming session here");
@@ -121,7 +122,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 							SecurityContextHolder.getContext().setAuthentication(authentication);
 							updateinRedis(username);
 						}else {
-							throw new BadCredentialsException("session Time out by token");
+//							throw new BadCredentialsException("session Time out by token");							
+							request.getRequestDispatcher("/oauth/validation").forward(req,res);
 						}						
 					}
 				} else {
