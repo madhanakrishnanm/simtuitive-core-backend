@@ -28,6 +28,8 @@ public interface UserRepository extends MongoRepository<User, String> {
 	
 	public boolean existsByuserEmail(String email);
 	
+	public List<User>findByOrgName(String orgName);
+	
 	public Long countByRoleAndStatus(String role,Long status);
 	
 	public Page<User> findByStatus(org.springframework.data.mongodb.core.query.Query query,String role, Pageable pageable);

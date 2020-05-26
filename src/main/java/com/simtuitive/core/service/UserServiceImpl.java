@@ -83,8 +83,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 //			System.out.println("welcome issue");
 //			System.out.println("organisaton"+org.getOrganizationId());
 			payload = new UserResponsePayload(user.getUserId(), user.getUserName(), user.getUserEmail(),
-					user.getOrgId(), null, user.getStatus(), user.getCreatedDate(), user.getClientGst(),
-					user.getClientPan(), user.getPermissions(), user.getRole(), user.getOrgName(),
+					user.getOrgId(), null, user.getStatus(), user.getCreatedDate(), user.getPermissions(), user.getRole(), user.getOrgName(),
 					user.getLastLoggedIn());
 		}
 		return payload;
@@ -268,7 +267,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		Organisation org = orgrepository.findByOrganizationId(payload.getOrganisationId());
 		User user = new User(payload.getName(), payload.getEmail(), payload.getOrganisationId(),
 				org.getOrganizationName(), passwordEncoder.encode(payload.getPassword()), 1L, new Date(),
-				payload.getGst(), payload.getPan(), permissionlist, payload.getRole(), new Date());
+				 permissionlist, payload.getRole(), new Date());
 		return user;
 
 	}
@@ -362,6 +361,18 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	public Long countByRoleAndStatus(String role, Long status) {
 		// TODO Auto-generated method stub
 		return userrepository.countByRoleAndStatus(role, status);
+	}
+
+	@Override
+	public List<String> getOrgUsers(String orgName) {
+		// TODO Auto-generated method stub
+		
+		List<String>result= new ArrayList<String>();
+		List<User>userlist=userrepository.findByOrgName(orgName);
+		for(User s:userlist) {
+			result.add(s.getUserEmail());
+		}
+		return result;
 	}
 
 }

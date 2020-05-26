@@ -38,8 +38,6 @@ public class UserResponsePayload implements Serializable {
 	private String userType;
 	private String roleid;
 	private Date lastLoggedIn;
-	
-	
 
 	/**
 	 * @return the lastLoggedIn
@@ -365,7 +363,8 @@ public class UserResponsePayload implements Serializable {
 
 	// client specific
 	public UserResponsePayload(String userId, String userName, String userEmail, String organisationId, String password,
-			Long status, Date createdDate, String gst, String pan, List<Permissions> permissions, String role,String organizationName, Date lastLoggedIn) {
+			Long status, Date createdDate, List<Permissions> permissions, String role, String organizationName,
+			Date lastLoggedIn) {
 		super();
 		this.userId = userId;
 		this.userName = userName;
@@ -374,8 +373,6 @@ public class UserResponsePayload implements Serializable {
 		this.password = password;
 		this.status = status;
 		this.createdDate = createdDate;
-		this.gst = gst;
-		this.pan = pan;
 		this.organizationName = organizationName;
 		this.permissions = permissions;
 		this.role = role;
@@ -431,7 +428,5 @@ public class UserResponsePayload implements Serializable {
 				+ noOfMilestoneCompleted + ", permissions=" + permissions + ", role=" + role + ", userType=" + userType
 				+ ", roleid=" + roleid + "]";
 	}
-
-	
 
 }

@@ -42,5 +42,7 @@ public interface IUserService {
 	public boolean userExist(String email);
 	
 	public Long countByRoleAndStatus(String role,Long status);
+	
+	public List<String> getOrgUsers(String orgName);
 
 }

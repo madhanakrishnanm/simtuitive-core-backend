@@ -1,8 +1,8 @@
 package com.simtuitive.core.model;
+
 /**
  * 
  */
-
 
 import java.io.Serializable;
 import java.util.Date;
@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  */
 @Document
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class User implements GrantedAuthority,Serializable {
+public class User implements GrantedAuthority, Serializable {
 
 	/**
 	 * 
@@ -36,13 +36,13 @@ public class User implements GrantedAuthority,Serializable {
 	private String orgId;
 	private String orgName;
 	private String password;
-	private Long status;//1-active,2-inactive,3-suspend
+	private Long status;// 1-active,2-inactive,3-suspend
 	private String clientDealOwner;
 	private Date createdDate;
 	private String clientLocation;
 	private String clientGst;
 	private String clientPan;
-	private List<User> clientSpoc;	
+	private List<User> clientSpoc;
 	private String simEventName;
 	private String smeAssigned;
 	private Long noOfMilestone;
@@ -51,7 +51,6 @@ public class User implements GrantedAuthority,Serializable {
 	private List<Permissions> permissions;
 	private String role;
 	private Date lastLoggedIn;
-	
 
 	/**
 	 * @return the lastLoggedIn
@@ -109,7 +108,6 @@ public class User implements GrantedAuthority,Serializable {
 		this.userEmail = userEmail;
 	}
 
-	
 	/**
 	 * @return the orgId
 	 */
@@ -336,7 +334,6 @@ public class User implements GrantedAuthority,Serializable {
 	public void setRole(String role) {
 		this.role = role;
 	}
-	
 
 	/**
 	 * @return the orgName
@@ -353,28 +350,25 @@ public class User implements GrantedAuthority,Serializable {
 	}
 
 	// client specific
-	public User(String userName, String userEmail, String orgId,String orgName, String password, Long status,
-			 Date createdDate, String clientGst, String clientPan,
-			 List<Permissions> permissions,String role,Date lastLoggedIn) {
+	public User(String userName, String userEmail, String orgId, String orgName, String password, Long status,
+			Date createdDate, List<Permissions> permissions, String role, Date lastLoggedIn) {
 		super();
 		this.userName = userName;
 		this.userEmail = userEmail;
 		this.orgId = orgId;
 		this.orgName = orgName;
 		this.password = password;
-		this.status = status;		
-		this.createdDate = createdDate;		
-		this.clientGst = clientGst;
-		this.clientPan = clientPan;	
+		this.status = status;
+		this.createdDate = createdDate;
 		this.permissions = permissions;
-		this.role =role;
+		this.role = role;
 		this.lastLoggedIn = lastLoggedIn;
 	}
 
 	// learner specific
 	public User(String userName, String userEmail, String orgId, String password, Long status, Date createdDate,
 			String simEventName, String smeAssigned, Long noOfMilestone, Long noOfMilestoneAttended,
-			Long noOfMilestoneCompleted,  List<Permissions> permissions,String role) {
+			Long noOfMilestoneCompleted, List<Permissions> permissions, String role) {
 		super();
 		this.userName = userName;
 		this.userEmail = userEmail;
@@ -388,25 +382,20 @@ public class User implements GrantedAuthority,Serializable {
 		this.noOfMilestoneAttended = noOfMilestoneAttended;
 		this.noOfMilestoneCompleted = noOfMilestoneCompleted;
 		this.permissions = permissions;
-		this.role =role;
+		this.role = role;
 	}
 
-	public User(String userName, String userEmail, String password, Long status,  List<Permissions> permissions,String role,Date lastLoggedIn) {
+	public User(String userName, String userEmail, String password, Long status, List<Permissions> permissions,
+			String role, Date lastLoggedIn) {
 		super();
 		this.userName = userName;
 		this.userEmail = userEmail;
 		this.password = password;
 		this.status = status;
 		this.permissions = permissions;
-		this.role =role;
+		this.role = role;
 		this.lastLoggedIn = lastLoggedIn;
 	}
-
-	
-
-	
-
-	
 
 	@Override
 	public String toString() {
@@ -427,6 +416,7 @@ public class User implements GrantedAuthority,Serializable {
 	public User(User user) {
 		// TODO Auto-generated constructor stub
 	}
+
 	@Override
 	public String getAuthority() {
 		// TODO Auto-generated method stub

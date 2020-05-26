@@ -468,6 +468,25 @@ public class UserController extends BaseController {
 		return new JsonApiWrapper<>(result, getSelfLink(request), Arrays.asList(l1));
 
 	}
+	
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	@ApiOperation(value = " Get all users ", response = User.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Successful getAll of User Data.", response = JsonApiWrapper.class),
+			@ApiResponse(code = 401, message = "Not authorized!"),
+			@ApiResponse(code = 403, message = "Not authorized to perform this action."),
+			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
+			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
+			@ApiResponse(code = 500, message = "Internal server error") })
+	@RequestMapping(value = "/get-client-org", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public JsonApiWrapper<List<String>> getAllOrgClient(@ApiIgnore UriComponentsBuilder builder,
+			@RequestParam("orgName") String orgName,HttpServletRequest request, HttpServletResponse response) {
+		List<String> result =userservice.getOrgUsers(orgName);		
+		String tmp = builder.path("/getAll").build().toString();
+		Link l1 = new Link(tmp, " User Detail getAll");			
+		return new JsonApiWrapper<>(result, getSelfLink(request), Arrays.asList(l1));
+
+	}
 
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "Successful delete of User Data.", response = JsonApiWrapper.class),
