@@ -55,16 +55,13 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 				createdOrganisation.getDealOwnerName(), createdOrganisation.getDealOwnerEmail(),
 				createdOrganisation.getDealOwnerMobile(), createdOrganisation.getCreatedAt(),
 				createdOrganisation.getStatus(), createdOrganisation.getCreditLimit(),
-				createdOrganisation.getUpdatedAt(), createdOrganisation.getModifiedBy());
+				createdOrganisation.getUpdatedAt(), createdOrganisation.getModifiedBy(),createdOrganisation.getPan(),createdOrganisation.getGst());
 		return addresponse;
 	}
 
 	private Organisation buildOrganisation(OrganisationRequestPayload payload) {
 		// TODO Auto-generated method stub
-		Organisation client = new Organisation(payload.getName(), payload.getLocation(), payload.getIndustry(),
-				payload.getDealOwner(), payload.getDealOwnerEmail(), payload.getDealOwnerMobile(), new Date(),
-				payload.getStatus(), payload.getCreditLimit(), new Date(), payload.getModifiedBy());
-
+		Organisation client = new Organisation(payload.getName(), payload.getLocation(), payload.getIndustry(), payload.getDealOwner(), payload.getDealOwnerEmail(), payload.getDealOwnerMobile(), new Date(), payload.getStatus(), payload.getCreditLimit(), payload.getPan(), payload.getGst(), new Date(), payload.getModifiedBy());
 		return client;
 	}
 
@@ -88,6 +85,8 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 		needtobeupdate.setIndustry(payload.getIndustry());
 		needtobeupdate.setCreditLimit(payload.getCreditLimit());
 		needtobeupdate.setStatus(payload.getStatus());
+		needtobeupdate.setPan(payload.getPan());
+		needtobeupdate.setGst(payload.getGst());
 		return needtobeupdate;
 	}
 
@@ -190,9 +189,10 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 			Page<Organisation> result = new PageImpl<Organisation>(orgresult, pageable, count);
 			return result;
 		}else {
-			query1.with(pageable);				
+			query1.with(pageable);
+			List<Organisation> countresult=organisationrepository.findAll();
 			List<Organisation> orgresult = mongoOps.find(query1, Organisation.class);
-			int total=orgresult.size();	
+			int total=countresult.size();	
 			System.out.println("Count"+total);
 			Page<Organisation> result = new PageImpl<Organisation>(orgresult, pageable, Long.valueOf(total));
 			return result;

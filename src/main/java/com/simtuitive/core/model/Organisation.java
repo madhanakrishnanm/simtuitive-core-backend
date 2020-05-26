@@ -28,6 +28,8 @@ public class Organisation implements Serializable {
 	private Date createdAt;
 	private String status;
 	private Long creditLimit;
+	private Long pan;
+	private String gst;
 	private Date updatedAt;
 	private String modifiedBy;
 	/**
@@ -174,11 +176,37 @@ public class Organisation implements Serializable {
 	public void setModifiedBy(String modifiedBy) {
 		this.modifiedBy = modifiedBy;
 	}
-	public Organisation(String organizationName, String location, String industry,
-			String dealOwnerName, String dealOwnerEmail, Long dealOwnerMobile, Date createdAt, String status,
-			Long creditLimit, Date updatedAt, String modifiedBy) {
+	
+	/**
+	 * @return the pan
+	 */
+	public Long getPan() {
+		return pan;
+	}
+	/**
+	 * @param pan the pan to set
+	 */
+	public void setPan(Long pan) {
+		this.pan = pan;
+	}
+	/**
+	 * @return the gst
+	 */
+	public String getGst() {
+		return gst;
+	}
+	/**
+	 * @param gst the gst to set
+	 */
+	public void setGst(String gst) {
+		this.gst = gst;
+	}
+	
+	public Organisation(String organizationName, String location, String industry, String dealOwnerName,
+			String dealOwnerEmail, Long dealOwnerMobile, Date createdAt, String status, Long creditLimit, Long pan,
+			String gst, Date updatedAt, String modifiedBy) {
 		super();
-		this.organizationName = organizationName;		
+		this.organizationName = organizationName;
 		this.location = location;
 		this.industry = industry;
 		this.dealOwnerName = dealOwnerName;
@@ -187,6 +215,8 @@ public class Organisation implements Serializable {
 		this.createdAt = createdAt;
 		this.status = status;
 		this.creditLimit = creditLimit;
+		this.pan = pan;
+		this.gst = gst;
 		this.updatedAt = updatedAt;
 		this.modifiedBy = modifiedBy;
 	}

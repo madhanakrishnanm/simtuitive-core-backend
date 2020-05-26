@@ -17,6 +17,8 @@ public class OrganisationRequestPayload implements Serializable {
 	private String status;
 	private Long creditLimit;
 	private String modifiedBy;
+	private Long pan;
+	private String gst;
 	/**
 	 * @return the modifiedBy
 	 */
@@ -137,8 +139,35 @@ public class OrganisationRequestPayload implements Serializable {
 	public void setCreditLimit(Long creditLimit) {
 		this.creditLimit = creditLimit;
 	}
+	
+	/**
+	 * @return the pan
+	 */
+	public Long getPan() {
+		return pan;
+	}
+	/**
+	 * @param pan the pan to set
+	 */
+	public void setPan(Long pan) {
+		this.pan = pan;
+	}
+	/**
+	 * @return the gst
+	 */
+	public String getGst() {
+		return gst;
+	}
+	/**
+	 * @param gst the gst to set
+	 */
+	public void setGst(String gst) {
+		this.gst = gst;
+	}
+	
 	public OrganisationRequestPayload(String name, String id, String location, String industry, String dealOwner,
-			String dealOwnerEmail, Long dealOwnerMobile, String status, Long creditLimit, String modifiedBy) {
+			String dealOwnerEmail, Long dealOwnerMobile, String status, Long creditLimit, String modifiedBy, Long pan,
+			String gst) {
 		super();
 		this.name = name;
 		this.id = id;
@@ -150,6 +179,8 @@ public class OrganisationRequestPayload implements Serializable {
 		this.status = status;
 		this.creditLimit = creditLimit;
 		this.modifiedBy = modifiedBy;
+		this.pan = pan;
+		this.gst = gst;
 	}
 	@Override
 	public String toString() {

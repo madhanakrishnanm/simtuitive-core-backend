@@ -10,4 +10,6 @@ public interface OrganisationRepository extends MongoRepository<Organisation, St
 	
 	public boolean existsByOrganizationName(String name);
 	
+	
+	
 }
