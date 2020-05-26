@@ -36,6 +36,7 @@ public class UserRequestPayload implements Serializable {
 	private String role;
 	private String userType;
 	private String roleid;
+	private String billingAddress;
 	
 	/**
 	 * @return the roleid
@@ -297,11 +298,23 @@ public class UserRequestPayload implements Serializable {
 	}
 	
 	
+	/**
+	 * @return the billingAddress
+	 */
+	public String getBillingAddress() {
+		return billingAddress;
+	}
+	/**
+	 * @param billingAddress the billingAddress to set
+	 */
+	public void setBillingAddress(String billingAddress) {
+		this.billingAddress = billingAddress;
+	}
 	public UserRequestPayload(String userId, String name, String email, String organisationId, String password,
 			Long status, String clientDealOwner, Date createdDate, String clientLocation, String gst, String pan,
 			List<User> clientSpoc, String simEventName, String smeAssigned, Long noOfMilestone,
 			Long noOfMilestoneAttended, Long noOfMilestoneCompleted, List<Permissions> permissions, String role,
-			String userType, String roleid) {
+			String userType, String roleid,String billingAddress) {
 		super();
 		this.userId = userId;
 		this.name = name;
@@ -323,6 +336,7 @@ public class UserRequestPayload implements Serializable {
 		this.permissions = permissions;
 		this.role = role;
 		this.userType = userType;
+		this.billingAddress = billingAddress;
 		this.roleid = roleid;
 	}
 	public UserRequestPayload() {

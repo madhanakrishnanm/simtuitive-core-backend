@@ -38,6 +38,7 @@ public class UserResponsePayload implements Serializable {
 	private String userType;
 	private String roleid;
 	private Date lastLoggedIn;
+	private String billingAddress;
 
 	/**
 	 * @return the lastLoggedIn
@@ -364,7 +365,7 @@ public class UserResponsePayload implements Serializable {
 	// client specific
 	public UserResponsePayload(String userId, String userName, String userEmail, String organisationId, String password,
 			Long status, Date createdDate, List<Permissions> permissions, String role, String organizationName,
-			Date lastLoggedIn) {
+			Date lastLoggedIn,String billingAddress) {
 		super();
 		this.userId = userId;
 		this.userName = userName;
@@ -376,6 +377,7 @@ public class UserResponsePayload implements Serializable {
 		this.organizationName = organizationName;
 		this.permissions = permissions;
 		this.role = role;
+		this.billingAddress = billingAddress;
 		this.lastLoggedIn = lastLoggedIn;
 	}
 

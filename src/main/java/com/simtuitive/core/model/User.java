@@ -51,6 +51,7 @@ public class User implements GrantedAuthority, Serializable {
 	private List<Permissions> permissions;
 	private String role;
 	private Date lastLoggedIn;
+	private String billingAddress;
 
 	/**
 	 * @return the lastLoggedIn
@@ -349,9 +350,23 @@ public class User implements GrantedAuthority, Serializable {
 		this.orgName = orgName;
 	}
 
+	/**
+	 * @return the billingAddress
+	 */
+	public String getBillingAddress() {
+		return billingAddress;
+	}
+
+	/**
+	 * @param billingAddress the billingAddress to set
+	 */
+	public void setBillingAddress(String billingAddress) {
+		this.billingAddress = billingAddress;
+	}
+
 	// client specific
 	public User(String userName, String userEmail, String orgId, String orgName, String password, Long status,
-			Date createdDate, List<Permissions> permissions, String role, Date lastLoggedIn) {
+			Date createdDate, List<Permissions> permissions, String role, Date lastLoggedIn, String billingAddress) {
 		super();
 		this.userName = userName;
 		this.userEmail = userEmail;
@@ -362,6 +377,7 @@ public class User implements GrantedAuthority, Serializable {
 		this.createdDate = createdDate;
 		this.permissions = permissions;
 		this.role = role;
+		this.billingAddress = billingAddress;
 		this.lastLoggedIn = lastLoggedIn;
 	}
 

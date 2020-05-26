@@ -84,7 +84,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 //			System.out.println("organisaton"+org.getOrganizationId());
 			payload = new UserResponsePayload(user.getUserId(), user.getUserName(), user.getUserEmail(),
 					user.getOrgId(), null, user.getStatus(), user.getCreatedDate(), user.getPermissions(), user.getRole(), user.getOrgName(),
-					user.getLastLoggedIn());
+					user.getLastLoggedIn(),user.getBillingAddress());
 		}
 		return payload;
 	}
@@ -267,7 +267,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		Organisation org = orgrepository.findByOrganizationId(payload.getOrganisationId());
 		User user = new User(payload.getName(), payload.getEmail(), payload.getOrganisationId(),
 				org.getOrganizationName(), passwordEncoder.encode(payload.getPassword()), 1L, new Date(),
-				 permissionlist, payload.getRole(), new Date());
+				 permissionlist, payload.getRole(), new Date(),payload.getBillingAddress());
 		return user;
 
 	}
