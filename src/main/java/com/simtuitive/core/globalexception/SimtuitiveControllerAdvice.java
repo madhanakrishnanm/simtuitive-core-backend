@@ -4,11 +4,17 @@ package com.simtuitive.core.globalexception;
  */
 
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
+import org.springframework.security.oauth2.common.exceptions.UnauthorizedClientException;
+import org.springframework.security.oauth2.common.exceptions.UnauthorizedUserException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -63,6 +69,20 @@ public class SimtuitiveControllerAdvice {
         return new ErrorInfo(url, ex, HttpStatus.INTERNAL_SERVER_ERROR.value(), logger.isDebugEnabled());
 
     }
+   
+   @ResponseStatus(HttpStatus.UNAUTHORIZED)
+   @ExceptionHandler(value = { InvalidTokenException.class, UnauthorizedUserException.class,
+                               UnauthorizedClientException.class, SessionTimeoutException.class
+                               })
+   @ResponseBody
+   ErrorInfo handleUnAutherized(HttpServletRequest req, Exception ex) {
+       String url = req.getRequestURL().toString();
+       //logger.error("URL:: {} STATUS:: {} Exception:: {} Of {}", url, HttpStatus.UNAUTHORIZED,
+                 //   ex.getClass().getCanonicalName(), ex.getLocalizedMessage());
+       //logger.debug(ex.getMessage(), ex);
+       System.out.println("welcome here controller advice");
+       return new ErrorInfo(url, ex, true);
+   }
 
  
 

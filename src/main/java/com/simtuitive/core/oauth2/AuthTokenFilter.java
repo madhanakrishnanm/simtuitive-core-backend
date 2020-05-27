@@ -1,21 +1,19 @@
 package com.simtuitive.core.oauth2;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Date;
 import java.util.Map;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.security.SecurityProperties.Filter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,13 +24,13 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.simtuitive.core.common.Constants;
 import com.simtuitive.core.config.RedisConfiguration;
-import com.simtuitive.core.globalexception.BadArgumentException;
+import com.simtuitive.core.globalexception.ErrorInfo;
+import com.simtuitive.core.globalexception.SessionTimeoutException;
 import com.simtuitive.core.model.SessionInfo;
 import com.simtuitive.core.service.CustomUserDetailsServiceImpl;
 import com.simtuitive.core.util.TokenUtil;
@@ -60,31 +58,24 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 		return new RedisTokenStore(redisConnectionFactory);
 	}
 	
+	
+	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-			throws ServletException, IOException {
+			throws InvalidTokenException,SessionTimeoutException,ServletException, IOException {
 		
 		String initrole=null;
 		String username=null;
 		System.out.println("url"+request.getRequestURI());
 		System.out.println("request before casting wrapper"+request.getParameter("username"));
-
-		HttpServletRequest req = (HttpServletRequest)request;
-		HttpServletResponse res = (HttpServletResponse)response;		
+		
+		
 		
 		System.out.println("request wrapper new one"+request.getParameter("username"));
-		System.out.println("request after casting"+req.getParameter("username"));
+		System.out.println("request after casting"+request.getParameter("username"));
 		
-		try {			
-			String clientToken = parseJwt(req);//
-			System.out.println("clientToken::" + clientToken);			
-			
-//			if(req.getParameter("username")!=null&&clientToken==null) {
-//			Boolean isSameUserRoleInLoggedIn = validateSameUser(req,res);
-//			if (isSameUserRoleInLoggedIn) {
-//				System.out.println("sameuser logged in");//DuplicateSessionException
-//			}			
-//			}
-			
+			try {		
+			String clientToken = parseJwt(request);//
+			System.out.println("clientToken::" + clientToken);		
 			if (clientToken != null && TokenUtil.validate(clientToken, secret)) {				
 				String clientTrueToken = TokenUtil.getToken(clientToken);//				
 				Map<?, ?> newtoken = (Map<?, ?>) redis.redisTemplate().opsForHash().get(clientTrueToken,
@@ -108,9 +99,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 				System.out.println("now"+now);
 				if (truetoken.matches(clientTrueToken)) {
 					if (now.after(expirationTime)) {
-						System.out.println("cominghere");
-//						throw new BadCredentialsException("Token expired");//
-						request.getRequestDispatcher("/oauth/validation").forward(req,res);
+						System.out.println("cominghere");//select right exception
+						throw new InvalidTokenException("Token expired");//
 					} else {
 						if(now.after(sessioncreatedtime)&&now.before(sessionexpiretime)) {
 							System.out.println("coming session here");
@@ -118,54 +108,61 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 							System.out.println("userDetails"+userDetails.getUsername());
 							UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
 									userDetails, null, userDetails.getAuthorities());
-							authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
+							authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 							SecurityContextHolder.getContext().setAuthentication(authentication);
-							updateinRedis(username);
+							//updateinRedis(username);
 						}else {
-							throw new BadCredentialsException("session Time out by token");							
-							//req.getRequestDispatcher("/oauth/validation").forward(request,response);
+							throw new SessionTimeoutException("User session already timed out");
 						}						
 					}
 				} else {
-					throw new BadCredentialsException("Invalid Token "+clientToken);
+					throw new InvalidTokenException("Invalid Token "+clientToken);
 				}
 			}
 				else {
-					throw new BadCredentialsException("Invalid Token "+clientToken);
+					throw new InvalidTokenException("Invalid Token "+clientToken);
 				}
 
-			} else {
-//				Boolean isSameUserRoleInLoggedIn = validateSameUser(request);
-//				if (isSameUserRoleInLoggedIn) {
-//					System.out.println("sameuser logged in");//DuplicateSessionException
-//					
-//				} else {
-//					//need to check time out//proceed further
-//					System.out.println("veryfirst login");
-//				}
 			}
-		} catch (BadArgumentException e) {
-			//throw new BadArgumentException(e.getMessage());			
-//			res.setHeader("Access-Control-Allow-Origin", "*");
-//			res.setHeader("Access-Control-Allow-Credentials", "true");
-//			res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-//			res.setHeader("Access-Control-Max-Age", "3600");
-//			res.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, remember-me");
-			//res.setHeader("Access-Control-Allow-Origin", "*");
-			//res.sendError(401, e.getMessage());			
-		}
-		catch (InvalidTokenException e) {
-			throw new InvalidTokenException(e.getMessage());
-		}
+			}catch (SessionTimeoutException e) {
+				String url = request.getRequestURL().toString();
+				ErrorInfo erroinfo=new ErrorInfo(url, e, false);
+				response.setStatus(HttpStatus.UNAUTHORIZED.value());
+				response.setContentType("application/json");
+				ObjectMapper jsonMapper= new ObjectMapper();
+				PrintWriter resOut=response.getWriter();
+				resOut.print(jsonMapper.writeValueAsString(erroinfo));
+				resOut.flush();
+				return;
+				
+				// TODO: handle exception
+			} catch (InvalidTokenException e) {
+				// TODO: handle exception
+				String url = request.getRequestURL().toString();
+				ErrorInfo erroinfo=new ErrorInfo(url, e, true);
+				response.setStatus(HttpStatus.UNAUTHORIZED.value());
+				response.setContentType("application/json");
+				ObjectMapper jsonMapper= new ObjectMapper();
+				PrintWriter resOut=response.getWriter();
+				resOut.print(jsonMapper.writeValueAsString(erroinfo));
+				resOut.flush();
+				return;
+			} 
+			
+			
+		
+		
 		System.out.println("request.getContextPath()"+request.getContextPath());
 		if(request.getRequestURI().matches("/api/v1/users/logout")) {
-			req=request;
+			
 			System.out.println("logout token"+request.getHeader(Constants.STR_AUTH_AUTHORIZATION));			
 		}
 		
-		filterChain.doFilter(req, res);
-		System.out.println("Changes for after filter string"+req.getParameter("username"));
+		filterChain.doFilter(request, response);
+		System.out.println("Changes for after filter string"+request.getParameter("username"));
 	}
+
+	
 
 	private void updateinRedis(String username) {
 		// TODO Auto-generated method stub
