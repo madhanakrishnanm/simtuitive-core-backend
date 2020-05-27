@@ -68,13 +68,14 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 		System.out.println("url"+request.getRequestURI());
 		System.out.println("request before casting wrapper"+request.getParameter("username"));
 		
-		
+		HttpServletRequest req = (HttpServletRequest)request;
+		HttpServletResponse res = (HttpServletResponse)response;
 		
 		System.out.println("request wrapper new one"+request.getParameter("username"));
 		System.out.println("request after casting"+request.getParameter("username"));
 		
 			try {		
-			String clientToken = parseJwt(request);//
+			String clientToken = parseJwt(req);//
 			System.out.println("clientToken::" + clientToken);		
 			if (clientToken != null && TokenUtil.validate(clientToken, secret)) {				
 				String clientTrueToken = TokenUtil.getToken(clientToken);//				
@@ -108,7 +109,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 							System.out.println("userDetails"+userDetails.getUsername());
 							UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
 									userDetails, null, userDetails.getAuthorities());
-							authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+							authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
 							SecurityContextHolder.getContext().setAuthentication(authentication);
 							//updateinRedis(username);
 						}else {
@@ -125,12 +126,12 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
 			}
 			}catch (SessionTimeoutException e) {
-				String url = request.getRequestURL().toString();
+				String url = req.getRequestURL().toString();
 				System.out.println("sessionTimeoutException"+url);
 				ErrorInfo erroinfo=new ErrorInfo(url, e, false);
 				System.out.println("errorinfo"+erroinfo.toString());
-				response.setStatus(HttpStatus.UNAUTHORIZED.value());
-				response.setContentType("application/json");				
+				res.setStatus(HttpStatus.UNAUTHORIZED.value());
+				res.setContentType("application/json");				
 				ObjectMapper jsonMapper= new ObjectMapper();
 				PrintWriter resOut=response.getWriter();
 				resOut.print(jsonMapper.writeValueAsString(erroinfo));
@@ -140,12 +141,12 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 				// TODO: handle exception
 			} catch (InvalidTokenException e) {
 				// TODO: handle exception
-				String url = request.getRequestURL().toString();
+				String url = req.getRequestURL().toString();
 				System.out.println("InvalidTokenException"+url);
 				ErrorInfo erroinfo=new ErrorInfo(url, e, false);
 				System.out.println("errorinfo"+erroinfo.toString());
-				response.setStatus(HttpStatus.UNAUTHORIZED.value());
-				response.setContentType("application/json");
+				res.setStatus(HttpStatus.UNAUTHORIZED.value());
+				res.setContentType("application/json");
 				ObjectMapper jsonMapper= new ObjectMapper();
 				PrintWriter resOut=response.getWriter();
 				resOut.print(jsonMapper.writeValueAsString(erroinfo));
@@ -158,11 +159,11 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 		
 		System.out.println("request.getContextPath()"+request.getContextPath());
 		if(request.getRequestURI().matches("/api/v1/users/logout")) {
-			
+			req=request;
 			System.out.println("logout token"+request.getHeader(Constants.STR_AUTH_AUTHORIZATION));			
 		}
 		
-		filterChain.doFilter(request, response);
+		filterChain.doFilter(req, res);
 		System.out.println("Changes for after filter string"+request.getParameter("username"));
 	}
 
