@@ -141,7 +141,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 			} catch (InvalidTokenException e) {
 				// TODO: handle exception
 				String url = request.getRequestURL().toString();
+				System.out.println("InvalidTokenException"+url);
 				ErrorInfo erroinfo=new ErrorInfo(url, e, false);
+				System.out.println("errorinfo"+erroinfo.toString());
 				response.setStatus(HttpStatus.UNAUTHORIZED.value());
 				response.setContentType("application/json");
 				ObjectMapper jsonMapper= new ObjectMapper();
