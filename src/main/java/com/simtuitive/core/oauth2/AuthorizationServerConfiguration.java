@@ -174,7 +174,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 			OAuth2RefreshToken refreshToken = new DefaultOAuth2RefreshToken(refreshTokenEnc);
 			
 			((DefaultOAuth2AccessToken) accessTokenGen).setRefreshToken(refreshToken);
-			((DefaultOAuth2AccessToken) accessTokenGen).setExpiration(accessToken.getExpiration());
+			//((DefaultOAuth2AccessToken) accessTokenGen).setExpiration(accessToken.getExpiration());
 			// create token info class have the token information manually by me
 			Date createdtime=new Date();			
 			redistoken = new PasswordResetToken(authentication.getPrincipal().toString(), accessToken.toString(), stronger_salt,

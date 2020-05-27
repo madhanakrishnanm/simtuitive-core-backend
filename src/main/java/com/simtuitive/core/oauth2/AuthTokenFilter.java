@@ -61,7 +61,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-			throws InvalidTokenException,SessionTimeoutException,ServletException, IOException {
+			throws ServletException, IOException {
 		
 		String initrole=null;
 		String username=null;
@@ -126,9 +126,11 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 			}
 			}catch (SessionTimeoutException e) {
 				String url = request.getRequestURL().toString();
+				System.out.println("sessionTimeoutException"+url);
 				ErrorInfo erroinfo=new ErrorInfo(url, e, false);
+				System.out.println("errorinfo"+erroinfo.toString());
 				response.setStatus(HttpStatus.UNAUTHORIZED.value());
-				response.setContentType("application/json");
+				response.setContentType("application/json");				
 				ObjectMapper jsonMapper= new ObjectMapper();
 				PrintWriter resOut=response.getWriter();
 				resOut.print(jsonMapper.writeValueAsString(erroinfo));
@@ -139,7 +141,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 			} catch (InvalidTokenException e) {
 				// TODO: handle exception
 				String url = request.getRequestURL().toString();
-				ErrorInfo erroinfo=new ErrorInfo(url, e, true);
+				ErrorInfo erroinfo=new ErrorInfo(url, e, false);
 				response.setStatus(HttpStatus.UNAUTHORIZED.value());
 				response.setContentType("application/json");
 				ObjectMapper jsonMapper= new ObjectMapper();
