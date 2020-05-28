@@ -179,15 +179,19 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 	private void updateinRedis(String username) {
 		// TODO Auto-generated method stub
 				System.out.println("updated in redis method");
+				System.out.println("username"+username);
 				String initrole = customuserdetail.getUserDetails(username);			
-				String key = username + initrole;
+				String key = username+initrole;
+				System.out.println("username"+username+initrole);
+				
 				Map<?, ?> sessioninfo = (Map<?, ?>) redis.redisTemplate().opsForHash().get(key, key);
+				System.out.println("sessionInfo"+sessioninfo.toString());
 				String sessionid=(String)sessioninfo.get("sessionId");
 				Date createdTime=new Date();
 				Date SessionExpire=new Date((System.currentTimeMillis()+300000L));
 				SessionInfo sessioninfoupdate=new SessionInfo(username, initrole, sessionid, createdTime, createdTime,SessionExpire);
 				Map<?, ?> ruleHash1 = new ObjectMapper().convertValue(sessioninfoupdate, Map.class);
-				redis.redisTemplate().opsForValue().getOperations().delete(key);//deleting		
+				//redis.redisTemplate().opsForValue().getOperations().delete(key);//deleting		
 				redis.redisTemplate().opsForHash().put(key,key,ruleHash1);//adding				
 				Map<?, ?> sessioninfoafterupdate = (Map<?, ?>) redis.redisTemplate().opsForHash().get(key, key);
 				System.out.println("sessioninfoafterupdate"+sessioninfoafterupdate);
