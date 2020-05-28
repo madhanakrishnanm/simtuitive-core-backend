@@ -54,7 +54,7 @@ public class TokenUtil {
 
 	public static boolean validate(String token, String secret) {
 
-		String decrypted = decrypt(token, secret);
+		String decrypted = decrypt(token, "secret");
 		if (!decrypted.isEmpty()) {
 			return true;
 		}
