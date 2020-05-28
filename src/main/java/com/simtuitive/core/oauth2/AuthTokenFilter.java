@@ -97,6 +97,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 				System.out.println("welcome sessioncreatedtime"+sessioncreatedtime);
 				Date now = new Date();
 				System.out.println("now"+now);
+				System.out.println("expirationTime"+expirationTime);
 				if (truetoken.matches(clientTrueToken)) {
 					if (now.after(expirationTime)) {
 						System.out.println("cominghere");//select right exception
@@ -112,7 +113,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 							SecurityContextHolder.getContext().setAuthentication(authentication);
 							updateinRedis(username);
 						}else {
-							throw new SessionTimeoutException("User session already timed out");
+							throw new SessionTimeoutException("Session expired");
 						}						
 					}
 				} else {
