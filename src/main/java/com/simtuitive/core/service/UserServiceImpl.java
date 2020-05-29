@@ -274,11 +274,13 @@ public class UserServiceImpl extends BaseService implements IUserService {
 
 	private User modifyClientUser(UserRequestPayload payload) {
 		User existinguser = userrepository.findByUserId(payload.getUserId());
-		existinguser.setUserName(payload.getName());
+		Organisation org = orgrepository.findByOrganizationId(payload.getOrganisationId());
+		existinguser.setFirstName(payload.getFirstName());
+		existinguser.setLastName(payload.getLastName());
 		existinguser.setUserEmail(payload.getEmail());
 		existinguser.setOrgId(payload.getOrganisationId());
-		existinguser.setClientGst(payload.getGst());
-		existinguser.setClientPan(payload.getPan());
+		existinguser.setOrgName(org.getOrganizationName());
+		existinguser.setBillingAddress(payload.getBillingAddress());
 		return existinguser;
 
 	}
