@@ -37,6 +37,7 @@ import com.simtuitive.core.repository.RoleHasPermissionRepository;
 import com.simtuitive.core.repository.RolesRepository;
 import com.simtuitive.core.repository.UserRepository;
 import com.simtuitive.core.service.abstracts.IUserService;
+import com.simtuitive.core.util.PasswordHelper;
 import com.simtuitive.core.util.SortbyRank;
 
 @Service
@@ -82,9 +83,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 //			Organisation org=orgrepository.findByOrganizationId(user.getOrgId());
 //			System.out.println("welcome issue");
 //			System.out.println("organisaton"+org.getOrganizationId());
-			payload = new UserResponsePayload(user.getUserId(), user.getUserName(), user.getUserEmail(),
-					user.getOrgId(), null, user.getStatus(), user.getCreatedDate(), user.getPermissions(), user.getRole(), user.getOrgName(),
-					user.getLastLoggedIn(),user.getBillingAddress());
+			payload = new UserResponsePayload(user.getUserId(), user.getFirstName(), user.getLastName(), user.getUserEmail(), user.getOrgId(), user.getPassword(),user.getStatus(), user.getCreatedDate(), user.getPermissions(), user.getRole(), user.getOrgName(), user.getLastLoggedIn(), user.getBillingAddress());
 		}
 		return payload;
 	}
@@ -171,7 +170,7 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		final Pageable pageable = PageRequest.of(pagenumber, 5, Sort.by("userId").ascending());
 		Query query1 = new Query();
 		Criteria rolename = null;
-		Criteria clientname, orgnameCr, nameAdmin, orgNameClient ,orgnameCr1 = null;
+		Criteria firstname,lastname, orgnameCr, nameAdmin, orgNameClient ,orgnameCr1 = null;
 		if (userType.equalsIgnoreCase("Admin")) {
 			if (query != null&&query.isPresent()&&!query.get().equalsIgnoreCase("null")) {
 				new Criteria();
@@ -188,10 +187,11 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		if (userType.equalsIgnoreCase("Client")) {
 			if (query != null&&query.isPresent()&&!query.get().equalsIgnoreCase("null")) {
 				new Criteria();
-				clientname = Criteria.where("userName").regex(query.orElse(""), "i");
+				firstname = Criteria.where("firstName").regex(query.orElse(""), "i");
+				lastname = Criteria.where("lastName").regex(query.orElse(""), "i");
 				orgnameCr = Criteria.where("orgName").regex(query.orElse(""), "i");
 				orgnameCr1 = Criteria.where("userEmail").regex(query.orElse(""), "i");
-				query1.addCriteria(new Criteria().orOperator(clientname, orgnameCr,orgnameCr1));
+				query1.addCriteria(new Criteria().orOperator(firstname,lastname, orgnameCr,orgnameCr1));
 			}
 			if (name.isPresent()&&name!=null&&!name.get().equalsIgnoreCase("null")) {
 				new Criteria();
@@ -265,8 +265,8 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		List<Permissions> permissionlist = buildRolePermission(role.getRoleId());
 		System.out.println("role" + permissionlist.toString());
 		Organisation org = orgrepository.findByOrganizationId(payload.getOrganisationId());
-		User user = new User(payload.getName(), payload.getEmail(), payload.getOrganisationId(),
-				org.getOrganizationName(), passwordEncoder.encode(payload.getPassword()), 1L, new Date(),
+		User user = new User(payload.getFirstName(),payload.getLastName(), payload.getEmail(), payload.getOrganisationId(),
+				org.getOrganizationName(), PasswordHelper.generatePassword(10), 1L, new Date(),
 				 permissionlist, payload.getRole(), new Date(),payload.getBillingAddress());
 		return user;
 

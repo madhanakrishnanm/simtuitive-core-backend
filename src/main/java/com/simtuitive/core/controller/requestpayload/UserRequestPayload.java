@@ -16,7 +16,9 @@ public class UserRequestPayload implements Serializable {
 	 * 
 	 */
 	private String userId;
-	private String name;	
+	private String name;
+	private String firstName;
+	private String lastName;
 	private String email;
 	private String organisationId;
 	private String password;
@@ -38,6 +40,30 @@ public class UserRequestPayload implements Serializable {
 	private String roleid;
 	private String billingAddress;
 	
+	/**
+	 * @return the firstName
+	 */
+	public String getFirstName() {
+		return firstName;
+	}
+	/**
+	 * @param firstName the firstName to set
+	 */
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	/**
+	 * @return the lastName
+	 */
+	public String getLastName() {
+		return lastName;
+	}
+	/**
+	 * @param lastName the lastName to set
+	 */
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
 	/**
 	 * @return the roleid
 	 */
@@ -310,14 +336,17 @@ public class UserRequestPayload implements Serializable {
 	public void setBillingAddress(String billingAddress) {
 		this.billingAddress = billingAddress;
 	}
-	public UserRequestPayload(String userId, String name, String email, String organisationId, String password,
-			Long status, String clientDealOwner, Date createdDate, String clientLocation, String gst, String pan,
-			List<User> clientSpoc, String simEventName, String smeAssigned, Long noOfMilestone,
-			Long noOfMilestoneAttended, Long noOfMilestoneCompleted, List<Permissions> permissions, String role,
-			String userType, String roleid,String billingAddress) {
+	
+	public UserRequestPayload(String userId, String name, String firstName, String lastName, String email,
+			String organisationId, String password, Long status, String clientDealOwner, Date createdDate,
+			String clientLocation, String gst, String pan, List<User> clientSpoc, String simEventName,
+			String smeAssigned, Long noOfMilestone, Long noOfMilestoneAttended, Long noOfMilestoneCompleted,
+			List<Permissions> permissions, String role, String userType, String roleid, String billingAddress) {
 		super();
 		this.userId = userId;
 		this.name = name;
+		this.firstName = firstName;
+		this.lastName = lastName;
 		this.email = email;
 		this.organisationId = organisationId;
 		this.password = password;
@@ -336,8 +365,8 @@ public class UserRequestPayload implements Serializable {
 		this.permissions = permissions;
 		this.role = role;
 		this.userType = userType;
-		this.billingAddress = billingAddress;
 		this.roleid = roleid;
+		this.billingAddress = billingAddress;
 	}
 	public UserRequestPayload() {
 

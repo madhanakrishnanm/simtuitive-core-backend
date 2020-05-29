@@ -33,6 +33,8 @@ public class User implements GrantedAuthority, Serializable {
 	private String userName;
 	@Email
 	private String userEmail;
+	private String firstName;
+	private String lastName;
 	private String orgId;
 	private String orgName;
 	private String password;
@@ -52,6 +54,34 @@ public class User implements GrantedAuthority, Serializable {
 	private String role;
 	private Date lastLoggedIn;
 	private String billingAddress;
+
+	/**
+	 * @return the firstName
+	 */
+	public String getFirstName() {
+		return firstName;
+	}
+
+	/**
+	 * @param firstName the firstName to set
+	 */
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	/**
+	 * @return the lastName
+	 */
+	public String getLastName() {
+		return lastName;
+	}
+
+	/**
+	 * @param lastName the lastName to set
+	 */
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
 
 	/**
 	 * @return the lastLoggedIn
@@ -365,10 +395,11 @@ public class User implements GrantedAuthority, Serializable {
 	}
 
 	// client specific
-	public User(String userName, String userEmail, String orgId, String orgName, String password, Long status,
+	public User(String firstName,String lastName, String userEmail, String orgId, String orgName, String password, Long status,
 			Date createdDate, List<Permissions> permissions, String role, Date lastLoggedIn, String billingAddress) {
 		super();
-		this.userName = userName;
+		this.firstName = firstName;
+		this.lastName = lastName;
 		this.userEmail = userEmail;
 		this.orgId = orgId;
 		this.orgName = orgName;

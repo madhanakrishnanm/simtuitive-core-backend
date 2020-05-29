@@ -17,6 +17,8 @@ public class UserResponsePayload implements Serializable {
 	 */
 	private String userId;
 	private String userName;
+	private String firstName;
+	private String lastName;
 	private String userEmail;
 	private String organisationId;
 	private String organizationName;
@@ -362,14 +364,56 @@ public class UserResponsePayload implements Serializable {
 		this.userType = userType;
 	}
 
+	/**
+	 * @return the firstName
+	 */
+	public String getFirstName() {
+		return firstName;
+	}
+
+	/**
+	 * @param firstName the firstName to set
+	 */
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	/**
+	 * @return the lastName
+	 */
+	public String getLastName() {
+		return lastName;
+	}
+
+	/**
+	 * @param lastName the lastName to set
+	 */
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	/**
+	 * @return the billingAddress
+	 */
+	public String getBillingAddress() {
+		return billingAddress;
+	}
+
+	/**
+	 * @param billingAddress the billingAddress to set
+	 */
+	public void setBillingAddress(String billingAddress) {
+		this.billingAddress = billingAddress;
+	}	
 	// client specific
-	public UserResponsePayload(String userId, String userName, String userEmail, String organisationId, String password,
+	public UserResponsePayload(String userId, String firstName,String lastName, String userEmail, String organisationId, String password,
 			Long status, Date createdDate, List<Permissions> permissions, String role, String organizationName,
 			Date lastLoggedIn,String billingAddress) {
 		super();
-		this.userId = userId;
-		this.userName = userName;
+		this.userId = userId;		
 		this.userEmail = userEmail;
+		this.firstName = firstName;
+		this.lastName = lastName;
 		this.organisationId = organisationId;
 		this.password = password;
 		this.status = status;
