@@ -128,7 +128,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 		tokenServices.setTokenStore(tokenStore());
 		tokenServices.setTokenEnhancer(tokenEnhancer());
 		tokenServices.setSupportRefreshToken(true);
-		tokenServices.setAccessTokenValiditySeconds(1200);
+		tokenServices.setAccessTokenValiditySeconds(30000);
 
 		return tokenServices;
 	}
@@ -182,7 +182,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 			Map<?, ?> ruleHash = new ObjectMapper().convertValue(redistoken, Map.class);
 			System.out.println("Ruleshash:::" + ruleHash.toString());
 			// Publishing in redis
-			Date SessionExpire=new Date((System.currentTimeMillis()+300000L));
+			Date SessionExpire=new Date((System.currentTimeMillis()+30000000L));
 			redis.redisTemplate().opsForHash().put(accessToken.toString(), accessToken.toString(), ruleHash);
 			sessioninfo=new SessionInfo(authentication.getPrincipal().toString(), userDetailsService.getUserDetails(authentication.getPrincipal().toString()), customvalues.get("key_super_key"), createdtime, createdtime,SessionExpire);
 			Map<?, ?> ruleHash1 = new ObjectMapper().convertValue(sessioninfo, Map.class);
