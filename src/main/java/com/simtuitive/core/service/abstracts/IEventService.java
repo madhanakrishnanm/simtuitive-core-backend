@@ -23,6 +23,7 @@ public interface IEventService {
 	public List<EventResponsePayload> getBookingCanceled();
 	public List<EventResponsePayload> getBookingRejected();
 	public EventResponsePayload updateBookingAction(String id,String action);
-	
+	public List<EventResponsePayload> getAllBooking();
+	public List<EventResponsePayload> getAllEvent();
 
 }

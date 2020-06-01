@@ -302,4 +302,44 @@ public class EventController extends BaseController{
 		userResponse = eventservice.getEvent(id);
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
 	}
+	
+	@PreAuthorize("hasAuthority('Admin')")
+	@ResponseStatus(HttpStatus.CREATED)
+	@ApiOperation(value = " Creates an event", response = Event.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Successful Creation of event Data.", response = JsonApiWrapper.class),
+			@ApiResponse(code = 401, message = "Not authorized!"),
+			@ApiResponse(code = 403, message = "Not authorized to perform this action."),
+			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
+			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
+			@ApiResponse(code = 500, message = "Internal server error") })
+	@RequestMapping(value = "/get-all-booking", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public JsonApiWrapper<List<EventResponsePayload>> getAllBooking(@ApiIgnore UriComponentsBuilder builder,
+			HttpServletRequest request, HttpServletResponse response) {
+		List<EventResponsePayload> userResponse=null;				
+		String tmp = builder.path("/update-booking-action").build().toString();
+		Link l1 = new Link(tmp, "event-managment");
+		userResponse = eventservice.getAllBooking();
+		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
+	}
+	
+	@PreAuthorize("hasAuthority('Admin')")
+	@ResponseStatus(HttpStatus.CREATED)
+	@ApiOperation(value = " Creates an event", response = Event.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Successful Creation of event Data.", response = JsonApiWrapper.class),
+			@ApiResponse(code = 401, message = "Not authorized!"),
+			@ApiResponse(code = 403, message = "Not authorized to perform this action."),
+			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
+			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
+			@ApiResponse(code = 500, message = "Internal server error") })
+	@RequestMapping(value = "/get-all-event", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public JsonApiWrapper<List<EventResponsePayload>> getAllEvent(@ApiIgnore UriComponentsBuilder builder,
+			HttpServletRequest request, HttpServletResponse response) {
+		List<EventResponsePayload> userResponse=null;				
+		String tmp = builder.path("/update-booking-action").build().toString();
+		Link l1 = new Link(tmp, "event-managment");
+		userResponse = eventservice.getAllEvent();
+		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
+	}
 }

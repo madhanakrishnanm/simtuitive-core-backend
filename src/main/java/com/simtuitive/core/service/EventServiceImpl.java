@@ -225,4 +225,33 @@ public class EventServiceImpl extends BaseService implements IEventService {
 		return buildEventResponsePayload(updatedaction);
 	}
 
+	@Override
+	public List<EventResponsePayload> getAllBooking() {
+		// TODO Auto-generated method stub
+		List<EventResponsePayload> payload = new ArrayList<EventResponsePayload>();
+		Query query1 = new Query();
+		query1.addCriteria(Criteria.where("type").is("Booking"));
+		List<Event> list = mongoOps.find(query1, Event.class);
+		for (Event e : list) {
+
+			payload.add(buildEventResponsePayload(e));
+		}
+		return payload;
+		
+	}
+
+	@Override
+	public List<EventResponsePayload> getAllEvent() {
+		// TODO Auto-generated method stub
+		List<EventResponsePayload> payload = new ArrayList<EventResponsePayload>();
+		Query query1 = new Query();
+		query1.addCriteria(Criteria.where("type").is("Event"));
+		List<Event> list = mongoOps.find(query1, Event.class);
+		for (Event e : list) {
+
+			payload.add(buildEventResponsePayload(e));
+		}
+		return payload;
+	}
+
 }
