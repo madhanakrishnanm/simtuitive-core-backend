@@ -203,7 +203,7 @@ public class EventController extends BaseController{
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 
-	@RequestMapping(value = "/update-event", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/update-event", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<EventResponsePayload> updateEvent(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody EventRequestPayload payload, HttpServletRequest request, HttpServletResponse response) {
 		EventResponsePayload userResponse = null;
@@ -227,7 +227,7 @@ public class EventController extends BaseController{
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 
-	@RequestMapping(value = "/update-booking", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/update-booking", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<EventResponsePayload> updateBooking(@ApiIgnore UriComponentsBuilder builder,
 			@RequestBody EventRequestPayload payload, HttpServletRequest request, HttpServletResponse response) {
 		EventResponsePayload userResponse = null;
