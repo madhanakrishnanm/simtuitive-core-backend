@@ -310,10 +310,12 @@ public class Event implements Serializable{
 	
 	
 	//Bookings
-	public Event(String productId, String productName, String eventName, String noOfParticipants,
+	public Event(String orgId, String orgName,String productId, String productName,String clientId, String clientName, String eventName, String noOfParticipants,
 			Date startDate, Date endDate, String notes, Date createdAt, String status, Date updatedAt,
 			String modifiedBy, String createdBy, String type) {
-		super();		
+		super();
+		this.orgId = orgId;
+		this.orgName = orgName;
 		this.productId = productId;
 		this.productName = productName;
 		this.eventName = eventName;
@@ -327,6 +329,8 @@ public class Event implements Serializable{
 		this.modifiedBy = modifiedBy;
 		this.createdBy = createdBy;
 		this.type = type;
+		this.clientId = clientId;
+		this.clientName = clientName;
 		
 	}
 	

@@ -9,32 +9,32 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EventSessions implements Serializable{
 
-	private String sessionName;
-	private Date sessiondate;
+	private String name;
+	private Date date;
 	private List<EventModules>modules;
 	/**
-	 * @return the sessionName
+	 * @return the name
 	 */
-	public String getSessionName() {
-		return sessionName;
+	public String getName() {
+		return name;
 	}
 	/**
-	 * @param sessionName the sessionName to set
+	 * @param name the name to set
 	 */
-	public void setSessionName(String sessionName) {
-		this.sessionName = sessionName;
+	public void setName(String name) {
+		this.name = name;
 	}
 	/**
-	 * @return the sessiondate
+	 * @return the date
 	 */
-	public Date getSessiondate() {
-		return sessiondate;
+	public Date getDate() {
+		return date;
 	}
 	/**
-	 * @param sessiondate the sessiondate to set
+	 * @param date the date to set
 	 */
-	public void setSessiondate(Date sessiondate) {
-		this.sessiondate = sessiondate;
+	public void setDate(Date date) {
+		this.date = date;
 	}
 	/**
 	 * @return the modules
@@ -48,17 +48,16 @@ public class EventSessions implements Serializable{
 	public void setModules(List<EventModules> modules) {
 		this.modules = modules;
 	}
-	public EventSessions(String sessionName, Date sessiondate, List<EventModules> modules) {
+	public EventSessions(String name, Date date, List<EventModules> modules) {
 		super();
-		this.sessionName = sessionName;
-		this.sessiondate = sessiondate;
+		this.name = name;
+		this.date = date;
 		this.modules = modules;
 	}
 	@Override
 	public String toString() {
-		return "EventSessions [sessionName=" + sessionName + ", sessiondate=" + sessiondate + ", modules=" + modules
-				+ "]";
+		return "EventSessions [name=" + name + ", date=" + date + ", modules=" + modules + "]";
 	}
-	
+		
 	
 }

@@ -6,8 +6,10 @@ package com.simtuitive.core.controller.requestpayload;
 import java.util.Date;
 import java.util.List;
 
+import com.simtuitive.core.controller.responsepayload.OrganisationResponsePayload;
 import com.simtuitive.core.model.EventModules;
 import com.simtuitive.core.model.EventSessions;
+import com.simtuitive.core.model.Organisation;
 
 /**
  * @author Veeramani N S
@@ -17,15 +19,16 @@ public class EventRequestPayload {
 	public String id;
 	public String orgId;
 	public String orgName;
-	public String clientId;
+	public String client;
 	public String clientName;
 	public String productId;
 	public String productName;
-	public String eventName;
+	public String name;
 	public String noOfParticipants;
-	public String tollPass;
-	public Date startDate;
-	public Date endDate;
+	public String tollGate;
+	public String startDate;
+	public String endDate;
+	public OrganisationResponsePayload organization;
 	public String notes;
 	private Date createdAt;
 	private String status;	
@@ -72,16 +75,16 @@ public class EventRequestPayload {
 		this.orgName = orgName;
 	}
 	/**
-	 * @return the clientId
+	 * @return the client
 	 */
-	public String getClientId() {
-		return clientId;
+	public String getClient() {
+		return client;
 	}
 	/**
-	 * @param clientId the clientId to set
+	 * @param client the client to set
 	 */
-	public void setClientId(String clientId) {
-		this.clientId = clientId;
+	public void setClient(String client) {
+		this.client = client;
 	}
 	/**
 	 * @return the clientName
@@ -120,16 +123,16 @@ public class EventRequestPayload {
 		this.productName = productName;
 	}
 	/**
-	 * @return the eventName
+	 * @return the name
 	 */
-	public String getEventName() {
-		return eventName;
+	public String getName() {
+		return name;
 	}
 	/**
-	 * @param eventName the eventName to set
+	 * @param name the name to set
 	 */
-	public void setEventName(String eventName) {
-		this.eventName = eventName;
+	public void setName(String name) {
+		this.name = name;
 	}
 	/**
 	 * @return the noOfParticipants
@@ -144,40 +147,52 @@ public class EventRequestPayload {
 		this.noOfParticipants = noOfParticipants;
 	}
 	/**
-	 * @return the tollPass
+	 * @return the tollGate
 	 */
-	public String getTollPass() {
-		return tollPass;
+	public String getTollGate() {
+		return tollGate;
 	}
 	/**
-	 * @param tollPass the tollPass to set
+	 * @param tollGate the tollGate to set
 	 */
-	public void setTollPass(String tollPass) {
-		this.tollPass = tollPass;
+	public void setTollGate(String tollGate) {
+		this.tollGate = tollGate;
 	}
 	/**
 	 * @return the startDate
 	 */
-	public Date getStartDate() {
+	public String getStartDate() {
 		return startDate;
 	}
 	/**
 	 * @param startDate the startDate to set
 	 */
-	public void setStartDate(Date startDate) {
+	public void setStartDate(String startDate) {
 		this.startDate = startDate;
 	}
 	/**
 	 * @return the endDate
 	 */
-	public Date getEndDate() {
+	public String getEndDate() {
 		return endDate;
 	}
 	/**
 	 * @param endDate the endDate to set
 	 */
-	public void setEndDate(Date endDate) {
+	public void setEndDate(String endDate) {
 		this.endDate = endDate;
+	}
+	/**
+	 * @return the organization
+	 */
+	public OrganisationResponsePayload getOrganization() {
+		return organization;
+	}
+	/**
+	 * @param organization the organization to set
+	 */
+	public void setOrganization(OrganisationResponsePayload organization) {
+		this.organization = organization;
 	}
 	/**
 	 * @return the notes
@@ -287,23 +302,25 @@ public class EventRequestPayload {
 	public void setBookingStatus(String bookingStatus) {
 		this.bookingStatus = bookingStatus;
 	}
-	public EventRequestPayload(String id, String orgId, String orgName, String clientId, String clientName,
-			String productId, String productName, String eventName, String noOfParticipants, String tollPass,
-			Date startDate, Date endDate, String notes, Date createdAt, String status, Date updatedAt,
-			String modifiedBy, String createdBy, String type, List<EventSessions> sessions, String bookingStatus) {
+	public EventRequestPayload(String id, String orgId, String orgName, String client, String clientName,
+			String productId, String productName, String name, String noOfParticipants, String tollGate,
+			String startDate, String endDate, OrganisationResponsePayload organization, String notes, Date createdAt,
+			String status, Date updatedAt, String modifiedBy, String createdBy, String type,
+			List<EventSessions> sessions, String bookingStatus) {
 		super();
 		this.id = id;
 		this.orgId = orgId;
 		this.orgName = orgName;
-		this.clientId = clientId;
+		this.client = client;
 		this.clientName = clientName;
 		this.productId = productId;
 		this.productName = productName;
-		this.eventName = eventName;
+		this.name = name;
 		this.noOfParticipants = noOfParticipants;
-		this.tollPass = tollPass;
+		this.tollGate = tollGate;
 		this.startDate = startDate;
 		this.endDate = endDate;
+		this.organization = organization;
 		this.notes = notes;
 		this.createdAt = createdAt;
 		this.status = status;
@@ -316,12 +333,15 @@ public class EventRequestPayload {
 	}
 	@Override
 	public String toString() {
-		return "EventRequestPayload [id=" + id + ", orgId=" + orgId + ", orgName=" + orgName + ", clientId=" + clientId
-				+ ", clientName=" + clientName + ", productId=" + productId + ", productName=" + productName
-				+ ", eventName=" + eventName + ", noOfParticipants=" + noOfParticipants + ", tollPass=" + tollPass
-				+ ", startDate=" + startDate + ", endDate=" + endDate + ", notes=" + notes + ", createdAt=" + createdAt
-				+ ", status=" + status + ", updatedAt=" + updatedAt + ", modifiedBy=" + modifiedBy + ", createdBy="
-				+ createdBy + ", type=" + type + ", sessions=" + sessions + ", bookingStatus=" + bookingStatus + "]";
-	}	
+		return "EventRequestPayload [id=" + id + ", orgId=" + orgId + ", orgName=" + orgName + ", client=" + client
+				+ ", clientName=" + clientName + ", productId=" + productId + ", productName=" + productName + ", name="
+				+ name + ", noOfParticipants=" + noOfParticipants + ", tollGate=" + tollGate + ", startDate="
+				+ startDate + ", endDate=" + endDate + ", organization=" + organization + ", notes=" + notes
+				+ ", createdAt=" + createdAt + ", status=" + status + ", updatedAt=" + updatedAt + ", modifiedBy="
+				+ modifiedBy + ", createdBy=" + createdBy + ", type=" + type + ", sessions=" + sessions
+				+ ", bookingStatus=" + bookingStatus + "]";
+	}
 	
+	
+		
 }

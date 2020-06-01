@@ -9,45 +9,42 @@ public class EventModules implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public String moduleName;
-	public String moduleNumber;
-	
+	public String id;
+	public String name;
 	/**
-	 * @return the moduleName
+	 * @return the id
 	 */
-	public String getModuleName() {
-		return moduleName;
+	public String getId() {
+		return id;
 	}
 	/**
-	 * @param moduleName the moduleName to set
+	 * @param id the id to set
 	 */
-	public void setModuleName(String moduleName) {
-		this.moduleName = moduleName;
+	public void setId(String id) {
+		this.id = id;
 	}
 	/**
-	 * @return the before
+	 * @return the name
 	 */
-	/**
-	 * @return the moduleNumber
-	 */
-	public String getModuleNumber() {
-		return moduleNumber;
+	public String getName() {
+		return name;
 	}
 	/**
-	 * @param moduleNumber the moduleNumber to set
+	 * @param name the name to set
 	 */
-	public void setModuleNumber(String moduleNumber) {
-		this.moduleNumber = moduleNumber;
+	public void setName(String name) {
+		this.name = name;
 	}
-	public EventModules(String moduleName, String moduleNumber) {
+	public EventModules(String id, String name) {
 		super();
-		this.moduleName = moduleName;
-		this.moduleNumber = moduleNumber;
+		this.id = id;
+		this.name = name;
 	}
 	@Override
 	public String toString() {
-		return "EventModules [moduleName=" + moduleName + ", moduleNumber=" + moduleNumber + "]";
+		return "EventModules [id=" + id + ", name=" + name + "]";
 	}
+	
 	
 	
 	

@@ -303,7 +303,7 @@ public class EventResponsePayload {
 	//Bookings
 		public EventResponsePayload(String bookingId, String productId, String productName, String eventName, String noOfParticipants,
 				Date startDate, Date endDate, String notes, Date createdAt, String status, Date updatedAt,
-				String modifiedBy, String createdBy, String type) {
+				String modifiedBy, String createdBy, String type,String orgId, String orgName, String clientId, String clientName) {
 			super();
 			this.bookingId = bookingId;
 			this.productId = productId;
@@ -318,7 +318,11 @@ public class EventResponsePayload {
 			this.updatedAt = updatedAt;
 			this.modifiedBy = modifiedBy;
 			this.createdBy = createdBy;
-			this.type = type;			
+			this.type = type;
+			this.orgId = orgId;
+			this.orgName= orgName;
+			this.clientId = clientId;
+			this.clientName = clientName;
 		}
 		
 		//Events

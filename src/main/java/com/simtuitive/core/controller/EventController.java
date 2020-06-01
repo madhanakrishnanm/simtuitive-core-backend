@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.simtuitive.core.service.abstracts.IEventService;
+
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -69,7 +71,7 @@ public class EventController extends BaseController{
 
 	@RequestMapping(value = "/add-event", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<EventResponsePayload> createEvent(@ApiIgnore UriComponentsBuilder builder,
-			@RequestBody EventRequestPayload payload, HttpServletRequest request, HttpServletResponse response) {
+			@RequestBody EventRequestPayload payload, HttpServletRequest request, HttpServletResponse response) throws ParseException {
 		EventResponsePayload userResponse = null;
 		String createdby = request.getUserPrincipal().getName();
 		payload.setModifiedBy(createdby);
@@ -94,7 +96,7 @@ public class EventController extends BaseController{
 
 	@RequestMapping(value = "/add-booking", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<EventResponsePayload> createBooking(@ApiIgnore UriComponentsBuilder builder,
-			@RequestBody EventRequestPayload payload, HttpServletRequest request, HttpServletResponse response) {
+			@RequestBody EventRequestPayload payload, HttpServletRequest request, HttpServletResponse response) throws ParseException {
 		EventResponsePayload userResponse = null;
 		String createdby = request.getUserPrincipal().getName();
 		payload.setModifiedBy(createdby);
