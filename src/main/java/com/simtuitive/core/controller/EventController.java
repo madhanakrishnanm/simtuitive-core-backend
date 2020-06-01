@@ -99,7 +99,7 @@ public class EventController extends BaseController{
 		String createdby = request.getUserPrincipal().getName();
 		payload.setModifiedBy(createdby);
 		payload.setCreatedBy(createdby);		
-		String tmp = builder.path("/add-event").build().toString();
+		String tmp = builder.path("/add-booking").build().toString();
 		Link l1 = new Link(tmp, "event-managment");
 		userResponse = eventservice.addEvent(payload);
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
@@ -121,7 +121,7 @@ public class EventController extends BaseController{
 	public JsonApiWrapper<List<EventResponsePayload>> getPendingBooking(@ApiIgnore UriComponentsBuilder builder,
 			 HttpServletRequest request, HttpServletResponse response) {
 		List<EventResponsePayload> userResponse=null;				
-		String tmp = builder.path("/add-event").build().toString();
+		String tmp = builder.path("/get-booking-pending").build().toString();
 		Link l1 = new Link(tmp, "event-managment");
 		userResponse = eventservice.getBookingPending();
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
@@ -143,7 +143,7 @@ public class EventController extends BaseController{
 	public JsonApiWrapper<List<EventResponsePayload>> getApprovedBooking(@ApiIgnore UriComponentsBuilder builder,
 			 HttpServletRequest request, HttpServletResponse response) {
 		List<EventResponsePayload> userResponse=null;				
-		String tmp = builder.path("/add-event").build().toString();
+		String tmp = builder.path("/get-booking-approved").build().toString();
 		Link l1 = new Link(tmp, "event-managment");
 		userResponse = eventservice.getBookingApproved();
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
@@ -164,7 +164,7 @@ public class EventController extends BaseController{
 	public JsonApiWrapper<List<EventResponsePayload>> getRejectedBooking(@ApiIgnore UriComponentsBuilder builder,
 			 HttpServletRequest request, HttpServletResponse response) {
 		List<EventResponsePayload> userResponse=null;				
-		String tmp = builder.path("/add-event").build().toString();
+		String tmp = builder.path("/get-booking-rejected").build().toString();
 		Link l1 = new Link(tmp, "event-managment");
 		userResponse = eventservice.getBookingRejected();
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
@@ -186,7 +186,7 @@ public class EventController extends BaseController{
 	public JsonApiWrapper<List<EventResponsePayload>> getCancelBooking(@ApiIgnore UriComponentsBuilder builder,
 			 HttpServletRequest request, HttpServletResponse response) {
 		List<EventResponsePayload> userResponse=null;				
-		String tmp = builder.path("/add-event").build().toString();
+		String tmp = builder.path("/get-booking-canceled").build().toString();
 		Link l1 = new Link(tmp, "event-managment");
 		userResponse = eventservice.getBookingCanceled();
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
@@ -209,7 +209,7 @@ public class EventController extends BaseController{
 		EventResponsePayload userResponse = null;
 		String createdby = request.getUserPrincipal().getName();
 		payload.setModifiedBy(createdby);				
-		String tmp = builder.path("/add-event").build().toString();
+		String tmp = builder.path("/update-event").build().toString();
 		Link l1 = new Link(tmp, "event-managment");
 		userResponse = eventservice.updateEvent(payload);
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
@@ -233,7 +233,7 @@ public class EventController extends BaseController{
 		EventResponsePayload userResponse = null;
 		String createdby = request.getUserPrincipal().getName();
 		payload.setModifiedBy(createdby);			
-		String tmp = builder.path("/add-event").build().toString();
+		String tmp = builder.path("/update-booking").build().toString();
 		Link l1 = new Link(tmp, "event-managment");
 		userResponse = eventservice.updateEvent(payload);
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
@@ -254,7 +254,7 @@ public class EventController extends BaseController{
 	public JsonApiWrapper<EventResponsePayload> getBooking(@ApiIgnore UriComponentsBuilder builder,
 			@RequestParam("id") String id,	 HttpServletRequest request, HttpServletResponse response) {
 		EventResponsePayload userResponse=null;				
-		String tmp = builder.path("/add-event").build().toString();
+		String tmp = builder.path("/get-booking-id").build().toString();
 		Link l1 = new Link(tmp, "event-managment");
 		userResponse = eventservice.getEvent(id);
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
@@ -270,12 +270,32 @@ public class EventController extends BaseController{
 			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
-
 	@RequestMapping(value = "/get-event-id", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<EventResponsePayload> getEvent(@ApiIgnore UriComponentsBuilder builder,
 			@RequestParam("id") String id,	 HttpServletRequest request, HttpServletResponse response) {
 		EventResponsePayload userResponse=null;				
-		String tmp = builder.path("/add-event").build().toString();
+		String tmp = builder.path("/get-event-id").build().toString();
+		Link l1 = new Link(tmp, "event-managment");
+		userResponse = eventservice.getEvent(id);
+		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
+	}
+	
+	
+	@PreAuthorize("hasAuthority('Admin')")
+	@ResponseStatus(HttpStatus.CREATED)
+	@ApiOperation(value = " Creates an event", response = Event.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Successful Creation of event Data.", response = JsonApiWrapper.class),
+			@ApiResponse(code = 401, message = "Not authorized!"),
+			@ApiResponse(code = 403, message = "Not authorized to perform this action."),
+			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
+			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
+			@ApiResponse(code = 500, message = "Internal server error") })
+	@RequestMapping(value = "/update-booking-action", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public JsonApiWrapper<EventResponsePayload> getEvent(@ApiIgnore UriComponentsBuilder builder,
+			@RequestParam("id") String id,@RequestParam("action") String action,	 HttpServletRequest request, HttpServletResponse response) {
+		EventResponsePayload userResponse=null;				
+		String tmp = builder.path("/update-booking-action").build().toString();
 		Link l1 = new Link(tmp, "event-managment");
 		userResponse = eventservice.getEvent(id);
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));

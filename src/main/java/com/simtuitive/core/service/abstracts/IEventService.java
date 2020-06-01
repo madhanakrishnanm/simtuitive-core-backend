@@ -21,6 +21,7 @@ public interface IEventService {
 	public List<EventResponsePayload> getBookingApproved();
 	public List<EventResponsePayload> getBookingCanceled();
 	public List<EventResponsePayload> getBookingRejected();
+	public EventResponsePayload updateBookingAction(String id,String action);
 	
 
 }

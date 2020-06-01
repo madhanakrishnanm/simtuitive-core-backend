@@ -204,4 +204,13 @@ public class EventServiceImpl extends BaseService implements IEventService {
 		return payload;
 	}
 
+	@Override
+	public EventResponsePayload updateBookingAction(String id, String action) {
+		// TODO Auto-generated method stub
+		Event eventtobeupdated =eventrepository.findByEventId(id);
+		eventtobeupdated.setStatus(action);
+		Event updatedaction=eventrepository.save(eventtobeupdated);
+		return buildEventResponsePayload(updatedaction);
+	}
+
 }
