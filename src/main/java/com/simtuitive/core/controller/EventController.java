@@ -207,7 +207,7 @@ public class EventController extends BaseController{
 
 	@RequestMapping(value = "/update-event", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<EventResponsePayload> updateEvent(@ApiIgnore UriComponentsBuilder builder,
-			@RequestBody EventRequestPayload payload, HttpServletRequest request, HttpServletResponse response) {
+			@RequestBody EventRequestPayload payload, HttpServletRequest request, HttpServletResponse response) throws ParseException {
 		EventResponsePayload userResponse = null;
 		String createdby = request.getUserPrincipal().getName();
 		payload.setModifiedBy(createdby);				
@@ -231,7 +231,7 @@ public class EventController extends BaseController{
 
 	@RequestMapping(value = "/update-booking", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<EventResponsePayload> updateBooking(@ApiIgnore UriComponentsBuilder builder,
-			@RequestBody EventRequestPayload payload, HttpServletRequest request, HttpServletResponse response) {
+			@RequestBody EventRequestPayload payload, HttpServletRequest request, HttpServletResponse response) throws ParseException {
 		EventResponsePayload userResponse = null;
 		String createdby = request.getUserPrincipal().getName();
 		payload.setModifiedBy(createdby);			

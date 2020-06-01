@@ -104,7 +104,7 @@ public class EventServiceImpl extends BaseService implements IEventService {
 	}
 
 	@Override
-	public EventResponsePayload updateEvent(EventRequestPayload payload) {
+	public EventResponsePayload updateEvent(EventRequestPayload payload) throws ParseException {
 		// TODO Auto-generated method stub
 		Event eventupdated =null;
 		if (payload.getType().equalsIgnoreCase("Event")) {
@@ -118,38 +118,50 @@ public class EventServiceImpl extends BaseService implements IEventService {
 		return buildEventResponsePayload(saved);
 	}
 
-	private Event modifyBooking(EventRequestPayload payload) {
+	private Event modifyBooking(EventRequestPayload payload) throws ParseException {
 		// TODO Auto-generated method stub
+		User client=userRepository.findByuserEmail(payload.getClient());
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");  
+		Date startdate = formatter.parse(payload.getStartDate());
+		Date enddate = formatter.parse(payload.getEndDate());
 		Event eventtobeupdated =eventrepository.findByEventId(payload.getId());
 		eventtobeupdated.setProductId(payload.getProductId());
 		eventtobeupdated.setProductName(payload.getProductName());
-//		eventtobeupdated.setEventName(payload.getEventName());
+		eventtobeupdated.setEventName(payload.getName());
 		eventtobeupdated.setNoOfParticipants(payload.getNoOfParticipants());
-//		eventtobeupdated.setStartDate(payload.getStartDate());
-//		eventtobeupdated.setEndDate(payload.getEndDate());
+		eventtobeupdated.setStartDate(startdate);
+		eventtobeupdated.setEndDate(enddate);
 		eventtobeupdated.setUpdatedAt(new Date());
 		eventtobeupdated.setModifiedBy(payload.getModifiedBy());
 		eventtobeupdated.setNotes(payload.getNotes());
+		eventtobeupdated.setClientId(client.getUserId());
+		eventtobeupdated.setClientName(client.getFirstName()+client.getLastName());
+		eventtobeupdated.setOrgId(payload.getOrganization().getOrganizationId());
+		eventtobeupdated.setOrgName(payload.getOrganization().getOrganizationName());
 		return eventtobeupdated;
 	}
 
-	private Event modifyEvent(EventRequestPayload payload) {
+	private Event modifyEvent(EventRequestPayload payload) throws ParseException {
 		// TODO Auto-generated method stub
+		User client=userRepository.findByuserEmail(payload.getClient());
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");  
+		Date startdate = formatter.parse(payload.getStartDate());
+		Date enddate = formatter.parse(payload.getEndDate());
 		Event eventtobeupdated =eventrepository.findByEventId(payload.getId());
-		eventtobeupdated.setOrgId(payload.getOrgId());
-		eventtobeupdated.setOrgName(payload.getOrgName());
-		//eventtobeupdated.setClientId(payload.getClientId());
-		eventtobeupdated.setClientName(payload.getClientName());
+		eventtobeupdated.setOrgId(payload.getOrganization().getOrganizationId());
+		eventtobeupdated.setOrgName(payload.getOrganization().getOrganizationName());
+		eventtobeupdated.setClientId(client.getUserId());
+		eventtobeupdated.setClientName(client.getFirstName()+client.getLastName());
 		eventtobeupdated.setProductId(payload.getProductId());
 		eventtobeupdated.setProductName(payload.getProductName());
-		//eventtobeupdated.setEventName(payload.getEventName());
-		//eventtobeupdated.setStartDate(payload.getStartDate());
-		//eventtobeupdated.setEndDate(payload.getEndDate());
+		eventtobeupdated.setEventName(payload.getName());
+		eventtobeupdated.setStartDate(startdate);
+		eventtobeupdated.setEndDate(enddate);
 		eventtobeupdated.setNoOfParticipants(payload.getNoOfParticipants());
 		eventtobeupdated.setNotes(payload.getNotes());
 		eventtobeupdated.setSessions(payload.getSessions());
 		eventtobeupdated.setModifiedBy(payload.getModifiedBy());
-		//eventtobeupdated.setTollPass(payload.getTollPass());		
+		eventtobeupdated.setTollPass(payload.getTollGate());		
 		return eventtobeupdated;
 	}
 
