@@ -315,11 +315,11 @@ public class EventController extends BaseController{
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/get-all-booking", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<List<EventResponsePayload>> getAllBooking(@ApiIgnore UriComponentsBuilder builder,
-			HttpServletRequest request, HttpServletResponse response) {
+			@RequestParam("status") Optional<String> status,HttpServletRequest request, HttpServletResponse response) {
 		List<EventResponsePayload> userResponse=null;				
 		String tmp = builder.path("/update-booking-action").build().toString();
 		Link l1 = new Link(tmp, "event-managment");
-		userResponse = eventservice.getAllBooking();
+		userResponse = eventservice.getAllBooking(status);
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
 	}
 	
@@ -335,11 +335,11 @@ public class EventController extends BaseController{
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/get-all-event", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<List<EventResponsePayload>> getAllEvent(@ApiIgnore UriComponentsBuilder builder,
-			HttpServletRequest request, HttpServletResponse response) {
+			@RequestParam("status") Optional<String> status,HttpServletRequest request, HttpServletResponse response) {
 		List<EventResponsePayload> userResponse=null;				
 		String tmp = builder.path("/update-booking-action").build().toString();
 		Link l1 = new Link(tmp, "event-managment");
-		userResponse = eventservice.getAllEvent();
+		userResponse = eventservice.getAllEvent(status);
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
 	}
 }

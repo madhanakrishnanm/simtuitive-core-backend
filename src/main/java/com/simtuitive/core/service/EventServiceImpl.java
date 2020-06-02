@@ -36,7 +36,7 @@ public class EventServiceImpl extends BaseService implements IEventService {
 
 	@Autowired
 	private EventRepository eventrepository;
-	
+
 	@Autowired
 	private UserRepository userRepository;
 
@@ -60,25 +60,32 @@ public class EventServiceImpl extends BaseService implements IEventService {
 
 	private Event buildEvent(EventRequestPayload payload) throws ParseException {
 		// TODO Auto-generated method stub
-		User client=userRepository.findByuserEmail(payload.getClient());
-		List<EventSessions>list=payload.getSessions();
-		
-		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");  
+		User client = userRepository.findByuserEmail(payload.getClient());
+		List<EventSessions> list = payload.getSessions();
+
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 		Date startdate = formatter.parse(payload.getStartDate());
 		Date enddate = formatter.parse(payload.getEndDate());
-		Event eventresult = new Event(payload.getOrganization().getOrganizationId(), payload.getOrganization().getOrganizationName(), client.getUserId(), client.getFirstName()+client.getLastName(), payload.getProductId(), payload.getProductName(), payload.getName(), payload.getNoOfParticipants(), payload.getTollGate(), startdate, enddate, payload.getNotes(), new Date(), "Approved", new Date(), payload.getModifiedBy(), payload.getCreatedBy(), payload.getType(), payload.getSessions(), PasswordHelper.generateEventPassword(8));
+		Event eventresult = new Event(payload.getOrganization().getOrganizationId(),
+				payload.getOrganization().getOrganizationName(), client.getUserId(),
+				client.getFirstName() + client.getLastName(), payload.getProductId(), payload.getProductName(),
+				payload.getName(), payload.getNoOfParticipants(), payload.getTollGate(), startdate, enddate,
+				payload.getNotes(), new Date(), "UpComing", new Date(), payload.getModifiedBy(), payload.getCreatedBy(),
+				payload.getType(), payload.getSessions(), PasswordHelper.generateEventPassword(8));
 		return eventresult;
 	}
 
 	private Event buildBooking(EventRequestPayload payload) throws ParseException {
 		// TODO Auto-generated method stub
-		User client=userRepository.findByuserEmail(payload.getClient());
-		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");  
+		User client = userRepository.findByuserEmail(payload.getClient());
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 		Date startdate = formatter.parse(payload.getStartDate());
 		Date enddate = formatter.parse(payload.getEndDate());
-		Event booking = new Event(payload.getOrganization().getOrganizationId(), payload.getOrganization().getOrganizationName(),payload.getProductId(),payload.getProductName(), client.getUserId(),client.getFirstName()+client.getLastName(),payload.getName(),
-				payload.getNoOfParticipants(), startdate, enddate, payload.getNotes(),
-				new Date(), "Pending", new Date(), payload.getModifiedBy(), payload.getCreatedBy(), payload.getType());
+		Event booking = new Event(payload.getOrganization().getOrganizationId(),
+				payload.getOrganization().getOrganizationName(), payload.getProductId(), payload.getProductName(),
+				client.getUserId(), client.getFirstName() + client.getLastName(), payload.getName(),
+				payload.getNoOfParticipants(), startdate, enddate, payload.getNotes(), new Date(), "Pending",
+				new Date(), payload.getModifiedBy(), payload.getCreatedBy(), payload.getType());
 		return booking;
 	}
 
@@ -99,7 +106,8 @@ public class EventServiceImpl extends BaseService implements IEventService {
 					created.getProductName(), created.getEventName(), created.getNoOfParticipants(),
 					created.getStartDate(), created.getEndDate(), created.getNotes(), created.getCreatedAt(),
 					created.getStatus(), created.getUpdatedAt(), created.getModifiedBy(), created.getCreatedBy(),
-					created.getType(),created.getOrgId(),created.getOrgName(),created.getClientId(),created.getClientName());
+					created.getType(), created.getOrgId(), created.getOrgName(), created.getClientId(),
+					created.getClientName());
 		}
 		System.out.println("addresponse" + addresponse.getBookingId());
 		return addresponse;
@@ -108,25 +116,25 @@ public class EventServiceImpl extends BaseService implements IEventService {
 	@Override
 	public EventResponsePayload updateEvent(EventRequestPayload payload) throws ParseException {
 		// TODO Auto-generated method stub
-		Event eventupdated =null;
+		Event eventupdated = null;
 		if (payload.getType().equalsIgnoreCase("Event")) {
-			eventupdated=modifyEvent(payload);
+			eventupdated = modifyEvent(payload);
 		}
 		if (payload.getType().equalsIgnoreCase("Booking")) {
-			eventupdated=modifyBooking(payload);
+			eventupdated = modifyBooking(payload);
 		}
-		
-		Event saved=eventrepository.save(eventupdated);
+
+		Event saved = eventrepository.save(eventupdated);
 		return buildEventResponsePayload(saved);
 	}
 
 	private Event modifyBooking(EventRequestPayload payload) throws ParseException {
 		// TODO Auto-generated method stub
-		User client=userRepository.findByuserEmail(payload.getClient());
-		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");  
+		User client = userRepository.findByuserEmail(payload.getClient());
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 		Date startdate = formatter.parse(payload.getStartDate());
 		Date enddate = formatter.parse(payload.getEndDate());
-		Event eventtobeupdated =eventrepository.findByEventId(payload.getId());
+		Event eventtobeupdated = eventrepository.findByEventId(payload.getId());
 		eventtobeupdated.setProductId(payload.getProductId());
 		eventtobeupdated.setProductName(payload.getProductName());
 		eventtobeupdated.setEventName(payload.getName());
@@ -137,7 +145,7 @@ public class EventServiceImpl extends BaseService implements IEventService {
 		eventtobeupdated.setModifiedBy(payload.getModifiedBy());
 		eventtobeupdated.setNotes(payload.getNotes());
 		eventtobeupdated.setClientId(client.getUserId());
-		eventtobeupdated.setClientName(client.getFirstName()+client.getLastName());
+		eventtobeupdated.setClientName(client.getFirstName() + client.getLastName());
 		eventtobeupdated.setOrgId(payload.getOrganization().getOrganizationId());
 		eventtobeupdated.setOrgName(payload.getOrganization().getOrganizationName());
 		return eventtobeupdated;
@@ -145,15 +153,15 @@ public class EventServiceImpl extends BaseService implements IEventService {
 
 	private Event modifyEvent(EventRequestPayload payload) throws ParseException {
 		// TODO Auto-generated method stub
-		User client=userRepository.findByuserEmail(payload.getClient());
-		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");  
+		User client = userRepository.findByuserEmail(payload.getClient());
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 		Date startdate = formatter.parse(payload.getStartDate());
 		Date enddate = formatter.parse(payload.getEndDate());
-		Event eventtobeupdated =eventrepository.findByEventId(payload.getId());
+		Event eventtobeupdated = eventrepository.findByEventId(payload.getId());
 		eventtobeupdated.setOrgId(payload.getOrganization().getOrganizationId());
 		eventtobeupdated.setOrgName(payload.getOrganization().getOrganizationName());
 		eventtobeupdated.setClientId(client.getUserId());
-		eventtobeupdated.setClientName(client.getFirstName()+client.getLastName());
+		eventtobeupdated.setClientName(client.getFirstName() + client.getLastName());
 		eventtobeupdated.setProductId(payload.getProductId());
 		eventtobeupdated.setProductName(payload.getProductName());
 		eventtobeupdated.setEventName(payload.getName());
@@ -163,7 +171,7 @@ public class EventServiceImpl extends BaseService implements IEventService {
 		eventtobeupdated.setNotes(payload.getNotes());
 		eventtobeupdated.setSessions(payload.getSessions());
 		eventtobeupdated.setModifiedBy(payload.getModifiedBy());
-		eventtobeupdated.setTollPass(payload.getTollGate());		
+		eventtobeupdated.setTollPass(payload.getTollGate());
 		return eventtobeupdated;
 	}
 
@@ -233,17 +241,22 @@ public class EventServiceImpl extends BaseService implements IEventService {
 	@Override
 	public EventResponsePayload updateBookingAction(String id, String action) {
 		// TODO Auto-generated method stub
-		Event eventtobeupdated =eventrepository.findByEventId(id);
+		Event eventtobeupdated = eventrepository.findByEventId(id);
 		eventtobeupdated.setStatus(action);
-		Event updatedaction=eventrepository.save(eventtobeupdated);
+		Event updatedaction = eventrepository.save(eventtobeupdated);
 		return buildEventResponsePayload(updatedaction);
 	}
 
 	@Override
-	public List<EventResponsePayload> getAllBooking() {
+	public List<EventResponsePayload> getAllBooking(Optional<String> status) {
 		// TODO Auto-generated method stub
 		List<EventResponsePayload> payload = new ArrayList<EventResponsePayload>();
 		Query query1 = new Query();
+		
+		if (status.isPresent() && status != null && !status.get().equalsIgnoreCase("null")) {
+
+			query1.addCriteria(Criteria.where("status").is(status.get()));
+		}
 		query1.addCriteria(Criteria.where("type").is("Booking"));
 		List<Event> list = mongoOps.find(query1, Event.class);
 		for (Event e : list) {
@@ -251,14 +264,18 @@ public class EventServiceImpl extends BaseService implements IEventService {
 			payload.add(buildEventResponsePayload(e));
 		}
 		return payload;
-		
+
 	}
 
 	@Override
-	public List<EventResponsePayload> getAllEvent() {
+	public List<EventResponsePayload> getAllEvent(Optional<String> status) {
 		// TODO Auto-generated method stub
 		List<EventResponsePayload> payload = new ArrayList<EventResponsePayload>();
 		Query query1 = new Query();
+		
+		if (status.isPresent() && status != null && !status.get().equalsIgnoreCase("null")) {
+			query1.addCriteria(Criteria.where("status").is(status.get()));
+		}
 		query1.addCriteria(Criteria.where("type").is("Event"));
 		List<Event> list = mongoOps.find(query1, Event.class);
 		for (Event e : list) {
