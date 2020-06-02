@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class EventSessions implements Serializable{
 
 	private String name;
-	private Date date;
+	private String date;
 	private List<EventModules>modules;
 	/**
 	 * @return the name
@@ -27,13 +27,13 @@ public class EventSessions implements Serializable{
 	/**
 	 * @return the date
 	 */
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
 	/**
 	 * @param date the date to set
 	 */
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 	/**
@@ -48,7 +48,7 @@ public class EventSessions implements Serializable{
 	public void setModules(List<EventModules> modules) {
 		this.modules = modules;
 	}
-	public EventSessions(String name, Date date, List<EventModules> modules) {
+	public EventSessions(String name, String date, List<EventModules> modules) {
 		super();
 		this.name = name;
 		this.date = date;
