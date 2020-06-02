@@ -52,7 +52,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/api/v1/event")
+@RequestMapping("/api/v1/events")
 public class EventController extends BaseController{
 
 	@Autowired
