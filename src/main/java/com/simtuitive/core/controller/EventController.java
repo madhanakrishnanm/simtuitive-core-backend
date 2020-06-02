@@ -272,13 +272,13 @@ public class EventController extends BaseController{
 			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	@RequestMapping(value = "/get-event-id", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<EventResponsePayload> getEvent(@ApiIgnore UriComponentsBuilder builder,
-			@RequestParam("id") String id,	 HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping(value = "/get-event-id", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public JsonApiWrapper<EventResponsePayload> getEventId(@ApiIgnore UriComponentsBuilder builder,
+			@RequestBody EventRequestPayload payload,	 HttpServletRequest request, HttpServletResponse response) {
 		EventResponsePayload userResponse=null;				
 		String tmp = builder.path("/get-event-id").build().toString();
 		Link l1 = new Link(tmp, "event-managment");
-		userResponse = eventservice.getEvent(id);
+		userResponse = eventservice.getEvent(payload.getId());
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
 	}
 	
@@ -294,12 +294,12 @@ public class EventController extends BaseController{
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/update-booking-action", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<EventResponsePayload> getEvent(@ApiIgnore UriComponentsBuilder builder,
-			@RequestParam("id") String id,@RequestParam("action") String action,	 HttpServletRequest request, HttpServletResponse response) {
+	public JsonApiWrapper<EventResponsePayload> updateEventAction(@ApiIgnore UriComponentsBuilder builder,
+			@RequestBody EventRequestPayload payload,HttpServletRequest request, HttpServletResponse response) {
 		EventResponsePayload userResponse=null;				
 		String tmp = builder.path("/update-booking-action").build().toString();
 		Link l1 = new Link(tmp, "event-managment");
-		userResponse = eventservice.getEvent(id);
+		userResponse = eventservice.updateBookingAction(payload.getId(),payload.getStatus());
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
 	}
 	
