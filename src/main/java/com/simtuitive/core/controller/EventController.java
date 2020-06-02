@@ -272,13 +272,13 @@ public class EventController extends BaseController{
 			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	@RequestMapping(value = "/get-event-id", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/get-event-id", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<EventResponsePayload> getEventId(@ApiIgnore UriComponentsBuilder builder,
-			@RequestBody EventRequestPayload payload,	 HttpServletRequest request, HttpServletResponse response) {
+			@RequestParam("id") String id,HttpServletRequest request, HttpServletResponse response) {
 		EventResponsePayload userResponse=null;				
 		String tmp = builder.path("/get-event-id").build().toString();
 		Link l1 = new Link(tmp, "event-managment");
-		userResponse = eventservice.getEvent(payload.getId());
+		userResponse = eventservice.getEvent(id);
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
 	}
 	

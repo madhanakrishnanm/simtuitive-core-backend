@@ -20,6 +20,7 @@ import com.simtuitive.core.controller.requestpayload.EventRequestPayload;
 import com.simtuitive.core.controller.responsepayload.EventResponsePayload;
 import com.simtuitive.core.model.Event;
 import com.simtuitive.core.model.EventModules;
+import com.simtuitive.core.model.EventSessions;
 import com.simtuitive.core.model.User;
 import com.simtuitive.core.repository.EventRepository;
 import com.simtuitive.core.repository.UserRepository;
@@ -60,18 +61,19 @@ public class EventServiceImpl extends BaseService implements IEventService {
 	private Event buildEvent(EventRequestPayload payload) throws ParseException {
 		// TODO Auto-generated method stub
 		User client=userRepository.findByuserEmail(payload.getClient());
+		List<EventSessions>list=payload.getSessions();
 		
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");  
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");  
 		Date startdate = formatter.parse(payload.getStartDate());
 		Date enddate = formatter.parse(payload.getEndDate());
-		Event eventresult = new Event(payload.getOrganization().getOrganizationId(), payload.getOrganization().getOrganizationName(), client.getUserId(), client.getFirstName()+client.getLastName(), payload.getProductId(), payload.getProductName(), payload.getName(), payload.getNoOfParticipants(), payload.getTollGate(), startdate, enddate, payload.getNotes(), new Date(), "1", new Date(), payload.getModifiedBy(), payload.getCreatedBy(), payload.getType(), payload.getSessions(), PasswordHelper.generateEventPassword(8));
+		Event eventresult = new Event(payload.getOrganization().getOrganizationId(), payload.getOrganization().getOrganizationName(), client.getUserId(), client.getFirstName()+client.getLastName(), payload.getProductId(), payload.getProductName(), payload.getName(), payload.getNoOfParticipants(), payload.getTollGate(), startdate, enddate, payload.getNotes(), new Date(), "Approved", new Date(), payload.getModifiedBy(), payload.getCreatedBy(), payload.getType(), payload.getSessions(), PasswordHelper.generateEventPassword(8));
 		return eventresult;
 	}
 
 	private Event buildBooking(EventRequestPayload payload) throws ParseException {
 		// TODO Auto-generated method stub
 		User client=userRepository.findByuserEmail(payload.getClient());
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");  
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");  
 		Date startdate = formatter.parse(payload.getStartDate());
 		Date enddate = formatter.parse(payload.getEndDate());
 		Event booking = new Event(payload.getOrganization().getOrganizationId(), payload.getOrganization().getOrganizationName(),payload.getProductId(),payload.getProductName(), client.getUserId(),client.getFirstName()+client.getLastName(),payload.getName(),
@@ -121,7 +123,7 @@ public class EventServiceImpl extends BaseService implements IEventService {
 	private Event modifyBooking(EventRequestPayload payload) throws ParseException {
 		// TODO Auto-generated method stub
 		User client=userRepository.findByuserEmail(payload.getClient());
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");  
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");  
 		Date startdate = formatter.parse(payload.getStartDate());
 		Date enddate = formatter.parse(payload.getEndDate());
 		Event eventtobeupdated =eventrepository.findByEventId(payload.getId());
@@ -144,7 +146,7 @@ public class EventServiceImpl extends BaseService implements IEventService {
 	private Event modifyEvent(EventRequestPayload payload) throws ParseException {
 		// TODO Auto-generated method stub
 		User client=userRepository.findByuserEmail(payload.getClient());
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");  
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");  
 		Date startdate = formatter.parse(payload.getStartDate());
 		Date enddate = formatter.parse(payload.getEndDate());
 		Event eventtobeupdated =eventrepository.findByEventId(payload.getId());
