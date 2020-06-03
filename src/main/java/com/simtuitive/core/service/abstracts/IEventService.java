@@ -5,6 +5,9 @@ package com.simtuitive.core.service.abstracts;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
 
 import com.simtuitive.core.controller.requestpayload.EventRequestPayload;
 import com.simtuitive.core.controller.responsepayload.EventResponsePayload;
@@ -23,7 +26,7 @@ public interface IEventService {
 	public List<EventResponsePayload> getBookingCanceled();
 	public List<EventResponsePayload> getBookingRejected();
 	public EventResponsePayload updateBookingAction(String id,String action);
-	public List<EventResponsePayload> getAllBooking();
-	public List<EventResponsePayload> getAllEvent();
-
+	public List<EventResponsePayload> getAllBooking(Optional<String>  status);
+	public List<EventResponsePayload> getAllEvent(Optional<String>  status);
+	
 }
