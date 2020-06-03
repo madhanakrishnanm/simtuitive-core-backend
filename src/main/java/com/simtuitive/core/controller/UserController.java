@@ -310,18 +310,19 @@ public class UserController extends BaseController {
 
 	private List<ProductUsers> generateProductCounts() {
 		// TODO Auto-generated method stub
-		List<ProductUsers> userresponse = new ArrayList<ProductUsers>();
+		List<ProductUsers> result = new ArrayList<ProductUsers>();
 		ProductUsers prod1 = new ProductUsers("Business Ethics", 765L, 734L);
-		userresponse.add(prod1);
+		result.add(prod1);
 		ProductUsers prod2 = new ProductUsers("Data Visualization", 5333L, 5334L);
-		userresponse.add(prod2);
+		result.add(prod2);
 		ProductUsers prod3 = new ProductUsers("Business Acumen", 3334L, 653L);
-		userresponse.add(prod3);
+		result.add(prod3);
 		ProductUsers prod4 = new ProductUsers("Business Finance", 789L, 764L);
-		userresponse.add(prod4);
+		result.add(prod4);
 		ProductUsers prod5 = new ProductUsers("Agile Project Management", 700L, 833L);
-		userresponse.add(prod5);
-		return userresponse;
+		result.add(prod5);
+		System.out.println("Result list"+result.toString());
+		return result;
 	}
 
 	@ResponseStatus(HttpStatus.ACCEPTED)
