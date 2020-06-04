@@ -7,7 +7,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,7 +94,11 @@ public class EventServiceImpl extends BaseService implements IEventService {
 	private EventResponsePayload buildEventResponsePayload(Event created) {
 		// TODO Auto-generated method stub
 		EventResponsePayload addresponse = null;
+		Map<String,String>client=new HashMap<String,String>();
+		Map<String,String>organisation=new HashMap<String,String>();
+		Map<String,String>product=new HashMap<String,String>();
 		System.out.println("EventType" + created.getType());
+		User clientdetails = userRepository.findByUserId(created.getClientId());
 		if (created.getType().equalsIgnoreCase("Event")) {
 			addresponse = new EventResponsePayload(created.getEventId(), created.getOrgId(), created.getOrgName(),
 					created.getClientId(), created.getClientName(), created.getProductId(), created.getProductName(),
@@ -102,12 +108,25 @@ public class EventServiceImpl extends BaseService implements IEventService {
 					created.getType(), created.getSessions(), created.getPasscode());
 		}
 		if (created.getType().equalsIgnoreCase("Booking")) {
+			client.put("id", created.getClientId());
+			String username=null;
+			if(clientdetails.getUserName()==null) {
+				 username=clientdetails.getFirstName()+clientdetails.getLastName();
+			}else {
+				username=clientdetails.getUserName();
+			}
+			client.put("name", username);
+			client.put("email", clientdetails.getUserEmail());
+			organisation.put("id", created.getOrgId());
+			organisation.put("name", created.getOrgName());			
+			product.put("id", created.getProductId());
+			product.put("name", created.getProductName());
 			addresponse = new EventResponsePayload(created.getEventId(), created.getProductId(),
 					created.getProductName(), created.getEventName(), created.getNoOfParticipants(),
 					created.getStartDate(), created.getEndDate(), created.getNotes(), created.getCreatedAt(),
 					created.getStatus(), created.getUpdatedAt(), created.getModifiedBy(), created.getCreatedBy(),
 					created.getType(), created.getOrgId(), created.getOrgName(), created.getClientId(),
-					created.getClientName());
+					created.getClientName(),client,organisation,product);
 		}
 		System.out.println("addresponse" + addresponse.getBookingId());
 		return addresponse;
