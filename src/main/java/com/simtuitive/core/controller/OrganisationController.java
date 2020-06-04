@@ -244,9 +244,9 @@ public class OrganisationController extends BaseController {
 			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	@RequestMapping(value = "/get-org-id-name", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public JsonApiWrapper<Map<String, String>> findAllOrganisationsName(@ApiIgnore UriComponentsBuilder builder,
+	public JsonApiWrapper<List<Organisation>> findAllOrganisationsName(@ApiIgnore UriComponentsBuilder builder,
 			HttpServletRequest request, HttpServletResponse response) {
-		Map<String, String> userResponse = organisationservice.getAllOrgIdName();
+		List<Organisation> userResponse = organisationservice.getAllOrgIdName();
 		String tmp = builder.path(Constants.PATH_GET_ALL_ORG).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_GET_ALL_ORGANISATION_DETAIL);
 		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));

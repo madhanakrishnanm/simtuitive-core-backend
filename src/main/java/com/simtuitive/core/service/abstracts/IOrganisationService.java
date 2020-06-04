@@ -33,5 +33,5 @@ public interface IOrganisationService {
 	
 	public boolean getExistsOrganisation(String name);
 	
-	public Map<String,String> getAllOrgIdName();
+	public List<Organisation> getAllOrgIdName();
 }

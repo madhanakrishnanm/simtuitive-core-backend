@@ -243,13 +243,26 @@ public class OrganisationServiceImpl extends BaseService implements IOrganisatio
 	}
 
 	@Override
-	public Map<String, String> getAllOrgIdName() {
+	public List<Organisation> getAllOrgIdName() {
 		// TODO Auto-generated method stub
-		Map<String,String> result =new HashMap<String, String>();
+		List<Organisation> result= new ArrayList<Organisation>();
 		List<Organisation> orglist=organisationrepository.findAll();
 		for(Organisation org:orglist) {
-			result.put(org.getOrganizationId(), org.getOrganizationName());
+			org.setCreatedAt(null);
+			org.setCreditLimit(null);
+			org.setStatus(null);
+			org.setDealOwnerEmail(null);
+			org.setDealOwnerMobile(null);
+			org.setDealOwnerName(null);
+			org.setGst(null);
+			org.setIndustry(null);
+			org.setLocation(null);
+			org.setModifiedBy(null);
+			org.setPan(null);
+			org.setUpdatedAt(null);
+			result.add(org);
 		}
+		
 		return result;
 	}
 
