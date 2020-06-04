@@ -457,6 +457,13 @@ public class UserResponsePayload implements Serializable {
 		this.role = role;
 		this.lastLoggedIn = lastLoggedIn;
 	}
+	
+	public UserResponsePayload(String userId, String userName, String userEmail) {
+		super();
+		this.userId = userId;
+		this.userName = userName;
+		this.userEmail = userEmail;		
+	}
 
 	public UserResponsePayload() {
 

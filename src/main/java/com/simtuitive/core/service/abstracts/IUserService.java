@@ -1,6 +1,7 @@
 package com.simtuitive.core.service.abstracts;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -43,6 +44,6 @@ public interface IUserService {
 	
 	public Long countByRoleAndStatus(String role,Long status);
 	
-	public List<String> getOrgUsers(String orgName);
+	public List<UserResponsePayload> getOrgUsers(String orgName);
 
 }

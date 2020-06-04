@@ -4,8 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -366,15 +371,25 @@ public class UserServiceImpl extends BaseService implements IUserService {
 	}
 
 	@Override
-	public List<String> getOrgUsers(String orgName) {
+	public List<UserResponsePayload> getOrgUsers(String orgName) {
 		// TODO Auto-generated method stub
 		
-		List<String>result= new ArrayList<String>();
+		
 		List<User>userlist=userrepository.findByOrgName(orgName);
+		System.out.println("userlist"+userlist.size());
+		List<UserResponsePayload> newlist= new ArrayList<UserResponsePayload>();
+		
 		for(User s:userlist) {
-			result.add(s.getUserEmail());
-		}
-		return result;
+			
+			UserResponsePayload payload= new UserResponsePayload(s.getUserId(), s.getUserName(), s.getUserEmail());
+			newlist.add(payload);
+			
+			
+		}	
+		 
+		
+		
+		return newlist;
 	}
 
 }
