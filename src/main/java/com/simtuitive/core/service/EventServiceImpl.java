@@ -62,7 +62,7 @@ public class EventServiceImpl extends BaseService implements IEventService {
 
 	private Event buildEvent(EventRequestPayload payload) throws ParseException {
 		// TODO Auto-generated method stub
-		User client = userRepository.findByuserEmail(payload.getClient());
+		User client = userRepository.findByuserEmail(payload.getClient().getUserEmail());
 		List<EventSessions> list = payload.getSessions();
 
 		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
@@ -79,7 +79,7 @@ public class EventServiceImpl extends BaseService implements IEventService {
 
 	private Event buildBooking(EventRequestPayload payload) throws ParseException {
 		// TODO Auto-generated method stub
-		User client = userRepository.findByuserEmail(payload.getClient());
+		User client = userRepository.findByuserEmail(payload.getClient().getUserEmail());
 		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 		Date startdate = formatter.parse(payload.getStartDate());
 		Date enddate = formatter.parse(payload.getEndDate());
@@ -149,7 +149,8 @@ public class EventServiceImpl extends BaseService implements IEventService {
 
 	private Event modifyBooking(EventRequestPayload payload) throws ParseException {
 		// TODO Auto-generated method stub
-		User client = userRepository.findByuserEmail(payload.getClient());
+		String username=null;
+		User client = userRepository.findByuserEmail(payload.getClient().getUserEmail());
 		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 		Date startdate = formatter.parse(payload.getStartDate());
 		Date enddate = formatter.parse(payload.getEndDate());
@@ -164,7 +165,12 @@ public class EventServiceImpl extends BaseService implements IEventService {
 		eventtobeupdated.setModifiedBy(payload.getModifiedBy());
 		eventtobeupdated.setNotes(payload.getNotes());
 		eventtobeupdated.setClientId(client.getUserId());
-		eventtobeupdated.setClientName(client.getFirstName() + client.getLastName());
+		if(client.getUserName()==null) {
+			 username=client.getFirstName()+client.getLastName();
+		}else {
+			username=client.getUserName();
+		}
+		eventtobeupdated.setClientName(username);
 		eventtobeupdated.setOrgId(payload.getOrganization().getOrganizationId());
 		eventtobeupdated.setOrgName(payload.getOrganization().getOrganizationName());
 		return eventtobeupdated;
@@ -172,7 +178,8 @@ public class EventServiceImpl extends BaseService implements IEventService {
 
 	private Event modifyEvent(EventRequestPayload payload) throws ParseException {
 		// TODO Auto-generated method stub
-		User client = userRepository.findByuserEmail(payload.getClient());
+		String username=null;
+		User client = userRepository.findByuserEmail(payload.getClient().getUserEmail());
 		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 		Date startdate = formatter.parse(payload.getStartDate());
 		Date enddate = formatter.parse(payload.getEndDate());
@@ -180,7 +187,12 @@ public class EventServiceImpl extends BaseService implements IEventService {
 		eventtobeupdated.setOrgId(payload.getOrganization().getOrganizationId());
 		eventtobeupdated.setOrgName(payload.getOrganization().getOrganizationName());
 		eventtobeupdated.setClientId(client.getUserId());
-		eventtobeupdated.setClientName(client.getFirstName() + client.getLastName());
+		if(client.getUserName()==null) {
+			 username=client.getFirstName()+client.getLastName();
+		}else {
+			username=client.getUserName();
+		}
+		eventtobeupdated.setClientName(username);
 		eventtobeupdated.setProductId(payload.getProductId());
 		eventtobeupdated.setProductName(payload.getProductName());
 		eventtobeupdated.setEventName(payload.getName());

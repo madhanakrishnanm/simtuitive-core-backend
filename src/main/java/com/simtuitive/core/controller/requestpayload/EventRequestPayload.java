@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.simtuitive.core.controller.responsepayload.OrganisationResponsePayload;
+import com.simtuitive.core.controller.responsepayload.UserResponsePayload;
 import com.simtuitive.core.model.EventModules;
 import com.simtuitive.core.model.EventSessions;
 import com.simtuitive.core.model.Organisation;
@@ -19,7 +20,7 @@ public class EventRequestPayload {
 	public String id;
 	public String orgId;
 	public String orgName;
-	public String client;
+	public UserResponsePayload client;
 	public String clientName;
 	public String productId;
 	public String productName;
@@ -77,13 +78,13 @@ public class EventRequestPayload {
 	/**
 	 * @return the client
 	 */
-	public String getClient() {
+	public UserResponsePayload getClient() {
 		return client;
 	}
 	/**
 	 * @param client the client to set
 	 */
-	public void setClient(String client) {
+	public void setClient(UserResponsePayload client) {
 		this.client = client;
 	}
 	/**
@@ -302,7 +303,7 @@ public class EventRequestPayload {
 	public void setBookingStatus(String bookingStatus) {
 		this.bookingStatus = bookingStatus;
 	}
-	public EventRequestPayload(String id, String orgId, String orgName, String client, String clientName,
+	public EventRequestPayload(String id, String orgId, String orgName, UserResponsePayload client, String clientName,
 			String productId, String productName, String name, String noOfParticipants, String tollGate,
 			String startDate, String endDate, OrganisationResponsePayload organization, String notes, Date createdAt,
 			String status, Date updatedAt, String modifiedBy, String createdBy, String type,
