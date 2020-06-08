@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import com.simtuitive.core.model.Organisation;
 import com.simtuitive.core.model.Permissions;
 import com.simtuitive.core.model.User;
 
@@ -39,6 +40,7 @@ public class UserRequestPayload implements Serializable {
 	private String userType;
 	private String roleid;
 	private String billingAddress;
+	private List<User> client;
 	
 	/**
 	 * @return the firstName
@@ -337,11 +339,25 @@ public class UserRequestPayload implements Serializable {
 		this.billingAddress = billingAddress;
 	}
 	
+	
+	
+	/**
+	 * @return the client
+	 */
+	public List<User> getClient() {
+		return client;
+	}
+	/**
+	 * @param client the client to set
+	 */
+	public void setClient(List<User> client) {
+		this.client = client;
+	}
 	public UserRequestPayload(String userId, String name, String firstName, String lastName, String email,
 			String organisationId, String password, Long status, String clientDealOwner, Date createdDate,
 			String clientLocation, String gst, String pan, List<User> clientSpoc, String simEventName,
 			String smeAssigned, Long noOfMilestone, Long noOfMilestoneAttended, Long noOfMilestoneCompleted,
-			List<Permissions> permissions, String role, String userType, String roleid, String billingAddress) {
+			List<Permissions> permissions, String role, String userType, String roleid, String billingAddress,List<User> client) {
 		super();
 		this.userId = userId;
 		this.name = name;
@@ -367,6 +383,7 @@ public class UserRequestPayload implements Serializable {
 		this.userType = userType;
 		this.roleid = roleid;
 		this.billingAddress = billingAddress;
+		this.client = client;
 	}
 	public UserRequestPayload() {
 

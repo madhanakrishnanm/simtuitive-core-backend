@@ -36,6 +36,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.simtuitive.core.common.Constants;
 import com.simtuitive.core.config.RedisConfiguration;
 import com.simtuitive.core.controller.productmgmt.api.JsonApiWrapper;
@@ -46,6 +48,8 @@ import com.simtuitive.core.controller.responsepayload.UserResponsePayload;
 import com.simtuitive.core.globalexception.BadArgumentException;
 import com.simtuitive.core.globalexception.ResourceNotFoundException;
 import com.simtuitive.core.globalexception.UserServiceException;
+import com.simtuitive.core.messaging.callback.SimtuitiveEmailNotificationProducerCallBack;
+import com.simtuitive.core.model.EmailNotificationMeta;
 import com.simtuitive.core.model.Permissions;
 import com.simtuitive.core.model.ProductUsers;
 import com.simtuitive.core.model.Roles;
@@ -109,7 +113,7 @@ public class UserController extends BaseController {
 
 	@RequestMapping(value = "/add-user", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonApiWrapper<UserResponsePayload> createUser(@ApiIgnore UriComponentsBuilder builder,
-			@RequestBody UserRequestPayload userpayload, HttpServletRequest request, HttpServletResponse response) {		
+			@RequestBody UserRequestPayload userpayload, HttpServletRequest request, HttpServletResponse response) throws JsonProcessingException, Exception {		
 		String tmp = builder.path(Constants.PATH_CREATE_ADMIN).build().toString();
 		Link l1 = new Link(tmp, Constants.LINK_CREATE_ADMIN_DETAIL);
 		checkArguments(userpayload);
@@ -117,8 +121,27 @@ public class UserController extends BaseController {
 		checkExistingUser(userpayload.getEmail(), l1.getHref());
 		UserResponsePayload userResponse = null;
 		userResponse = userservice.addUser(userpayload);
-		return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
+		sendMail(userResponse);
+				return new JsonApiWrapper<>(userResponse, getSelfLink(request), Arrays.asList(l1));
 
+	}
+
+	private void sendMail(UserResponsePayload userpayload) throws JsonProcessingException, Exception {
+		// TODO Auto-generated method stub
+		if(userpayload.getRole().equalsIgnoreCase("Client")) {
+			SimtuitiveEmailNotificationProducerCallBack  senpcBack = new SimtuitiveEmailNotificationProducerCallBack();
+			String topicName = "SimtuitiveEmailNotification";			
+			String[] to= {userpayload.getUserEmail()};	
+			String[] cc= {""};
+			EmailNotificationMeta mail=new EmailNotificationMeta("rockerviju@gmail.com",to,cc, "Sign In As a Client","Your Auto Generated password is " +userpayload.getPassword());
+			ObjectMapper jsonMapper= new ObjectMapper();	
+			InitializationController.getMessagingService().publishMessage(topicName, jsonMapper.writeValueAsString(mail), senpcBack);
+			UserRequestPayload userpayload1=new UserRequestPayload();
+			userpayload1.setUserId(userpayload.getUserId());
+			userpayload1.setPassword(userpayload.getPassword());
+			userservice.encryptPassword(userpayload1);
+		}
+		
 	}
 
 	public void checkExistingUser(String email, String url) {
@@ -487,6 +510,43 @@ public class UserController extends BaseController {
 		Link l1 = new Link(tmp, " User Detail getAll");			
 		return new JsonApiWrapper<>(result, getSelfLink(request), Arrays.asList(l1));
 
+	}
+
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	@ApiOperation(value = " Invite client ", response = User.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Successful getAll of User Data.", response = JsonApiWrapper.class),
+			@ApiResponse(code = 401, message = "Not authorized!"),
+			@ApiResponse(code = 403, message = "Not authorized to perform this action."),
+			@ApiResponse(code = 404, message = "Invalid userId or userRoleId."),
+			@ApiResponse(code = 404, message = "Operation cannot be performed now."),
+			@ApiResponse(code = 500, message = "Internal server error") })
+	@RequestMapping(value = "/invite-client", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public JsonApiWrapper<String> inviteClient(@ApiIgnore UriComponentsBuilder builder,
+			@RequestBody UserRequestPayload userpayload,HttpServletRequest request, HttpServletResponse response) throws JsonProcessingException, Exception {
+		String result="Success";
+		sendInviteClient(userpayload);
+		String tmp = builder.path("/getAll").build().toString();
+		Link l1 = new Link(tmp, " User Detail getAll");			
+		return new JsonApiWrapper<>(result, getSelfLink(request), Arrays.asList(l1));
+
+	}
+	private void sendInviteClient(UserRequestPayload userpayload) throws JsonProcessingException, Exception {
+		// TODO Auto-generated method stub
+		SimtuitiveEmailNotificationProducerCallBack  senpcBack = new SimtuitiveEmailNotificationProducerCallBack();
+		String topicName = "SimtuitiveEmailNotification";
+		List<String> sb = new ArrayList<>();
+		for(User s:userpayload.getClient()) {
+			sb.add(s.getUserEmail());
+		}
+		String[] to= new String[sb.size()]; 
+		sb.toArray(to);
+		System.out.println("invite client"+to.toString());
+		String[] cc= {""};
+		EmailNotificationMeta mail=new EmailNotificationMeta("rockerviju@gmail.com",to,cc, "Invitation from simtutive","Your are invited to login simtutive with your password");
+		ObjectMapper jsonMapper= new ObjectMapper();	
+		InitializationController.getMessagingService().publishMessage(topicName, jsonMapper.writeValueAsString(mail), senpcBack);
+	
 	}
 
 	@ApiResponses(value = {

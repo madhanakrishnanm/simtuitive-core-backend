@@ -392,4 +392,12 @@ public class UserServiceImpl extends BaseService implements IUserService {
 		return newlist;
 	}
 
+	@Override
+	public void encryptPassword(UserRequestPayload UserRequestPayload) {
+		// TODO Auto-generated method stub
+		User user=userrepository.findByUserId(UserRequestPayload.getUserId());
+		user.setPassword(passwordEncoder.encode(UserRequestPayload.getPassword()));
+		userrepository.save(user);
+	}
+
 }

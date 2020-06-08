@@ -45,5 +45,7 @@ public interface IUserService {
 	public Long countByRoleAndStatus(String role,Long status);
 	
 	public List<UserResponsePayload> getOrgUsers(String orgName);
+	
+	public void encryptPassword(UserRequestPayload UserRequestPayload);
 
 }
