@@ -29,8 +29,8 @@ public class EmailServiceImpl implements IEmailService {
         String host = "smtp.gmail.com";
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.host", host);
-        props.put("mail.smtp.user", "maniveerasimtutive@gmail.com");
-        props.put("mail.smtp.password", "Simtutive");
+        props.put("mail.smtp.user", "Enquiry@simtuitive.com");
+        props.put("mail.smtp.password", "Simtuitive#mail");
         props.put("mail.smtp.port", "587");
         props.put("mail.smtp.auth", "true");
         
@@ -38,7 +38,7 @@ public class EmailServiceImpl implements IEmailService {
         MimeMessage message = new MimeMessage(session);
         try {
         	MimeMessageHelper helper = new MimeMessageHelper(message, false, "utf-8");
-            message.setFrom(new InternetAddress("maniveerasimtutive@gmail.com"));
+            message.setFrom(new InternetAddress("Enquiry@simtuitive.com"));
             InternetAddress[] toAddress = new InternetAddress[to.length];
             InternetAddress[] ccAddress = new InternetAddress[cc.length];
             String htmlMsg=null;
@@ -110,7 +110,7 @@ public class EmailServiceImpl implements IEmailService {
            
            
             Transport transport = session.getTransport("smtp");
-            transport.connect(host, "maniveerasimtutive@gmail.com", "Simtutive");
+            transport.connect(host, "Enquiry@simtuitive.com", "Simtuitive#mail");
             transport.sendMessage(message, message.getAllRecipients());
             transport.close();
         }
