@@ -1,7 +1,9 @@
 package com.simtuitive.core.service;
 
+import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.AddressException;
@@ -20,6 +22,22 @@ public class EmailServiceImpl implements IEmailService {
 	JavaMailSenderImpl sender =new JavaMailSenderImpl();
 	
 	
+	private class SMTPAuthenticator extends Authenticator
+    {
+        private PasswordAuthentication authentication;
+
+        public SMTPAuthenticator(final String login, final String password)
+        {
+             authentication = new PasswordAuthentication(login, password);
+        }
+
+        @Override
+        protected PasswordAuthentication getPasswordAuthentication()
+        {
+             return authentication;
+        }
+    }
+	
 	@Override
 	public void triggerMessageClient(String[] to, String[] cc, String subject, String text) {
 		// TODO Auto-generated method stub
@@ -29,12 +47,12 @@ public class EmailServiceImpl implements IEmailService {
         String host = "smtp.gmail.com";
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.host", host);
-        props.put("mail.smtp.user", "Enquiry@simtuitive.com");
-        props.put("mail.smtp.password", "Simtuitive#mail");
+        //props.put("mail.smtp.user", "Enquiry@simtuitive.com");
+        //props.put("mail.smtp.password", "Simtuitive#mail");
         props.put("mail.smtp.port", "587");
         props.put("mail.smtp.auth", "true");
-        
-        Session session = Session.getDefaultInstance(props);
+        Authenticator auth = new SMTPAuthenticator("maniveerasimtutive@gmail.com", "Simtutive");
+        Session session = Session.getDefaultInstance(props,auth);
         MimeMessage message = new MimeMessage(session);
         try {
         	MimeMessageHelper helper = new MimeMessageHelper(message, false, "utf-8");
@@ -109,10 +127,11 @@ public class EmailServiceImpl implements IEmailService {
             
            
            
-            Transport transport = session.getTransport("smtp");
-            transport.connect(host, "Enquiry@simtuitive.com", "Simtuitive#mail");
-            transport.sendMessage(message, message.getAllRecipients());
-            transport.close();
+//            Transport transport = session.getTransport("smtp");
+//            transport.connect(host, "Enquiry@simtuitive.com", "Simtuitive#mail");
+//            transport.sendMessage(message, message.getAllRecipients());
+//            transport.close();
+            Transport.send(message);
         }
         catch (AddressException ae) {
             ae.printStackTrace();
