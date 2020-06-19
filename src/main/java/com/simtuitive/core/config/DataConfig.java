@@ -18,10 +18,6 @@ public class DataConfig extends AbstractMongoConfiguration {
 	private static final String uri = "mongodb://simtuitivedev:cYxhwHNjJpmLdh7J@52.66.197.93:27017/simtuitive?authSource=admin&authMechanism=SCRAM-SHA-1";
 //	@Value("${spring.data.mongodb.uri}")
 //    private String uri;
-//	@Value("${spring.data.mongodb.uri}")
-//    private String uri;
-//	@Value("${spring.data.mongodb.uri}")
-//    private String uri;
 	@Value("${spring.data.mongodb.database}")
 	private String database;
 
