@@ -20,6 +20,8 @@ public class DataConfig extends AbstractMongoConfiguration {
 //    private String uri;
 //	@Value("${spring.data.mongodb.uri}")
 //    private String uri;
+//	@Value("${spring.data.mongodb.uri}")
+//    private String uri;
 	@Value("${spring.data.mongodb.database}")
 	private String database;
 
